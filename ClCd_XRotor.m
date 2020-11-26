@@ -41,8 +41,10 @@ function [Cl_vec, Cd, Cd_bp] = ClCd_XRotor(Cd_min, dCd_dCl2, Cl_Cd_min, Re_ref, 
 % |              (Cl_max) = maximum blade element's lift coefficient           |
 % |              (Cl_min) = minimum blade element's lift coefficient           |
 % |              (Cl_bp) = blade element's lift coefficient breakpoints        |
-% |Output      : tipo di output prodotto                                       |
-% |Note        : note addizionali                                              |
+% |Output      : (Cl_vec) = lift coefficient vector used to plot the law       |
+% |              (Cd) = drag coefficent values @ Cl_vec                        |
+% |              (Cd_bp) = drag coefficient values @ requested Cl_bp           |
+% |Note        :                                                               |
 % ==============================================================================================
 
     Cl_vec = Cl_min:.01:Cl_max;
