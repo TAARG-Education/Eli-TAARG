@@ -3,7 +3,7 @@ function [Cl_vec, Cd, Cd_bp] = ClCd_XRotor(input_v, Cl_bp)
 %  \brief: the function evaluates the Cd(Cl) law according to XRotor
 %  aerodynamic model
 %  \author: Crescenzo Visone
-%  \version: 1.02
+%  \version: 1.03
 %
 % Eli-TAARG is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public
@@ -26,9 +26,9 @@ function [Cl_vec, Cd, Cd_bp] = ClCd_XRotor(input_v, Cl_bp)
 % |Name        : ClCd_XRotor.m                                                           |
 % |Author      : Crescenzo Visone                                                        |
 % |              University of Naples Federico II.                                       |
-% |Version     : 1.02                                                                    |
+% |Version     : 1.03                                                                    |
 % |Date        : 25/11/2020                                                              |
-% |Modified    : 11/12/2020                                                              |
+% |Modified    : 16/12/2020                                                              |
 % |Description : Cd(Cl) evaluation law according to XRotor aero model                    |     
 % |Reference   : XRotor User Guide                                                       |
 % |              <http://web.mit.edu/drela/Public/web/xrotor/xrotor_doc.txt>             |                                                         |
@@ -61,16 +61,16 @@ function [Cl_vec, Cd, Cd_bp] = ClCd_XRotor(input_v, Cl_bp)
     % lift coefficient vector creation
     Cl_vec = Cl_min:.01:Cl_max;
     % aerodynamic model building
-    for i = 1:length(Cl_vec)
-        Cl = Cl_vec(i);
-        Cd(i) = (Cd_min + dCd_dCl2*(Cl_Cd_min - Cl)^2)*(Re_inf/Re_ref)^f;
-    end
-    % plot
-    plot(Cd, Cl_vec);
+    Cd = (Cd_min + dCd_dCl2*(Cl_Cd_min - Cl_vec).^2)*(Re_inf/Re_ref)^f;
     %% evaluation of Cd values @ requested Cl breakpoints 
     % note that Cl_bp can be both a single value or a vector
     % definition of an anonymous function through the handle (@) symbol
     Cd_interp = @(Cl_interp) interp1(Cl_vec, Cd, Cl_interp, 'pchip');
     % anonymous fcn used to compute requested Cd
     Cd_bp = Cd_interp(Cl_bp);
+    %% plots section ------------------------------------------------------
+    % blade element's polar diagram
+    % along x: drag coefficient
+    % along y: lift coefficient
+    plot(Cd, Cl_vec);
 end
