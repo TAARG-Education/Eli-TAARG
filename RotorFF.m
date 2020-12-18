@@ -1,5 +1,3 @@
-function [Vt,wt,Vp,wp,Pt,Tp] = RotorFF(alfa)
-
 %% \RotorFF
 %  \The function plots the characteristic curves for rotor in forward
 %  flight for both constant thrust and power and gives in output also the
@@ -50,6 +48,7 @@ function [Vt,wt,Vp,wp,Pt,Tp] = RotorFF(alfa)
 % |Note        :                                                                               |
 % ==============================================================================================
 
+function [Vt,wt,Vp,wp,Pt,Tp] = RotorFF(alfa)
 
 %%Angle conversion to radiant
 alfa=deg2rad(alfa);
