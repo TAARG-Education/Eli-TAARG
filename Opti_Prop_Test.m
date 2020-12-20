@@ -1,7 +1,7 @@
 %% \Opti_Prop_TEST.m
 %  \brief: Test function
 %  \authors : Francesco Gervasio, Nicola Russo
-%  \version: 1.01
+%  \version: 1.03
 %
 % Eli-TAARG is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public
@@ -24,17 +24,16 @@
 % |Name        : Opti_Prop.m                                                   |
 % |Authors     : Francesco Gervasio, Nicola Russo                              |
 % |              University of Naples Federico II.                             |
-% |Version     : 1.01                                                          |
+% |Version     : 1.03                                                         |
 % |Date        : 28/11/2020                                                    |
-% |Modified    : 4/12/2020                                                     |
+% |Modified    : 20/12/2020                                                     |
 % |Description : this function designs the geometry of an optimum propeller
 %  at given thrust or power.                                                   |     
 % |Reference   :                                                               |
 % |                                                                            |                                                         |
 % |Input       : GEOMETRY
-% |              R_prop  = Propeller radius [m]                                |
 % |              N_blade = Number of blades [ ]                                |  
-% |              R_hub   = Hub radius       [m]                                |
+% |              R_hub   = Hub radius percentage  [%]                          |
 % |              n_rpm   = Revolutions per minutes  [rpm]                      |
 % |              ATMO                                                          |
 % |              h       = Height               [m]                            |
@@ -53,31 +52,23 @@
 clear all; close all; clc;
 
 %% INPUT
-R_tip  = 0.95;      %[m] 
 N_blade = 2;        %[ ]
-R_hub   = 0.14;     %[m]
-n_rpm   = 2500;     %[rpm]
+R_hub   = 0.2;     %[%]
+n_rpm   = 2000;     %[rpm]
 V_inf   = 45 ;      %[m/s]
-T = 964;            %[N]
-P = 53579.12;       %[kW]
+Ct = 0.05;           %[]
+Cp =0.060;           %[]
 h = 4000;           %[m]
 
-[r_adim_T,theta_T,chord_T,dT_corr,w_0_T] = Opti_prop_T(R_tip,N_blade,R_hub,n_rpm,V_inf,T,h);
-[r_adim_P,theta_P,chord_P,dP_corr,w_0_P] = Opti_prop_P(R_tip,N_blade,R_hub,n_rpm,V_inf,P,h);
+[r_adim_T_new,a_chi,a_first_chi,dCt_N,W_0,k,Ct_corr] = Opti_prop_T_Newton(N_blade,R_hub,n_rpm,V_inf,Ct,h);
+[r_adim_T,a_chi,a_first_chi,dCt,w0] = Opti_prop_T_corr(N_blade,R_hub,n_rpm,V_inf,Ct,h); 
+error_perc = abs((Ct_corr - Ct))/Ct*100
 
-figure
-plot(r_adim_T,theta_T,'-k');
-hold on;
-plot(r_adim_P,theta_P,'ok','markersize',3);
-xlabel('$\bar{r}$','interpreter','latex');
-ylabel('$\theta$ (rad)','interpreter','latex');
-title('Theta angle $ \theta$  vs $\bar{r}$','interpreter','latex');
-grid on;
-
-figure
-plot(r_adim_T,chord_T,'-k');
-hold on;
-plot(r_adim_P,chord_P,'ok','markersize',3);
-xlabel('$\bar{r}$','interpreter','latex');
-ylabel('$c(\bar{r})$','interpreter','latex');
-title('Chord distribution c vs $\bar{r}$','interpreter','latex');
+% figure
+% plot(r_adim_T_new,dCt_N,'-k');
+% grid on;
+% hold on ;
+% plot(r_adim_T,dCt,'ok');
+% xlabel('$\bar{r}$','interpreter','latex');
+% ylabel('$\frac{dC_{T}}{d\bar{r}}$','interpreter','latex');
+% title('Thrust coefficient distribution $\frac{dC_{T}}{d\bar{r}}$ vs $\bar{r}$','interpreter','latex');

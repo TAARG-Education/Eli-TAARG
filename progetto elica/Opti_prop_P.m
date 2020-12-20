@@ -189,56 +189,56 @@ P_corr = trapz(dP_corr);
 w_0 = w_0 +0.0001;
 end
 
-% %% Plot
-% figure
-% plot(r_adim,phi_adim,'-k');
-% xlabel('$\bar{r}$','interpreter','latex');
-% ylabel('$\phi$ (rad)','interpreter','latex');
-% title('Inflow angle $ \phi$  vs $\bar{r}$','interpreter','latex');
-% grid on;
-% 
-% figure
-% plot(chi,a_chi,'-.k')
-% hold on
-% plot(chi,a_first_chi,'-k')
-% xlabel('$\chi$','interpreter','latex');
-% legend('$a$','$a^{''}$','interpreter','latex');
-% title('Axial induction $ a$ and rotational induction $a^{''}$ vs $\bar{r}$','interpreter','latex');
-% 
-% figure
-% plot(r_adim,F,'-k')
-% xlabel('$\bar{r}$','interpreter','latex');
-% ylabel('$F$','interpreter','latex');
-% title('Prandtl correction function for finite blade number vs $\bar{r}$',...
-%     'interpreter','latex');
-% grid on;
-% 
-% figure
-% plot(chi,gamma_adim_opti,'-k')
-% grid on;
-% xlabel('$\chi$','interpreter','latex');
-% legend('$\frac{N \Gamma \Omega}{4\pi w_{0}*v_{inf}}$','interpreter','latex');
-% 
-% figure
-% plot(r_adim,theta,'-k');
-% xlabel('$\bar{r}$','interpreter','latex');
-% ylabel('$\theta$ (rad)','interpreter','latex');
-% title('Theta angle $ \theta$  vs $\bar{r}$','interpreter','latex');
-% grid on;
-% 
-% figure
-% plot(r_adim,chord,'-k');
-% grid on;
-% xlabel('$\bar{r}$','interpreter','latex');
-% ylabel('$c(\bar{r})$','interpreter','latex');
-% title('Chord distribution c vs $\bar{r}$','interpreter','latex');
-% 
-% figure
-% plot(r_adim,dP_corr,'-k');
-% grid on;
-% xlabel('$\bar{r}$','interpreter','latex');
-% ylabel('$\frac{dT}{d\bar{r}}$','interpreter','latex');
-% title('Power distribution $P$ vs $\bar{r}$','interpreter','latex');
+%% Plot
+figure
+plot(r_adim,phi_adim,'-k');
+xlabel('$\bar{r}$','interpreter','latex');
+ylabel('$\phi$ (rad)','interpreter','latex');
+title('Inflow angle $ \phi$  vs $\bar{r}$','interpreter','latex');
+grid on;
+
+figure
+plot(chi,a_chi,'-.k')
+hold on
+plot(chi,a_first_chi,'-k')
+xlabel('$\chi$','interpreter','latex');
+legend('$a$','$a^{''}$','interpreter','latex');
+title('Axial induction $ a$ and rotational induction $a^{''}$ vs $\bar{r}$','interpreter','latex');
+
+figure
+plot(r_adim,F,'-k')
+xlabel('$\bar{r}$','interpreter','latex');
+ylabel('$F$','interpreter','latex');
+title('Prandtl correction function for finite blade number vs $\bar{r}$',...
+    'interpreter','latex');
+grid on;
+
+figure
+plot(chi,gamma_adim_opti,'-k')
+grid on;
+xlabel('$\chi$','interpreter','latex');
+legend('$\frac{N \Gamma \Omega}{4\pi w_{0}*v_{inf}}$','interpreter','latex');
+
+figure
+plot(r_adim,theta,'-k');
+xlabel('$\bar{r}$','interpreter','latex');
+ylabel('$\theta$ (rad)','interpreter','latex');
+title('Theta angle $ \theta$  vs $\bar{r}$','interpreter','latex');
+grid on;
+
+figure
+plot(r_adim,chord,'-k');
+grid on;
+xlabel('$\bar{r}$','interpreter','latex');
+ylabel('$c(\bar{r})$','interpreter','latex');
+title('Chord distribution c vs $\bar{r}$','interpreter','latex');
+
+figure
+plot(r_adim,dP_corr,'-k');
+grid on;
+xlabel('$\bar{r}$','interpreter','latex');
+ylabel('$\frac{dP}{d\bar{r}}$','interpreter','latex');
+title('Power distribution $P$ vs $\bar{r}$','interpreter','latex');
 
 DATA(:,1) = r_adim';
 DATA(:,2) = theta';
