@@ -1,4 +1,4 @@
-function [Power,Induction] = Curve(M,R)
+function [Power,Induction] =Axial_Descent_Ascent_Operating_Curves_Rotor(M,R)
 %% \Axial_Descent_Ascent_Operating_Curves_Rotor.m
 %  \brief: the function plots w(V_infty) and P(V_infty) curves according to
 %  Impulsive theory.
