@@ -1,7 +1,39 @@
-function [alpha_i_A, alpha_i_B, alpha_i_C, beta, c, Cl_alpha]=BEMT(V, rpm, R, r_hub, N, ns)
+%% BEMT_Function Summary
+%
+% Eli-TAARG is free software; you can redistribute it and/or
+% modify it under the terms of the GNU General Public
+% License as published by the Free Software Foundation; either
+% version 3 of the License, or (at your option) any later version.
+%
+% Eli-TAARG is developed by the TAARG Educational organization for
+% educational purposes only.
+% Theoretical and Applied Aerodynamic Research Group - University of Naples Federico II.
+%
+% Eli-TAARG GitHub link: <https://github.com/TAARG-Education/Eli-TAARG>
+%
+% Eli-TAARG is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+% General Public License for more details.
+% <http://www.gnu.org/licenses/>.
+%
+% ==============================================================================================
+% |Name        : Function BEMT (A, B and C Methods)                                           |
+% |Author      : Crispino Umberto & Di Maio Daniele                                           |
+% |              University of Naples Federico II.                                            |
+% |Version     : 1.0.0                                                                        |
+% |Date        : 15/12/2020                                                                   |
+% |Modified    : 22/12/2020                                                                   |
+% |Description : Using flight conditions and the geometry of the propeller, through three     | 
+%                different methods the induced angle of incidence is obtained                 |
+% |Reference   :                                                                              |
+% |Input       : Geometry of the propeller (number of blades (N), radius (R), number of       |
+%                sections (ns) and radius of the hub) and flight condintions (V and rpm)      |  
+% |Output      : Induced incidence angle valued by A, B and C Methods                         |
+% |Note        :                                                                              |
+% ==============================================================================================
 
-%BEMT Summary of this function goes here
-%   Detailed explanation goes here
+function [alpha_i_A, alpha_i_B, alpha_i_C, beta, c, Cl_alpha]=BEMT(V, rpm, R, r_hub, N, ns)
 
 i=1;
 while i< ns+1
