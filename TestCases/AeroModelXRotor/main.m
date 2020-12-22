@@ -1,8 +1,7 @@
-%% \ClCd_XRotor.m
-%  \brief: the function evaluates the Cd(Cl) law according to XRotor
-%  aerodynamic model
+%% \main.m
+%  \brief: this script tests the ClCd_XRotor.m function
 %  \author: Crescenzo Visone
-%  \version: 1.04
+%  \version: 1.01
 %
 % Eli-TAARG is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public
@@ -22,13 +21,13 @@
 % <http://www.gnu.org/licenses/>.
 %
 % ==============================================================================================
-% |Name        : ClCd_XRotor.m                                                           |
+% |Name        : main.m                                                                  |
 % |Author      : Crescenzo Visone                                                        |
 % |              University of Naples Federico II.                                       |
-% |Version     : 1.04                                                                    |
-% |Date        : 25/11/2020                                                              |
+% |Version     : 1.01                                                                    |
+% |Date        : 22/12/2020                                                              |
 % |Modified    : 22/12/2020                                                              |
-% |Description : Cd(Cl) evaluation law according to XRotor aero model                    |     
+% |Description : ClCd_XRotor.m function testing                    |     
 % |Reference   : XRotor User Guide                                                       |
 % |              <http://web.mit.edu/drela/Public/web/xrotor/xrotor_doc.txt>             |                                                         |
 % |Input       : * the first input must be a vector with the following components:       |
@@ -45,32 +44,17 @@
 % |Output      : (Cl_vec) = lift coefficient vector used to plot the law                 |
 % |              (Cd) = drag coefficent values @ Cl_vec                                  |
 % |              (Cd_bp) = drag coefficient values @ requested Cl_bp                     |
-% |Note        :                                                                         |
+% |Note        : results have been validated through XRotor software                     |
 % ==============================================================================================
-function [Cl_vec, Cd, Cd_bp] = ClCd_XRotor(input_v, Cl_bp)
+close all; clear all; clc;
 
-    % taking input data
-    Cd_min    = input_v(1);
-    dCd_dCl2  = input_v(2);
-    Cl_Cd_min = input_v(3);
-    Re_ref    = input_v(4);
-    Re_inf    = input_v(5);
-    f         = input_v(6);
-    Cl_max    = input_v(7);
-    Cl_min    = input_v(8);
-    % lift coefficient vector creation
-    Cl_vec = Cl_min:.01:Cl_max;
-    % aerodynamic model building
-    Cd = (Cd_min + dCd_dCl2*(Cl_Cd_min - Cl_vec).^2)*(Re_inf/Re_ref)^f;
-    %% evaluation of Cd values @ requested Cl breakpoints 
-    % note that Cl_bp can be both a single value or a vector
-    % definition of an anonymous function through the handle (@) symbol
-    Cd_interp = @(Cl_interp) interp1(Cl_vec, Cd, Cl_interp, 'pchip');
-    % anonymous fcn used to compute requested Cd
-    Cd_bp = Cd_interp(Cl_bp);
-    %% plots section ------------------------------------------------------
-    % blade element's polar diagram
-    % along x: drag coefficient
-    % along y: lift coefficient
-    plot(Cd, Cl_vec);
-end
+% the following script is only aimed to test the ClCd_XRotor function
+
+% input vector
+input_vec = [.0068, .0023, .69, 750000, 750000, -1.5, 1.57, -.86];
+
+% lift coefficient input breakpoints
+Cl_bp = [0.8,1];
+
+% function calling
+[Cl_vec, Cd, Cd_bp] = ClCd_XRotor(input_vec, Cl_bp);
