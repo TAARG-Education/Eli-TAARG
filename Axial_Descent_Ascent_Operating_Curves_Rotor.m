@@ -1,4 +1,4 @@
-function [Power,Induction] = Axial_Descent_Ascent_Operating_Curves_Rotor(M,R)
+function [Power,Induction] = Curve(M,R)
 %% \Axial_Descent_Ascent_Operating_Curves_Rotor.m
 %  \brief: the function plots w(V_infty) and P(V_infty) curves according to
 %  Impulsive theory.
@@ -41,35 +41,31 @@ function [Power,Induction] = Axial_Descent_Ascent_Operating_Curves_Rotor(M,R)
 
 %% Function Main
 
-%Definizione Variabili
+%Variables Definition
 hh    = linspace(0,6000,1000);
 VVs   = linspace(0, 50, 100);
 VVd   = linspace(-50, 0, 100);
-rho1  = zeros(1,length(hh));
 g     = 9.81;
-% wh  = zeros(1,length(hh));
 
-%Calcolo Induzione in hovering
+%Axial Induction
 
 [~, ~, ~, rho1] = atmosisa(hh);
     
 rho = @(h) interp1(hh,rho1,h, 'pchip');
 wh  = @(h) sqrt((M*g)/(2*rho(h)*pi*R^2));
 
-% Definizione variabili adimensionali 
+% Non-Dimensional Variables Definition
 V_tilde = @(V,h) V/wh(h);
 
-%Calcolo curve di Funzionamento:
-
-%Induzione
+%Non Dimensional Induction
 w_tilde_salita  = @(V,h) (-V_tilde(V,h)/2) + sqrt((V_tilde(V,h)/2)^2+1);
 w_tilde_discesa = @(V,h) (-V_tilde(V,h)/2) - sqrt((V_tilde(V,h)/2)^2-1);
 
-WTS = zeros(length(hh),length(VVs)); %Induzione in salita
-WTD = zeros(length(hh),length(VVd)); %Induzione in discesa
-aa  = zeros(1,length(hh));
+WTS = zeros(length(hh),length(VVs)); %Ascent Induction
+WTD = zeros(length(hh),length(VVd)); %Descent Induction
+aa  = zeros(1,length(hh));           %Control Parameter
 
-
+% Matrices fill
 for i = 1 : length(hh)
     for j = 1 : length(VVs)
         WTS(i,j) = w_tilde_salita(VVs(j),hh(i));
@@ -78,7 +74,7 @@ end
 
 for i = 1 : length(hh)
     for j = 1 : length(VVd)
-        if V_tilde(VVd(j),hh(i)) < -2
+        if V_tilde(VVd(j),hh(i)) < -2            %Validity limit of simply impulsive theory;
         WTD(i,j) = w_tilde_discesa(VVd(j),hh(i));
         aa(1,i) = j;
         else 
@@ -87,15 +83,16 @@ for i = 1 : length(hh)
     end
 end
 
-%Potenza
+%Non-Dimensional Power
 
 P_tilde_salita   = @(V,h) V_tilde(V,h) + w_tilde_salita(V,h);
 P_tilde_discesa  = @(V,h) V_tilde(V,h) + w_tilde_discesa(V,h);
 
-PTS = zeros(length(hh),length(VVs)); %Induzione in salita
-PTD = zeros(length(hh),length(VVd)); %Induzione in discesa
-bb  = zeros(1,length(hh));
+PTS = zeros(length(hh),length(VVs)); %Ascent Power
+PTD = zeros(length(hh),length(VVd)); %Descent Power
+bb  = zeros(1,length(hh));           %Control Paramenter
 
+% Matrices fill
 for i = 1 : length(hh)
     for j = 1 : length(VVs)
         PTS(i,j) = P_tilde_salita(VVs(j),hh(i));
@@ -104,7 +101,7 @@ end
 
 for i = 1 : length(hh)
     for j = 1 : length(VVd)
-        if V_tilde(VVd(j),hh(i)) < -2
+        if V_tilde(VVd(j),hh(i)) < -2            %Validity limit of simply impulsive theory;
         PTD(i,j) = P_tilde_discesa(VVd(j),hh(i));
         bb(1,i) = j;
         else 
@@ -115,7 +112,7 @@ end
 
 
 %%
-% Plot Curva funzionamento Induzione funzione di velocità e quota
+% 3D Plots of Induction [output]
 figure(1)
  plot3(hh(1)*ones(1,length(WTS(1,:))),VVs,WTS(1,:))
  hold on
@@ -132,7 +129,7 @@ grid on
 title('$w (V_{\infty}, h)$','Interpreter','latex', 'FontSize', 15)
 view(71,32)
 
-% Plot Curva funzionamento Potenza funzione di velocità e quota
+% 3D Plots of Power [output]
 figure(2)
  plot3(hh(1)*ones(1,length(PTS(1,:))),VVs,PTS(1,:))
  hold on
@@ -149,25 +146,24 @@ grid on
 title('$P (V_{\infty}, h)$','Interpreter','latex', 'FontSize', 15)
 view(71,32)
 
-%% Scelta Quota di Interesse 
+%% Insertion of Interes Altitude;
+
 prompt = {'Inserire la quota di interesse in metri [min=0,Max=6000]: '};
 dlgtitle = 'Quota';
 dims = [1 35];
 answer = inputdlg(prompt,dlgtitle,dims);
 hnew = str2double(answer{1});
-% disp('Premere un tasto per scegliere la quota di interesse...')
-% pause
-% hnew = input('Inserire la quota di interesse: ');
-WTSnew = zeros(1,length(VVs));
-WTDnew = zeros(1,length(VVd));
 
+WTSnew = zeros(1,length(VVs));  %Vector Inizialization of axial ascent induction related to velocity
+WTDnew = zeros(1,length(VVd));  %Vector Inizialization of axial descent induction related to velocity
 
+% Matrices fill
 for j = 1 : length(VVs)
     WTSnew(1,j) = w_tilde_salita(VVs(j),hnew);
 end
 
 for j = 1 : length(VVd)
-    if V_tilde(VVd(j),hh(i)) < -2
+    if V_tilde(VVd(j),hh(i)) < -2                  %Validity limit of simply impulsive theory;
         WTDnew(1,j) = w_tilde_discesa(VVd(j),hnew);
         aanew = j;
     else
@@ -184,7 +180,7 @@ for j = 1 : length(VVs)
 end
 
 for j = 1 : length(VVd)
-    if V_tilde(VVd(j),hh(i)) < -2
+    if V_tilde(VVd(j),hh(i)) < -2                  %Validity limit of simply impulsive theory;
         PTDnew(1,j) = P_tilde_discesa(VVd(j),hnew);
         bbnew = j;
     else
@@ -192,7 +188,8 @@ for j = 1 : length(VVd)
     end
 end
 
-%% Plot Curve A Quota Di Interesse
+%% 
+% 2D Plots of induction [Output]
 figure(3)
 plot(VVs, WTSnew, '-k')
 hold on
@@ -201,8 +198,9 @@ grid on
 xlabel('$V_{\infty}$','Interpreter','latex','FontSize',15)
 ylabel('$w$','Interpreter','latex','FontSize',15)
 title(['$w$ per h=' num2str(hnew)],'Interpreter','latex')
+matlab2tikz('D:\Università\Magistrale\AerodinamicaAlaRotante\Matlab\EliiTAARG\Figure\Induzione2d.tex');
 
-
+% 2D Plots of power [Output]
 figure(4)
 plot(VVs, PTSnew, '-k')
 hold on
@@ -211,11 +209,11 @@ grid on
 xlabel('$V_{\infty}$','Interpreter','latex','FontSize',15)
 ylabel('$P$','Interpreter','latex','FontSize',15)
 title(['$P$ per h=' num2str(hnew)],'Interpreter','latex')
-
-%Per ora li ho messi a caso per far funzionare il tutto.
-
-Power = 1;
-Induction = WTS;
+matlab2tikz('D:\Università\Magistrale\AerodinamicaAlaRotante\Matlab\EliiTAARG\Figure\Potenza2d.tex');
+%%
+% Numerical Output of Power and Induction for the interest altitude;
+Power = [PTDnew(1:bbnew), PTSnew];
+Induction = [WTDnew(1:aanew), WTSnew];
 
 
 
