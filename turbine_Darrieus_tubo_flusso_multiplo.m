@@ -7,7 +7,7 @@ cq = zeros(numel(lambdav),1); %inizializzazione del vettore del coefficiente di 
 a = zeros(1,numel(phiv)); %inizializzazione del vettore di induzione
 v_vinf = zeros(numel(phiv),numel(phiv)); %inizializzazione del vettore di v/vinfinito
 alpha = zeros(numel(phiv),numel(phiv)); %inizializzazione del vettore degli alfa
-ind = zeros(numel(phiv),numel(phiv));
+ind = zeros(numel(phiv),numel(phiv)); 
 %% Calcolo di a, CP, CQ
 for j = 1 : numel(lambdav)
     lambda = lambdav(j); %assegnazione di lambda
