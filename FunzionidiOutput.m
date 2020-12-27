@@ -27,15 +27,15 @@
 % |Version     : 1.0.0                                                                         |
 % |Date        : 25/11/20                                                                      |
 % |Modified    : 27/12/20                                                          	           |
-% |Description : starting from the output data of all functions, the function		           |
+% |Description : starting from the output data of all functions, the function		               |
 % |              provides to show in output all the charateristics graphs to describe          |
-% |		 propellers, rotors and turbines operation 				                               |
-% |											                                                   |
+% |		 propellers, rotors and turbines operation 				                                       |
+% |											                                                                       |
 % |Reference   :                                                                               |
 % |Input       : output data of all functions                                                  |
 % |Output      : graphs to describes propellers, rotors and turbines operation     	           |
 % |                                                                                            |
-% |Note        :                                                               		           |
+% |Note        :                                                               		             |
 % ==============================================================================================
 
 function [outputArg1,outputArg2] = FunzionidiOutput(inputArg1,inputArg2)
