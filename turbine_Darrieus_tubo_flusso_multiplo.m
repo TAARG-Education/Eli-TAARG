@@ -1,7 +1,7 @@
-function [cq,cp] = turbine_Darrieus_tubo_flusso_multiplo (alphamax,c,R,cla,N,cd)
+function [cp,cq,lambdav] = turbine_Darrieus_tubo_flusso_multiplo(alphamax,c,R,cla,N,cd)
 phiv = linspace(0,360,100); %dominio di phi (posizione angolare dell'ala)
 phiv = deg2rad(phiv); % dominio di phi in rad
-lambdav = linspace(2,17.5,100); %vettore dei lambda
+lambdav = linspace(3,14.5,100); %vettore dei lambda
 cp = zeros(numel(lambdav),1); %inizializzazione del vettore del coefficiente di potenza
 cq = zeros(numel(lambdav),1); %inizializzazione del vettore del coefficiente di coppia
 a = zeros(1,numel(phiv)); %inizializzazione del vettore di induzione
@@ -14,10 +14,10 @@ for j = 1 : numel(lambdav)
     for i = 1 : numel(phiv) 
     phi = phiv(i); %assegnazione di phi
     eq = @(a) ((1-a).*a) - (c/(4*R))* ( (lambda + (1-a).*sin(phi)).^2 +...
-         (1-a).^2.* cos(phi).^2).*cla.*(atan((1-a).*cos(phi))./(lambda + ...
-         (1-a).*sin(phi))).*(cos(phi+(atan((1-a).*cos(phi))./(lambda +...
-         (1-a).*sin(phi))))./cos(phi)); %equazione in a di cui trovare lo zero
-          a(1,i) = (fzero(eq,0.2)); % zero della funzione, per ogni phi abbiamo un valore di a --> a è costante lungo l'ala ma varia con phi
+         (1-a).^2.* cos(phi).^2).*cla.*atan2(((1-a).*cos(phi)),(lambda + ...
+         (1-a).*sin(phi))).*(cos(phi+(atan2(((1-a).*cos(phi)),(lambda +...
+         (1-a).*sin(phi))))./cos(phi))); %equazione in a di cui trovare lo zero 
+          a(1,i) = (fzero(eq,0.05)); % zero della funzione, per ogni phi abbiamo un valore di a --> a è costante lungo l'ala ma varia con phi
           ind(j,:) = a; %lungo la riga varia con phi, lungo la colonna varia con lambda
 
     v_vinf(j,:) = sqrt((lambda + (1-a).*sin(phiv)).^2 + (1-a).^2 .*cos(phiv).^2); %v/vinf: lungo le righe varia con phi, lungo le colonne varia con lambda
@@ -55,7 +55,7 @@ end
 % lambdaminimo(alpha deve essere minore dell'alphadistallo) e il lambdamassimo(cp>0)
 cq = cq(contatorelambdamin:end-contatorelambdamax,1);
 cp = cp(contatorelambdamin:end-contatorelambdamax,1);
+lambdav = lambdav(1,contatorelambdamin:end-contatorelambdamax);
 end
-
 
 
