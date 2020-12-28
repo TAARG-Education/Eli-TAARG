@@ -1,61 +1,122 @@
+% License as published by the Free Software Foundation; either
+% version 3 of the License, or (at your option) any later version.
+%
+% Eli-TAARG is developed by the TAARG Educational organization for
+% educational purposes only.
+% Theoretical and Applied Aerodynamic Research Group - University of Naples Federico II.
+%
+% Eli-TAARG GitHub link: <https://github.com/TAARG-Education/Eli-TAARG>
+%
+% Eli-TAARG is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+% General Public License for more details.
+% <http://www.gnu.org/licenses/>.
+%
+% ==============================================================================================
+% |Name        : turbine_Darrieus_tubo_flusso_multiplo.m                                       |
+% |Author      : Luciano Roncioni - Camilla Scotto di Carlo                                    |
+% |              University of Naples Federico II.                                             |
+% |Version     : 1.5                                                                           |
+% |Date        : 18/12/2020                                                                    |
+% |Modified    : 27/12/2020                                                                    |
+% |Description : characteristic curves evaluation for a Darrieus turbine through the           |
+%                 multiple streamtubes theory                                                  |
+% |Reference   : Tognaccini R., (2019), "Lezioni di Aerodinamica dell'ala rotante"             |
+%                De Vries O., (1979), "Fluid Dynamic Aspects of Wind Energy Conversion"        |
+% |Input       :  (alphamax) = angle of attack at the stall of the considered airfoil          |
+%                 (c) = chord of the blade                                                     |
+%                 (R) = blade radius                                                           |
+%                 (Cla) = slope coefficient of the Cl curve for the considered airfoil         |
+%                 (N) = number of blades                                                       |
+%                 (Cd) = drag coefficient of the considered airfoil                            |
+% |Output      :  (cp) = vector of power coefficient values for the                            |
+%                 turbine                                                                      |
+%                 (cq) = vector of torque coefficient values for the                           |
+%                 turbine                                                                      |
+%                 (lambdav) = vector of tip speed values corresponding to                      |
+%                 the cp and cq coefficients                                                   |
+% |Note        :                                                                               |
+% ==============================================================================================
+
 function [cp,cq,lambdav] = turbine_Darrieus_tubo_flusso_multiplo(alphamax,c,R,cla,N,cd)
-phiv = linspace(0,360,100); %dominio di phi (posizione angolare dell'ala)
-phiv = deg2rad(phiv); % dominio di phi in rad
-lambdav = linspace(3,14.5,100); %vettore dei lambda
-cp = zeros(numel(lambdav),1); %inizializzazione del vettore del coefficiente di potenza
-cq = zeros(numel(lambdav),1); %inizializzazione del vettore del coefficiente di coppia
-a = zeros(1,numel(phiv)); %inizializzazione del vettore di induzione
-v_vinf = zeros(numel(phiv),numel(phiv)); %inizializzazione del vettore di v/vinfinito
-alpha = zeros(numel(phiv),numel(phiv)); %inizializzazione del vettore degli alfa
-ind = zeros(numel(phiv),numel(phiv));  
-%% Calcolo di a, CP, CQ
-for j = 1 : numel(lambdav)
-    lambda = lambdav(j); %assegnazione di lambda
-    for i = 1 : numel(phiv) 
-    phi = phiv(i); %assegnazione di phi
-    eq = @(a) ((1-a).*a) - (c/(4*R))* ( (lambda + (1-a).*sin(phi)).^2 +...
-         (1-a).^2.* cos(phi).^2).*cla.*atan2(((1-a).*cos(phi)),(lambda + ...
-         (1-a).*sin(phi))).*(cos(phi+(atan2(((1-a).*cos(phi)),(lambda +...
-         (1-a).*sin(phi))))./cos(phi))); %equazione in a di cui trovare lo zero 
-          a(1,i) = (fzero(eq,0.05)); % zero della funzione, per ogni phi abbiamo un valore di a --> a è costante lungo l'ala ma varia con phi
-          ind(j,:) = a; %lungo la riga varia con phi, lungo la colonna varia con lambda
-
-    v_vinf(j,:) = sqrt((lambda + (1-a).*sin(phiv)).^2 + (1-a).^2 .*cos(phiv).^2); %v/vinf: lungo le righe varia con phi, lungo le colonne varia con lambda
-    alpha(j,:) = atan2(((1-a).*cos(phiv)),(lambda + (1-a).*sin(phiv))); %alpha: lungo le righe varia con phi, lungo le colonne varia con lambda
-    cost_p = (N*c*lambda)./(4*pi*R); % costante nel calcolo dell'integrale (cp)
-    cp(j,1) = cost_p.* trapz(phiv, (v_vinf(j,:).^2*cla.*alpha(j,:).*sin(alpha(j,:)).*(1-(cd./(cla.*alpha(j,:))).*cot(alpha(j,:))))); %calcolo di cp
-    cq(j,1) = cp(j,1)/lambda; %9.6 pagina 118 %calcolo cq
+%% Initialization of vectors used in the code
+phiv = linspace(0,360,100); %phi domain [deg]
+phiv = deg2rad(phiv); % [rad]
+lambdav = linspace(0.1,14,100); %tip speed
+cpv = zeros(numel(lambdav),1); %cp vector
+cqv = zeros(numel(lambdav),1); %cq vector
+a = zeros(1,numel(phiv)); %induction
+v_vinf = zeros(numel(phiv),numel(phiv)); %v/v_inf
+alpha = zeros(numel(phiv),numel(phiv)); %alpha
+ind = zeros(numel(phiv),numel(phiv)); %inductions vector
+%% Values for entering the loop
+cp = 0;
+j = 0;
+%% a, CP, CQ computing
+while cp >= 0
+    j = j +1;
+    lambda = lambdav(j);
+    for i = 1 : numel(phiv)
+        phi = phiv(i);
+        eq = @(a) ((1-a).*a) - (c/(4*R))* ( (lambda + (1-a).*sin(phi)).^2 +...
+            (1-a).^2.* cos(phi).^2).*cla.*atan2(((1-a).*cos(phi)),(lambda + ...
+            (1-a).*sin(phi))).*(cos(phi+(atan2(((1-a).*cos(phi)),(lambda +...
+            (1-a).*sin(phi))))./cos(phi))); %anonymous function
+        a(1,i) = (fzero(eq,0.2));%find zero of the previous function
     end
-
-massimi = zeros(numel(lambdav),1);
-alphadeg = rad2deg(alpha); % dominio di phi in rad
-
-    for h = 1 : numel(phiv)
-        massimi(h) = max(alphadeg(h,:));
-    end
-
-contatorelambdamin = 0;
-
-    for f = 1 : numel(phiv)
-        if alphamax < massimi(f)
-            contatorelambdamin = contatorelambdamin + 1;
+    
+    ind(j,:) = a;
+% Check on the reliability of the computed induction
+% When ind is NaN, the cycle is left
+    if sum(isnan(ind(j,:))) >= 1
+        disp('Warning: from this lambda on, the results are not reliable,');
+        disp('so the results are not reported');
+        cp = -1;
+        j = j-1;
+    else
+        
+        v_vinf(j,:) = sqrt((lambda + (1-a).*sin(phiv)).^2 + (1-a).^2 .*cos(phiv).^2);
+        alpha(j,:) = atan2(((1-a).*cos(phiv)),(lambda + (1-a).*sin(phiv)));
+        cost_p = (N*c*lambda)./(4*pi*R);
+        % computing Cp - numerical integration
+        cp = cost_p.* trapz(phiv, (v_vinf(j,:).^2*cla.*alpha(j,:).*sin(alpha(j,:)).*...
+            (1-(cd./(cla.*alpha(j,:))).*cot(alpha(j,:)))));
+        cq = cp/lambda; % Cq value
+        
+        % Allocating values in corresponding vectors
+        cpv(j,1) = cp;
+        cqv(j,1) = cq;
+        
+        %Condition to exit the cycle when lambda
+        % is the last value of the
+        %vector
+        if lambda == lambdav(end)
+            cp = -1;
         end
     end
+end
+%Allocating vector of max values
+max_v = zeros(numel(lambdav),1);
+alphadeg = rad2deg(alpha); % [deg]
 
-contatorelambdamax = 0;
+%Find max alpha for each row of the matrix alpha
+for h = 1 : numel(phiv)
+    max_v(h) = max(alphadeg(h,:));
+end
 
-    for k = 1 : length(phiv)
-        if cp(k) < 0 
-        contatorelambdamax = contatorelambdamax + 1;
-        end
+contatorelambdamin = 0; %intial value for lambda min index
+
+%check on stall angle
+for f = 1 : numel(phiv)
+    if alphamax < max_v(f)
+        contatorelambdamin = contatorelambdamin + 1;
     end
-
-end
-% cq e cp vengono ridimensionati considerando il
-% lambdaminimo(alpha deve essere minore dell'alphadistallo) e il lambdamassimo(cp>0)
-cq = cq(contatorelambdamin:end-contatorelambdamax,1);
-cp = cp(contatorelambdamin:end-contatorelambdamax,1);
-lambdav = lambdav(1,contatorelambdamin:end-contatorelambdamax);
 end
 
-
+%cp, cq and lambdav are downsized according to conditions
+% of stall and positive power value
+cq = cqv(contatorelambdamin:j,1);
+cp = cpv(contatorelambdamin:j,1);
+lambdav = lambdav(1,contatorelambdamin:j);
+end
