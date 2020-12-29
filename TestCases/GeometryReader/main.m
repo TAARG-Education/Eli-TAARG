@@ -27,7 +27,7 @@
 % |              University of Naples Federico II.                                             |
 % |Version     : 1.0                                                                           |
 % |Date        : 16/11/2020                                                                    |
-% |Modified    : 20/11/2020                                                                    |
+% |Modified    : 29/12/2020                                                                    |
 % |Description : the function reads the geometry of a propeller and analyzes it using xrotor   |
 % |Reference   : http://web.mit.edu/drela/Public/web/xrotor/                                   |
 % |Input       : standard .txt file that contains informations about propeller geometry        |
@@ -41,29 +41,25 @@
 % ==============================================================================================
 
 
+%% User instructions analize and plot global variables must be setted as follow:
 
-%The analize and plot global variables must be setted as follow:
+%  The Matlab class 'geometryreader' reads parameters from the input file 
+%  'propgeometry.txt' and allocates them in local variables.
+%  Moreover the class itself contains two functions:
+%   - 'xRotorAnalysis' that gives the propeller's variables in input to 
+%     xrotor.exe which analizes the propeller in the range of advance ratio 
+%     setted in the propgeometry.txt and saves the analysis  results in 
+%     local variables. User has to call this function with the following
+%     sintax -> myProp.xRotorAnalysis after calling the class.
+%   - 'plotResults' that performs the analysis and also plots the analysis
+%     results. User has to call this function with the following sintax ->
+%     myProp.plotResults after calling the class.
 
-%- analize=0: the class 'geometryreader' only reads parameters from the 
-%  input file 'PropDataFileName' and allocates them in local variables
-
-%- analize=1 && plots=0: the class 'geometryreader' reads parameters from 
-%  the input file 'PropDataFileName' and allocates them in local variables; 
-%  moreover the function give the propeller's variables in unput to 
-%  xrotor.exe which analizes the propeller in the range of advance ratio 
-%  setted in the variables firstadv, lastadv,advstep and saves the 
-%  analysis  results in local variables;
-
-%- analize=1 && plots=1: the class also generates plots of the analysis 
-%  results.
-
+%% main
 clc; clear; close all;
-global analize plots firstadv lastadv advstep
-firstadv='0.143';  %first value of the advance ratio vector of the analysis
-lastadv='0.363';   %last value of the advance ratio vector of the analysis
-advstep='0.003';   %step of the advance ratio
-analize=1;
-plots=0;
 PropDataFileName='propgeometry.txt';    %.txt standard geometry file
-myProp=analisi(PropDataFileName);       %class call
+myProp=geometryreader(PropDataFileName);       %class call
+%myProp.xRotorAnalysis;
+%myProp.plotResults;
+
 

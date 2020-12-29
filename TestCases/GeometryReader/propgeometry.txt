@@ -32,5 +32,13 @@ BLADE SECTIONS
 0.13  0.17  0.11  0.02                                     c/R
 55    35    25    0                                        theta(deg)
 
+----------------------------------------------------------------------
+XROTOR ANALYSIS PARAMETERS
+----------------------------------------------------------------------
+500     Number of iterations
+0       Power choice (set 0 for power and 1 for thrust)
+0.143   First advance ratio value
+0.363   Last advance ratio value
+0.006   Advance ratio step
 
 
