@@ -59,8 +59,8 @@ switch function_name
         X=Reynolds;    
     case 'Mach'
         X=Mach;
-    case 'pitch'
-        X=pitch;
+    case 'Darrieus_flusso_multiplo'
+        X=struct('pitch',pitch, 'Reynolds',Reynolds);
 
 end
 
