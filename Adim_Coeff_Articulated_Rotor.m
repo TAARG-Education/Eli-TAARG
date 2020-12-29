@@ -1,12 +1,12 @@
-function [Tc,Hc,Yc,Qc,Pc,CM] = Adim_Coeff_Articulated_Rotor(V_inf,altitude)
+function [Tc,Hc,Yc,Qc,Pc,alfa] = Adim_Coeff_Articulated_Rotor(V_inf,altitude,Lock,f,X)
 %% Adim_Coeff_Articulated_Rotor
 % Determination of adimensional aerodynamics coefficients: 
-% - Tc thrust coefficient 
-% - Hc rotor drag force coefficient 
-% - Yc lateral force coefficient 
-% - Qc torque coefficient
-% - Pc power coefficient
-% - CM moment coefficient  (da chiarire)
+% - Tc   thrust coefficient 
+% - Hc   rotor drag force coefficient 
+% - Yc   lateral force coefficient 
+% - Qc   torque coefficient
+% - Pc   power coefficient
+% - alfa angle of attack
 %
 % Marco Artiano - Luca Angelino
 % version 1.0.0
@@ -55,7 +55,8 @@ function [Tc,Hc,Yc,Qc,Pc,CM] = Adim_Coeff_Articulated_Rotor(V_inf,altitude)
 %  Omega     [rad/s]   Rotor rotational speed
 %  f         [m^2]     Equivalent drag area of helicopter fuselage and hub
 %  Lock      [~]       Lock number
-
+%  X         [deg]     Rate of climb 
+ 
 %% Note
 % W,N,D,c,theta_tw,Cl_alfa,Cd_mean,Omega,f and Lock. We think that all these
 % parameters should be obtained by a geometry input function, that is not
@@ -64,20 +65,23 @@ function [Tc,Hc,Yc,Qc,Pc,CM] = Adim_Coeff_Articulated_Rotor(V_inf,altitude)
 %% Input data for local test
 % It will be replaced with a function that reads input parameters listed below
  N        = 4;
- W        = 2600*9.81;
+ W        = 2600;
  R        = 11.9/2;
  c        = 0.385;
  Cl_alpha = 2*pi;
  Omega    = 40.3361;
  theta_tw = -0.0799;
  Cd_mean  = 0.01;
- A        = pi*R^2;   
+ A        = pi*R^2; 
+  
+ if nargin == 0
  f        = 0.007*A;
  Lock     = 8;
+ X        = convang(18,'deg','rad'); 
+ V_inf    = 60;
+ altitude = 0;
+ end
  
-%  V_inf    = 20;
-%  altitude = 0;
-
 %% Reading geometry and aerodynamics input data
 %  not yet available 
 %
@@ -95,41 +99,43 @@ function [Tc,Hc,Yc,Qc,Pc,CM] = Adim_Coeff_Articulated_Rotor(V_inf,altitude)
  err_stop = 1e-3;                         % Error tollerance 
  alfa     = convang(0,'deg','rad');       % Initialization for the angle of attack
  Tc       = W/(rho_inf*(Omega*R)^2*A);    % Thrust coefficient                                      
-
+ X        = convang(X,'deg','rad');       % Rate of climb
+ lambda_c = V_inf*sin(X)/(Omega*R);        
 %% Beginning of the cycle
 while abs(err) > err_stop  
     mu = V_inf*cos(alfa)/(Omega*R);                                                           % Rotor advance ratio
+    
     if i == 0
         lambda_i = Tc/(2*mu);                                                                 % First attempt value of induced inflow ratio
     else
         lambda_i = Tc/(2*sqrt(mu^2 + lambda^2));                                              % Updated value of induced inflow ratio 
     end
-    lambda     = mu*tan(alfa) + lambda_i;                                                     % Rotor inflow ratio
-    theta_0    = (2*Tc/(sigma*Cl_alpha) - theta_tw/4*(1 + mu^2) + lambda/2)*3/(1 + 3/2*mu^2); % Collective pitch angle
-    beta_0     = Lock*(theta_0/8*(1 + mu^2) + theta_tw/10*(1 + 5/6*mu^2) - lambda/6);         % Coning angle
-    beta_1c    = -2*mu*(4/3*theta_0+theta_tw-lambda)/(1-mu^2/2);                              % Longitudinal tip-path-plane tilt angle, positive forward
-    beta_1s    = -4/3*mu*beta_0/(1+mu^2/2);                                                   % Lateral tip-path-plane tilt angle, positive toward retrating side
-    Hci        = sigma*Cl_alpha*0.5*( theta_0*( -1/3*beta_1c+1/2*mu*lambda ) + ...            % H-induced force coefficient
+    
+    lambda   = mu*tan(alfa) + lambda_i;                                                     % Rotor inflow ratio
+    theta_0  = (2*Tc/(sigma*Cl_alpha) - theta_tw/4*(1 + mu^2) + lambda/2)*3/(1 + 3/2*mu^2); % Collective pitch angle
+    Pc0      = sigma*Cd_mean*(1 + 3*mu^2)/8;
+    Pc       = lambda_i*Tc + lambda_c*Tc + mu*D_fus*Tc/W + Pc0;                             % Power coefficient
+    
+    beta_0   = Lock*(theta_0/8*(1 + mu^2) + theta_tw/10*(1 + 5/6*mu^2) - lambda/6);         % Coning angle
+    beta_1c  = -2*mu*(4/3*theta_0+theta_tw-lambda)/(1-mu^2/2);                              % Longitudinal tip-path-plane tilt angle, positive forward
+    beta_1s  = -4/3*mu*beta_0/(1+mu^2/2);                                                   % Lateral tip-path-plane tilt angle, positive toward retrating side
+    
+    Hci      = sigma*Cl_alpha*0.5*( theta_0*( -1/3*beta_1c+1/2*mu*lambda ) + ...                 % H-induced force coefficient
                  theta_tw*(-1/4*beta_1c + 1/4*mu*lambda) + 3/4*lambda*beta_1c + ...       
                  1/6*beta_0*beta_1s + 1/4*mu*(beta_0^2 + beta_1c^2));
-    Hc0        = sigma*Cd_mean*mu/4;                                                          % H-parasite force coefficient   
-    Hc         = Hci + Hc0;                                                                   % H-force coefficient
-    lambda_c   = mu*tan(alfa) - Hc/Tc*mu - f*mu^3/(2*Tc*A*cos(alfa)^3);                       % Climb inflow ratio
+    Hc0      = sigma*Cd_mean*mu/4;                                                               % H-parasite force coefficient   
+    Hc       = Hci + Hc0;                                                                        % H-force coefficient
+    Qc       = Pc;                                                                               % Torque coefficient
+    Yc       = -sigma*Cl_alpha*0.5*( theta_0*(3/4*mu*beta_0 + 1/3*beta_1s*(1 + 3/2*mu^2)) + ...  % Y-force coefficient 
+               theta_tw*(1/2*mu*beta_0 + 1/4*beta_1s*(1 + mu^2)) -3/4*lambda*beta_1s      + ...
+               beta_0*beta_1c*(1/6 - mu^2)-3/2*mu*lambda*beta_0 - 1/4*beta_1c*beta_1s);
+           
     lambda_old = lambda;                                                                      % Saving old lambda variable                
     lambda     = lambda_i + lambda_c+mu*Hc/Tc + mu*D_fus/W;                                   % Updating lambda at the end of cycle
     alfa       = atan((lambda - Tc/(2*sqrt(mu^2 + lambda^2)))/mu);                            % Updating the value of the angle of attack for the next iteration
-    err = (lambda - lambda_old)/lambda;                                                       % Evaluating the error
-    i   = i+1;                                                                                % Increasing the count iteration 
+    err        = (lambda - lambda_old)/lambda;                                                % Evaluating the error
+    i          = i + 1;                                                                       % Increasing the count iteration 
 end
-
-%% Calculation of the missing outputs
- Pc0 = sigma*Cd_mean*(1 + 3*mu^2)/8;                                                          % Parasite power loss coefficient
- Pc  = lambda_i*Tc + lambda_c*Tc + mu*D_fus*Tc/W + Pc0;                                       % Power coefficient
- Qc  = Pc;                                                                                    % Torque coefficient
- Yc  = -sigma*Cl_alpha*0.5*( theta_0*(3/4*mu*beta_0 + 1/3*beta_1s*(1 + 3/2*mu^2)) + ...       % Y-force coefficient 
-       theta_tw*(1/2*mu*beta_0 + 1/4*beta_1s*(1 + mu^2)) -3/4*lambda*beta_1s     + ...
-       beta_0*beta_1c*(1/6 - mu^2)-3/2*mu*lambda*beta_0 - 1/4*beta_1c*beta_1s);
- CM = 0;                                                                                      % Moment coefficient (da chiarire)
 
 %% Determination of induced and parasite coefficients  
 % Qc0 = sigma*Cd_mean*(1 + mu^2)/8; 
@@ -145,9 +151,9 @@ end
                  'VariableNames',{'Value','Measure unit'},...
                  'RowName',{'V_inf';'Altitude';'W';'N';'D';'c';'theta_tw';'Cl_alpha';'Cd_mean';'Omega';'f/A';'Lock'});
             
- table_disp_ou = table([Tc; Hc; Yc; Qc; Pc; CM],...
+ table_disp_ou = table([Tc; Hc; Yc; Qc; Pc; alfa*57.3],...
                  'VariableNames',{'Value'},...
-                 'RowName',{'Tc';'Hc';'Yc';'Qc';'Pc';'CM'});
+                 'RowName',{'Tc';'Hc';'Yc';'Qc';'Pc';'alfa [deg]'});
  fprintf('\n');
  disp('<strong>Input data:</strong>');
  disp(table_disp_in);
