@@ -73,15 +73,16 @@ function [Tc,Hc,Yc,Qc,Pc,alfa] = Adim_Coeff_Articulated_Rotor(V_inf,altitude,Loc
  theta_tw = -0.0799;
  Cd_mean  = 0.01;
  A        = pi*R^2; 
-  
+ 
+ %% Test values  
  if nargin == 0
  f        = 0.007*A;
  Lock     = 8;
  X        = convang(18,'deg','rad'); 
- V_inf    = 60;
+ V_inf    = 20;
  altitude = 0;
  end
- 
+
 %% Reading geometry and aerodynamics input data
 %  not yet available 
 %
@@ -100,17 +101,29 @@ function [Tc,Hc,Yc,Qc,Pc,alfa] = Adim_Coeff_Articulated_Rotor(V_inf,altitude,Loc
  alfa     = convang(0,'deg','rad');       % Initialization for the angle of attack
  Tc       = W/(rho_inf*(Omega*R)^2*A);    % Thrust coefficient                                      
  X        = convang(X,'deg','rad');       % Rate of climb
- lambda_c = V_inf*sin(X)/(Omega*R);        
+ lambda_c = V_inf*sin(X)/(Omega*R);
+ 
 %% Beginning of the cycle
 while abs(err) > err_stop  
     mu = V_inf*cos(alfa)/(Omega*R);                                                           % Rotor advance ratio
     
+%% To overcome the problems due to the divergence of lambda_i at low speed, a different formula provided by Eng. Di Giorgio has been used.    
+if V_inf <= 20       
     if i == 0
-        lambda_i = Tc/(2*mu);                                                                 % First attempt value of induced inflow ratio
+        lambda_i = sqrt(-V_inf^2/2+sqrt(V_inf^4/4+(W/(2*rho_inf*A))^2))/(Omega*R);            % First attempt value of induced inflow ratio at low speed
     else
         lambda_i = Tc/(2*sqrt(mu^2 + lambda^2));                                              % Updated value of induced inflow ratio 
-    end
-    
+    end    
+end
+       
+if V_inf > 20        
+    if i == 0
+        lambda_i = Tc/(2*mu);                                                                 % First attempt value of induced inflow ratio at high speed
+    else
+        lambda_i = Tc/(2*sqrt(mu^2 + lambda^2));                                              % Updated value of induced inflow ratio 
+    end    
+end
+%%    
     lambda   = mu*tan(alfa) + lambda_i;                                                     % Rotor inflow ratio
     theta_0  = (2*Tc/(sigma*Cl_alpha) - theta_tw/4*(1 + mu^2) + lambda/2)*3/(1 + 3/2*mu^2); % Collective pitch angle
     Pc0      = sigma*Cd_mean*(1 + 3*mu^2)/8;
@@ -161,4 +174,3 @@ end
  disp(table_disp_ou);
 
 end
-
