@@ -1,7 +1,7 @@
 %% \Opti_Prop_TEST.m
 %  \brief: Test function
 %  \authors : Francesco Gervasio, Nicola Russo
-%  \version: 1.04
+%  \version: 1.05
 %
 % Eli-TAARG is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public
@@ -24,9 +24,9 @@
 % |Name        : Opti_Prop.m                                                   |
 % |Authors     : Francesco Gervasio, Nicola Russo                              |
 % |              University of Naples Federico II.                             |
-% |Version     : 1.04                                                          |
+% |Version     : 1.05                                                          |
 % |Date        : 28/11/2020                                                    |
-% |Modified    : 23/12/2020                                                    |
+% |Modified    : 30/12/2020                                                    |
 % |Description : this function provides the axial and the rotational           |
 % inductions of the optimal propeller as well as the thrust and power          |
 % coefficient distributions vs the adimensional radius                         |
@@ -36,6 +36,7 @@
 % |Input     : GEOMETRY
 % |            N_blade = Number of blades         [ ]                          |  
 % |            R_hub   = Hub radius percentage    [%]                          |
+% |            R_tip   = Tip radius               [m]                          |
 % |            n_rpm   = Revolutions per minutes  [rpm]                        |
 % |              ATMO                                                          |
 % |              h       = Height               [m]                            |
@@ -45,11 +46,12 @@
 
 % |Note        :                                                               |
 % ==============================================================================================
+
 %% INPUT
 %{
-R_tip  =    [m] 
 N_blade =   [ ]
 R_hub   =   [%]
+R_tip  =    [m] 
 n_rpm   =   [rpm]
 V_inf   =   [m/s]
 T =         [N]
@@ -57,8 +59,7 @@ P =         [kW]
 h =         [m]
 %}
 
-function [r_adim,a_chi,a_first_chi,dCp_new,w_0,k,Cp_new,dCt] = Opti_prop_P(N_blade,R_hub,n_rpm,V_inf,Cp,h)
-
+function [r_adim,a,a_first,dCp_new,w_0,k,Cp_new,dCt] = Opti_prop_P(N_blade,R_hub,R_tip,n_rpm,V_inf,Cp,h)
 %% CONVERSIONS
 %{
 From rpm to rps and rad/s
@@ -73,16 +74,21 @@ It can be downloaded from the Mathworks website.
 %}
 [Temp a P rho] = atmosisa(h);
 
-%% Adimensional values
-r_adim = linspace(R_hub,1,1000);
-chi = (n_rads.*r_adim)/V_inf;
+%% Radius and adimensional values
 
-%% Step 1 FIRST ATTEMPT VALUES
+r = linspace(R_hub*R_tip,R_tip,1000);
+D   = 2*R_tip;
+chi = (n_rads.*r)/V_inf;
+r_adim = r./R_tip;
+
+%% Step 1 First attempt values
 %{
-The first attempt value of the axial induction w_0 has been set to w_0 =
-a*V_inf where a is the axial induction a = w_0/V_inf. 
+The two first attempt values of the axial induction w_0 and w_1 have been 
+set. w_0 = a*V_inf where a is the axial induction a = w_0/V_inf while 
+w_1 = 2*w_0. Two different first attempt values are necessary in order to 
+initialize the false position method.
 %}
-P = Cp*rho*(n_rps^3)*(32);
+P = Cp*rho*(n_rps^3)*(D^5);
 syms w0;
 eqn1 = w0 > 0;
 eqn2 = P == 2*rho*pi*(V_inf+w0).^2*w0;
@@ -91,7 +97,7 @@ S = solve(eqn,w0,'ReturnConditions',true);
 w_0 = double(S.w0);
 w_1 = 2*w_0;
 P_1 = 2*rho*pi*(V_inf+w_1).^2*w_1;
-Cp_1 = P_1/(rho*(n_rps^3)*(2^5));
+Cp_1 = P_1/(rho*(n_rps^3)*(D^5));
 Cp_0= 0;
 Cp_new = 0;
 
@@ -104,10 +110,10 @@ error_1 = Cp-Cp_1;
 
 %% False position method initialization
 %{
-The false position method has been choosen in ordert to implement the
+The false position method has been chosen in ordert to implement the
 iterative cycle. The first value of the axial induction speed, has been
-calculated according to the classical method formulation bt using the first
-attempt axial induction speed values
+calculated according to the classical method formulation by using the first
+attempt axial induction speed values.
 %}
 w = (w_1*error_0-w_0*error_1)/(error_0-error_1);
 k = 0; %cycle counter
@@ -117,41 +123,37 @@ while abs(Cp-Cp_new) > tao;
 %{
 In this step a calculation of:
 - chi = (OMEGA*r)/V_inf (an alternative non-dimensional radius)
-- a   = axial induction as function of both chi and adim radius r_adim
-- a'  = rotational induction as function of both chi and adim radius r_adim
+- a   = axial induction as function of chi 
+- a'  = rotational induction as function of chi 
 has been provided and plotted.
 %}
-a_chi = w/V_inf*((chi.^2)./((1+w/V_inf)^2+(chi.^2)));
-a_first_chi = w/V_inf*((1+w/V_inf)./((1+w/V_inf)^2+chi.^2));
-a_radim = w/V_inf*(((n_rads*r_adim/V_inf).^2)./((1+w/V_inf)^2+((n_rads*r_adim/V_inf).^2)));
-a_first_radim = w/V_inf*((1+w/V_inf)./((1+w/V_inf)^2+(n_rads*r_adim/V_inf).^2));
+a = w/V_inf*((chi.^2)./((1+w/V_inf)^2+(chi.^2)));
+a_first = w/V_inf*((1+w/V_inf)./((1+w/V_inf)^2+chi.^2));
+
 
 %{
 The Prandtl correction function for finite blade number has been
 implemented. Lambda is  = chi^-1. According to the momentum theory: ...
 w_j = 2*w;
 %}
-lambda = (n_rads/V_inf)^-1;
+lambda = (n_rads*R_tip/V_inf)^-1;
 F      = (2/pi)*acos(exp((N_blade/(2*lambda))*(r_adim-1)));
 
 %{
-The non-dimensional aerodynamic load gamma_adim_opti, already scaled with...
-the Prandtl correction function, can be plotted as well. The non ...
-dimensional Gamma function can be visualized in the aforementioned plot...
- as ratio.
+The non-dimensional aerodynamic optimal load Gamma, already scaled with
+the Prandtl correction function is implemented.
 %} 
-GAMMA = (4*pi.*F.*r_adim.^2.*a_first_radim*n_rads)/N_blade';
+GAMMA = (4*pi.*F.*(r_adim*R_tip).^2.*a_first*n_rads)/N_blade';
 
 %% Step 2
 %{
-At each step, dT/dr_adim or dP/dr_adim are calculated. The optimal
-distribution is supposed to be linear. These values are lately integrated
-along the non dimensional radius in order to calculate a step T or P ...
-value that must be confronted with the design T or P value.
+At each step, dT/dr_adim or dP/dr_adim are calculated. These values are
+lately integrated along the non dimensional radius in order to calculate a 
+step T or P value that must be confronted with the design T or P value.
 %}
 dr_adim = gradient(r_adim);
-dP = N_blade*rho*V_inf*n_rads*r_adim.*(1+a_radim).*GAMMA.*dr_adim;
-dCp_new = dP/(rho*(n_rps^3)*(2^5));
+dP = N_blade*rho*V_inf*n_rads*(R_tip^2)*r_adim.*(1+a).*GAMMA.*dr_adim;
+dCp_new = dP/(rho*(n_rps^3)*(D^5));
 Cp_new = trapz(dCp_new);
 error_new = Cp_new - Cp;
 
@@ -170,45 +172,45 @@ k = k+1;
 
 end
 
-dCt = dP/((V_inf+w)*(rho*(n_rps^2)*(2^4)));
+dCt = dP/((V_inf+w)*(rho*(n_rps^2)*(D^4)));
 error_perc_Cp = abs((error_new))/Cp*100
 
 %% Plot
 figure
-plot(chi,a_chi,'-.k')
+plot(chi,a,'-.k')
 hold on
-plot(chi,a_first_chi,'-k')
+plot(chi,a_first,'-k')
 xlabel('$\chi$','interpreter','latex');
 legend('$a$','$a^{''}$','interpreter','latex');
 grid on;
-title('Axial induction $ a$ and rotational induction $a^{''}$ vs $\bar{r}$','interpreter','latex');
+title('Axial induction $ a$ and rotational induction $a^{''}$ vs $\chi$','interpreter','latex');
 
 figure
 plot(r_adim,dCt,'-k');
 grid on;
 xlabel('$\bar{r}$','interpreter','latex');
 ylabel('$\frac{dC_{T}}{d\bar{r}}$','interpreter','latex');
-title('Thrust coefficient distribution $\frac{dC_{P}}{d\bar{r}}$ vs $\bar{r}$','interpreter','latex');
-
+title('Thrust coefficient distribution $\frac{dC_{T}}{d\bar{r}}$ vs $\bar{r}$','interpreter','latex');
 
 figure
 plot(r_adim,dCp_new,'-k');
 grid on;
 xlabel('$\bar{r}$','interpreter','latex');
 ylabel('$\frac{dC_{P}}{d\bar{r}}$','interpreter','latex');
-title('Power coefficient distribution $\frac{dC_{T}}{d\bar{r}}$ vs $\bar{r}$','interpreter','latex');
+title('Power coefficient distribution $\frac{dC_{P}}{d\bar{r}}$ vs $\bar{r}$','interpreter','latex');
 
 %% OUTPUT FILE
 %{
 An output .txt file is created
 %}
+
 DATA(:,1) = r_adim';
 DATA(:,2) = chi';
-DATA(:,3) = a_chi';
-DATA(:,4) = a_first_chi';
+DATA(:,3) = a';
+DATA(:,4) = a_first';
 DATA(:,5) = dCt';
 DATA(:,6) = dCp_new';
-filename = ['Data_Opti_Prop_P.txt'];
+filename  = ['Data_Opti_Prop_P.txt'];
 fid = fopen(filename, 'wt');
 fprintf(fid, '%s\t%s\t%s\t%s\t%s\t%s\n', '  r_adim','  chi','      a(chi)','  a''(chi)','  dCt_corr(r_adim)','  dCp_corr(r_adim)');  % header
 fclose(fid);
