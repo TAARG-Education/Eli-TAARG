@@ -38,4 +38,5 @@
 % |Note        :                                                                                |
 % ==============================================================================================
 clc; close all; clear all;
-X= input_per_la_geometria('Darrieus_flusso_multiplo');
+X= input_per_la_geometria('Opti_Prop');
+

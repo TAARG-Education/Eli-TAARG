@@ -44,23 +44,38 @@ function [X]= input_per_la_geometria(txt)
 %      numdipale = myProp.N ;
     numdipale=3;
     diametro = 2;
+    raggio=5;
     corda=5;
     pitch=[2 3 5 7];
     Reynolds=[ 10e5 20e6];
     Mach=5;
+    rpm=3;
+    hub_radius=5;
+    tip_radius=5;
+    v=50;
+    n_sec=3;
+    massa=500;
+    theta=0;
+    thrust=10;
+    h=200;
     
 function_name=txt;
-switch function_name
-    case 'diametro'
-        X=diametro;
-    case 'numdipale'
-        X=numdipale;
-    case 'Reynolds'
-        X=Reynolds;    
-    case 'Mach'
-        X=Mach;
+switch function_name    
+    case 'BEMT'
+        X=struct('blades',numdipale, 'r',raggio, 'sections', n_sec, 'hub_radius', hub_radius, 'velocity', v, 'rpm',rpm);
     case 'Darrieus_flusso_multiplo'
         X=struct('pitch',pitch, 'Reynolds',Reynolds);
+    case 'Axial_rotor'
+        X=struct('mass',massa,'r',raggio);
+    case 'Ang_attacco_effettivo'
+        X=struct('theta',theta);
+    case 'elica_intubata'
+        X=struct('v',v,'thrust',thrust);
+    case 'adim_coeff'
+        X=struct('velocity',v,'altitude',h,'blades', numdipale);
+    case 'Opti_Prop'
+        X=struct('blades',numdipale,'hub_radius', hub_radius,'tip_radius',tip_radius,'rpm',rpm,'altitude',h,'velocity', v,'thrust',thrust);
+        
 
 end
 
