@@ -20,7 +20,7 @@ opts.ExtraColumnsRule = "ignore";
 opts.EmptyLineRule = "read";
 
 % Import the data
-tbl = readtable("C:\Users\dtagl\Desktop\TestCase\InduzioneSpintaCalfa0.txt", opts);
+tbl = readtable("C:\Users\dtagl\Desktop\TestCase\InductionThrustCalfa0.txt", opts);
 
 %% Convert to output type
 Vt_t1 = tbl.V;
@@ -48,7 +48,7 @@ opts.ExtraColumnsRule = "ignore";
 opts.EmptyLineRule = "read";
 
 % Import the data
-tbl = readtable("C:\Users\dtagl\Desktop\TestCase\PotenzaSpintaCalfa0.txt", opts);
+tbl = readtable("C:\Users\dtagl\Desktop\TestCase\PowerThrustCalfa0.txt", opts);
 
 %% Convert to output type
 Vt_t2 = tbl.Vt;
@@ -75,7 +75,7 @@ opts.ExtraColumnsRule = "ignore";
 opts.EmptyLineRule = "read";
 
 % Import the data
-tbl = readtable("C:\Users\dtagl\Desktop\TestCase\InduzionePotenzaCalfa0.txt", opts);
+tbl = readtable("C:\Users\dtagl\Desktop\TestCase\InductionPowerCalfa0.txt", opts);
 
 %% Convert to output type
 Vp_t1 = tbl.Vp;
@@ -102,7 +102,7 @@ opts.ExtraColumnsRule = "ignore";
 opts.EmptyLineRule = "read";
 
 % Import the data
-tbl = readtable("C:\Users\dtagl\Desktop\TestCase\SpintaPotenzaCalfa0.txt", opts);
+tbl = readtable("C:\Users\dtagl\Desktop\TestCase\ThrustPowerCalfa0.txt", opts);
 
 %% Convert to output type
 Vp_t2 = tbl.Vp;
