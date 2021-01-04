@@ -1,4 +1,8 @@
+%This script is used to test the function. The value are compared with the
+%one obtained from: R. Tognaccini. "Lezioni di aerodinamica dell’ala rotante" 2019 pp. 84-85,fig. 7.1-4. 
+
 clear all;close all;clc;
+
 %% Import data from text file
 %% Set up the Import Options and import the data
 opts = delimitedTextImportOptions("NumVariables", 2);
