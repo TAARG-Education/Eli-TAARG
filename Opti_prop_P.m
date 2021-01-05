@@ -216,7 +216,7 @@ filename = ['Data_Opti_Prop_P.txt'];
 fid = fopen(filename, 'wt');
 fprintf(fid, '%s\t%s','  efficiency =',eta,' at J =', J);  % header
 fprintf(fid,'\n');
-fprintf(fid, '%s\t%s\t%s\t%s\t%s\t%s\n', '  r_adim','  chi','      a(chi)','  a''(chi)','  dCt(r_adim)',' dCp(r_adim)');  % header
+fprintf(fid, '%s\t%s\t%s\t%s\t%s\t%s\n', '  r_adim','  chi','      a(chi)','  a''(chi)','  dCt/dr_adim',' dCp/dr_adim');  % header
 fclose(fid);
 dlmwrite(filename,DATA,'delimiter','\t','precision',['%10.',num2str(6),'f'],'-append');
 end
