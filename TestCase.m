@@ -1,5 +1,52 @@
-%This script is used to test the function. The value are compared with the
-%one obtained from: R. Tognaccini. "Lezioni di aerodinamica dell’ala rotante" 2019 pp. 84-85,fig. 7.1-4. 
+%% \RotorFF
+%  \The function plots the characteristic curves for rotor in forward
+%  flight for both constant thrust and power and gives in output also the
+%  relative x and y values. It requires in input the angle of attack in 
+%  degrees.
+%  The plot avaiable are:
+%- For constant Thrust:
+%  -w versus V
+%  -P versus V
+%- For constant Power:
+%  -w versus V
+%  -T versus V
+% where w = induction, V = asymptotic velocity, T = Thrust, P = Power
+% All the values are non-dimensional with respect to their value in
+% hovering (for V is used induction in hovering).
+%  \Angelo Tagliafierro
+%  \0.1
+%
+% Eli-TAARG is free software; you can redistribute it and/or
+% modify it under the terms of the GNU General Public
+% License as published by the Free Software Foundation; either
+% version 3 of the License, or (at your option) any later version.
+%
+% Eli-TAARG is developed by the TAARG Educational organization for
+% educational purposes only.
+% Theoretical and Applied Aerodynamic Research Group - University of Naples Federico II.
+%
+% Eli-TAARG GitHub link: <https://github.com/TAARG-Education/Eli-TAARG>
+%
+% Eli-TAARG is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+% General Public License for more details.
+% <http://www.gnu.org/licenses/>.
+%
+% ==============================================================================================
+% |Name        : RotorFF                                                                       |
+% |Author      : Angelo Tagliafierro                                                           |
+% |              University of Naples Federico II.                                             |
+% |Version     : 0.1                                                                           |
+% |Date        : 15/12/2020                                                                    |
+% |Modified    : 15/12/2020                                                                    |
+% |Description : The function generates the characteristic curves for rotor in forward         |
+%                flight and the relative x and y values                                        |
+% |Reference   : R. Tognaccini. "Lezioni di aerodinamica dell’ala rotante" 2019 pp. 84-85.     |
+% |Input       : Angle of attack                                                               |
+% |Output      : Plots and axis values                                                         |
+% |Note        :                                                                               |
+% ==============================================================================================
 
 clear all;close all;clc;
 
@@ -20,7 +67,7 @@ opts.ExtraColumnsRule = "ignore";
 opts.EmptyLineRule = "read";
 
 % Import the data
-tbl = readtable("C:\Users\dtagl\Desktop\TestCase\InductionThrustCalfa0.txt", opts);
+tbl = readtable("InductionThrustCalfa0.txt", opts);
 
 %% Convert to output type
 Vt_t1 = tbl.V;
@@ -48,7 +95,7 @@ opts.ExtraColumnsRule = "ignore";
 opts.EmptyLineRule = "read";
 
 % Import the data
-tbl = readtable("C:\Users\dtagl\Desktop\TestCase\PowerThrustCalfa0.txt", opts);
+tbl = readtable("PowerThrustCalfa0.txt", opts);
 
 %% Convert to output type
 Vt_t2 = tbl.Vt;
@@ -75,7 +122,7 @@ opts.ExtraColumnsRule = "ignore";
 opts.EmptyLineRule = "read";
 
 % Import the data
-tbl = readtable("C:\Users\dtagl\Desktop\TestCase\InductionPowerCalfa0.txt", opts);
+tbl = readtable("InductionPowerCalfa0.txt", opts);
 
 %% Convert to output type
 Vp_t1 = tbl.Vp;
@@ -102,7 +149,7 @@ opts.ExtraColumnsRule = "ignore";
 opts.EmptyLineRule = "read";
 
 % Import the data
-tbl = readtable("C:\Users\dtagl\Desktop\TestCase\ThrustPowerCalfa0.txt", opts);
+tbl = readtable("ThrustPowerCalfa0.txt", opts);
 
 %% Convert to output type
 Vp_t2 = tbl.Vp;
