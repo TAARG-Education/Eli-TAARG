@@ -65,8 +65,8 @@ end
 f_input = fopen('xfoil_input.txt','w');            % Create input file for xfoil 
 
 if ext_AF == 0
-        fprintf(f_input,'y\n');
-        fprintf(f_input,['naca ' NACA '\n']);
+    fprintf(f_input,'y\n');
+    fprintf(f_input,['naca ' NACA '\n']);
 end
 if ext_AF == 1
     fprintf(f_input,'y\n');
@@ -87,8 +87,7 @@ fprintf(f_input,'pacc\n');
 fprintf(f_input,[savePolar '\n\n']);
 
 for i = 1:length(Alfa_vec)
-    
-        fprintf(f_input,'a %2.4f\n', Alfa_vec(i));
+    fprintf(f_input,'a %2.4f\n', Alfa_vec(i));
 end
 
 fprintf(f_input,'pacc\n\n');
