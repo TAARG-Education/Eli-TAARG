@@ -68,23 +68,28 @@ for i = 1:length(y1)
 % Integrate Y using trapz. 
 A =   trapz(phiv,Y);
 x = 1 + (N.*c./(8.*R.*2.*pi)).*A;
-a(i)= 1-1/x;
-lambda(i) = y.*(1-a(i));
+a= 1-1/x;
+lambda = y.*(1-a);
+lambda2(i)=lambda;
 
-
-
-end
 v_vinf = sqrt((lambda + (1-a).*sin(phiv)).^2 + (1-a).^2 .*cos(phiv).^2);
         alpha = atan2(((1-a).*cos(phiv)),(lambda + (1-a).*sin(phiv)));
+        alphadeg= rad2deg(alpha);
         cost_p = (N*c*lambda)./(4*pi*R);
         % computing Cp - numerical integration
-        cp = cost_p.* trapz(phiv, (v_vinf.^2*cla.*alpha.*sin(alpha).*...
+        cp(i) = cost_p.* trapz(phiv, (v_vinf.^2*cla.*alpha.*sin(alpha).*...
             (1-(cd./(cla.*alpha)).*cot(alpha))));
         cq = cp/lambda; % Cq value
 
-        plot(lambda,cp,'k-');
+end
+
+        plot(lambda2,cp,'k-'); hold on;
         legend('single streamtube theory','Location','best');
         h=xlabel('$\lambda$','Interpreter','latex'); set(h,'Fontsize',20);
         h=ylabel('$C_P$','Interpreter','latex');
         set(h,'Fontsize',20);
         title('\sigma = 0.1 - Cd = 0.01');
+
+
+
+
