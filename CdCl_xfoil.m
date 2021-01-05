@@ -1,5 +1,3 @@
-function [Cl, Cd] = CdCl_xfoil(NACA, ext_AF, numPanel, Re_number, iter, FirstAlfa, LastAlfa, DeltaAlfa)
-
 %% \xfoil_polar.m
 %  \brief: evaluation of the Cd(Cl) polar through the software xfoil
 %  \author(s): Palma Caputo - Lorenzo Frascino
@@ -44,6 +42,7 @@ function [Cl, Cd] = CdCl_xfoil(NACA, ext_AF, numPanel, Re_number, iter, FirstAlf
 % |              (Cd) = drag coefficent vector                                                   |
 % |Note        : The function must be in the same directory of xfoil.exe!                        |
 % ==============================================================================================
+function [Cl, Cd] = CdCl_xfoil(NACA, ext_AF, numPanel, Re_number, iter, FirstAlfa, LastAlfa, DeltaAlfa)
 
 Alfa_vec   = str2num(FirstAlfa):str2num(DeltaAlfa):str2num(LastAlfa);
 saveGeometry = 'Airfoil_geometry.txt';  % Create .txt file to save airfoil coordinates
