@@ -2,7 +2,7 @@ function [Cl, Cd] = CdCl_xfoil(NACA, ext_AF, numPanel, Re_number, iter, FirstAlf
 
 %% \xfoil_polar.m
 %  \brief: evaluation of the Cd(Cl) polar through the software xfoil
-%  \author(s): Lorenzo Frascino - Palma Caputo
+%  \author(s): Palma Caputo - Lorenzo Frascino
 %  \version: 1.0
 %
 % Eli-TAARG is free software; you can redistribute it and/or
@@ -24,7 +24,7 @@ function [Cl, Cd] = CdCl_xfoil(NACA, ext_AF, numPanel, Re_number, iter, FirstAlf
 %
 % ==============================================================================================
 % |Name        : CdCl_xfoil.m                                                                    |
-% |Author(s)   : Lorenzo Frascino - Palma Caputo                                                 |
+% |Author(s)   : Palma Caputo - Lorenzo Frascino                                                 |
 % |              University of Naples Federico II.                                               |
 % |Version     : 1.0                                                                             |
 % |Date        : 03/01/2020                                                                      |
