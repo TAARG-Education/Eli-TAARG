@@ -1,7 +1,7 @@
 %% \Opti_Prop_TEST.m
 %  \brief: Test function
 %  \authors : Francesco Gervasio, Nicola Russo
-%  \version: 1.05
+%  \version: 1.06
 %
 % Eli-TAARG is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public
@@ -24,9 +24,9 @@
 % |Name        : Opti_Prop.m                                                   |
 % |Authors     : Francesco Gervasio, Nicola Russo                              |
 % |              University of Naples Federico II.                             |
-% |Version     : 1.05                                                          |
+% |Version     : 1.06                                                          |
 % |Date        : 28/11/2020                                                    |
-% |Modified    : 30/12/2020                                                    |
+% |Modified    : 05/01/2021                                                    |
 % |Description : this function provides the axial and the rotational           |
 % inductions of the optimal propeller as well as the thrust and power          |
 % coefficient distributions vs the adimensional radius                         |
@@ -58,7 +58,7 @@ P =         [kW]
 h =         [m]
 %}
 
-function [r_adim,a,a_first,dCt_new,w_0,k,Ct_new,dCp] = Opti_prop_T(N_blade,R_hub,R_tip,n_rpm,V_inf,Ct,h)
+function [r_adim,a,a_first,dCt_dradim,w_0,k,Ct_new,dCp_dradim] = Opti_prop_T(N_blade,R_hub,R_tip,n_rpm,V_inf,Ct,h)
 %% CONVERSIONS
 %{
 From rpm to rps and rad/s
@@ -91,12 +91,12 @@ initialize the false position method.
 T    = Ct*rho*(n_rps^2)*(D^4);
 syms w0;
 eqn1 = w0 > 0;
-eqn2 = T == 2*rho*pi*(V_inf+w0)*w0;
+eqn2 = T == 2*rho*pi*(R_tip^2)*(V_inf+w0)*w0;
 eqn  = [eqn1 eqn2];
 S    = solve(eqn,w0,'ReturnConditions',true);
 w_0  = double(S.w0);
-w_1  = 2*w_0;
-T_1  = 2*rho*pi*(V_inf+w_1)*w_1;
+w_1  = 1.5*w_0;
+T_1  = 2*rho*pi*(R_tip^2)*(V_inf+w_1)*w_1;
 Ct_1 = T_1/(rho*(n_rps^2)*(D^4));
 Ct_0 = 0;
 Ct_new = 0;
@@ -149,10 +149,10 @@ At each step, dT/dr_adim or dP/dr_adim are calculated. These values are
 lately integrated along the non dimensional radius in order to calculate a 
 step T or P value that must be confronted with the design T or P value.
 %}
-dr_adim   = gradient(r_adim);
-dT        = N_blade*rho*n_rads*(R_tip^2)*r_adim.*(1-a_first).*GAMMA.*dr_adim;
-dCt_new   = dT/(rho*(n_rps^2)*(D^4));
-Ct_new    = trapz(dCt_new);
+
+dT_dradim = N_blade*rho*n_rads*R_tip*r_adim.*(1-a_first).*GAMMA;
+dCt_dradim   = dT_dradim/(rho*(n_rps^2)*(D^4));
+Ct_new    = trapz(r_adim,dCt_dradim);
 error_new = Ct_new - Ct;
 
 %% Step 3 - FALSE POSITION METHOD
@@ -170,7 +170,10 @@ k       = k+1;
 
 end
 
-dCp = dT*(V_inf+w)/(rho*(n_rps^3)*(D^5));
+dCp_dradim = dT_dradim*(V_inf+w)/(rho*(n_rps^3)*(D^5));
+Cp  = trapz(r_adim,dCp_dradim);
+J   = (V_inf/(n_rps*D));
+eta = J*(Ct_new/Cp);
 error_perc_Ct = abs((error_new))/Ct*100
 
 %% Plot
@@ -184,14 +187,14 @@ grid on;
 title('Axial induction $ a$ and rotational induction $a^{''}$ vs $\chi$','interpreter','latex');
 
 figure
-plot(r_adim,dCt_new,'-k');
+plot(r_adim,dCt_dradim,'-k');
 grid on;
 xlabel('$\bar{r}$','interpreter','latex');
 ylabel('$\frac{dC_{T}}{d\bar{r}}$','interpreter','latex');
 title('Thrust coefficient distribution $\frac{dC_{T}}{d\bar{r}}$ vs $\bar{r}$','interpreter','latex');
 
 figure
-plot(r_adim,dCp,'-k');
+plot(r_adim,dCp_dradim,'-k');
 grid on;
 xlabel('$\bar{r}$','interpreter','latex');
 ylabel('$\frac{dC_{P}}{d\bar{r}}$','interpreter','latex');
@@ -206,11 +209,13 @@ DATA(:,1) = r_adim';
 DATA(:,2) = chi';
 DATA(:,3) = a';
 DATA(:,4) = a_first';
-DATA(:,5) = dCt_new';
-DATA(:,6) = dCp';
+DATA(:,5) = dCt_dradim';
+DATA(:,6) = dCp_dradim';
 filename = ['Data_Opti_Prop_T.txt'];
 fid = fopen(filename, 'wt');
-fprintf(fid, '%s\t%s\t%s\t%s\t%s\t%s\n', '  r_adim','  chi','      a(chi)','  a''(chi)','  dCt_corr(r_adim)','  dCp_corr(r_adim)');  % header
+fprintf(fid, '%s\t%s','  efficiency =',eta,' at J =', J);  % header
+fprintf(fid,'\n');
+fprintf(fid, '%s\t%s\t%s\t%s\t%s\t%s\n', '  r_adim','  chi','      a(chi)','  a''(chi)','  dCt(r_adim)',' dCp(r_adim)');  % header
 fclose(fid);
 dlmwrite(filename,DATA,'delimiter','\t','precision',['%10.',num2str(6),'f'],'-append');
 end
