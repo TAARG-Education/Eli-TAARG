@@ -40,9 +40,9 @@
 function [Power,Induction] =Axial_Descent_Ascent_Operating_Curves_Rotor(M,R)
 
 %Variables Definition
-hh    = linspace(0,6000,1000);
+hh    = linspace(0,6000,100);
 VVs   = linspace(0, 50, 100);
-VVd   = linspace(-50, 0, 100);
+VVd   = linspace(-50, 0, 7000);
 g     = 9.81;
 
 %Axial Induction
@@ -72,7 +72,7 @@ end
 
 for i = 1 : length(hh)
     for j = 1 : length(VVd)
-        if V_tilde(VVd(j),hh(i)) < -2            %Validity limit of simply impulsive theory;
+        if V_tilde(VVd(j),hh(i)) <= -2            %Validity limit of simply impulsive theory;
         WTD(i,j) = w_tilde_discesa(VVd(j),hh(i));
         aa(1,i) = j;
         else 
@@ -99,7 +99,7 @@ end
 
 for i = 1 : length(hh)
     for j = 1 : length(VVd)
-        if V_tilde(VVd(j),hh(i)) < -2            %Validity limit of simply impulsive theory;
+        if V_tilde(VVd(j),hh(i)) <= -2            %Validity limit of simply impulsive theory;
         PTD(i,j) = P_tilde_discesa(VVd(j),hh(i));
         bb(1,i) = j;
         else 
@@ -120,9 +120,10 @@ figure(1)
  for i = 1 : length(hh)
      plot3(hh(i)*ones(1,length(WTD(i,1:aa(i)))),VVd(1,1:aa(i)),WTD(i,1:aa(i)))
  end
-xlabel('$Quota$','Interpreter','latex', 'FontSize',15)
-ylabel('$V_{\infty}$','Interpreter','latex', 'FontSize',15)
-zlabel('$w$','Interpreter','latex', 'FontSize',15)
+yticks([-50 -25 0 25 50])
+xlabel('$Height[m]$','Interpreter','latex', 'FontSize',15)
+ylabel('$V_{\infty}[\frac{m}{s}]$','Interpreter','latex', 'FontSize',15)
+zlabel('$\widetilde{w}$','Interpreter','latex', 'FontSize',15)
 grid on
 title('$w (V_{\infty}, h)$','Interpreter','latex', 'FontSize', 15)
 view(71,32)
@@ -137,9 +138,10 @@ figure(2)
  for i = 1 : length(hh)
      plot3(hh(i)*ones(1,length(PTD(i,1:bb(i)))),VVd(1,1:bb(i)),PTD(i,1:bb(i)))
  end
-xlabel('$Quota$','Interpreter','latex', 'FontSize',15)
-ylabel('$V_{\infty}$','Interpreter','latex', 'FontSize',15)
-zlabel('$P$','Interpreter','latex', 'FontSize',15)
+yticks([-50 -25 0 25 50])
+xlabel('$Height[m]$','Interpreter','latex', 'FontSize',15)
+ylabel('$V_{\infty}[\frac{m}{s}]$','Interpreter','latex', 'FontSize',15)
+zlabel('$\widetilde{P}$','Interpreter','latex', 'FontSize',15)
 grid on
 title('$P (V_{\infty}, h)$','Interpreter','latex', 'FontSize', 15)
 view(71,32)
@@ -161,7 +163,7 @@ for j = 1 : length(VVs)
 end
 
 for j = 1 : length(VVd)
-    if V_tilde(VVd(j),hh(i)) < -2                  %Validity limit of simply impulsive theory;
+    if V_tilde(VVd(j),hnew) <= -2                  %Validity limit of simply impulsive theory;
         WTDnew(1,j) = w_tilde_discesa(VVd(j),hnew);
         aanew = j;
     else
@@ -178,7 +180,7 @@ for j = 1 : length(VVs)
 end
 
 for j = 1 : length(VVd)
-    if V_tilde(VVd(j),hh(i)) < -2                  %Validity limit of simply impulsive theory;
+    if V_tilde(VVd(j),hnew) <= -2                  %Validity limit of simply impulsive theory;
         PTDnew(1,j) = P_tilde_discesa(VVd(j),hnew);
         bbnew = j;
     else
@@ -189,24 +191,24 @@ end
 %% 
 % 2D Plots of induction [Output]
 figure(3)
-plot(VVs, WTSnew, '-k')
+plot(V_tilde(VVs,hnew), WTSnew, '-k')
 hold on
-plot(VVd(1:aanew), WTDnew(1:aanew), '-k')
+plot(V_tilde(VVd(1:aanew),hnew), WTDnew(1:aanew), '-k')
 grid on
-xlabel('$V_{\infty}$','Interpreter','latex','FontSize',15)
-ylabel('$w$','Interpreter','latex','FontSize',15)
-title(['$w$ per h=' num2str(hnew)],'Interpreter','latex')
+xlabel('$\widetilde{V}$','Interpreter','latex','FontSize',15)
+ylabel('$\widetilde{w}$','Interpreter','latex','FontSize',15)
+title(['$\widetilde{w}$ per h=' num2str(hnew) '[m]'],'Interpreter','latex')
 %matlab2tikz('D:\Università\Magistrale\AerodinamicaAlaRotante\Matlab\EliiTAARG\Figure\Induzione2d.tex');
 
 % 2D Plots of power [Output]
 figure(4)
-plot(VVs, PTSnew, '-k')
+plot(V_tilde(VVs,hnew), PTSnew, '-k')
 hold on
-plot(VVd(1:aanew), PTDnew(1:bbnew), '-k')
+plot(V_tilde(VVd(1:aanew),hnew), PTDnew(1:bbnew), '-k')
 grid on
-xlabel('$V_{\infty}$','Interpreter','latex','FontSize',15)
-ylabel('$P$','Interpreter','latex','FontSize',15)
-title(['$P$ per h=' num2str(hnew)],'Interpreter','latex')
+xlabel('$\widetilde{V}$','Interpreter','latex','FontSize',15)
+ylabel('$\widetilde{P}$','Interpreter','latex','FontSize',15)
+title(['$\widetilde{P}$ per h=' num2str(hnew) '[m]'],'Interpreter','latex')
 %matlab2tikz('D:\Università\Magistrale\AerodinamicaAlaRotante\Matlab\EliiTAARG\Figure\Potenza2d.tex');
 %%
 % Numerical Output of Power and Induction for the interest altitude;
