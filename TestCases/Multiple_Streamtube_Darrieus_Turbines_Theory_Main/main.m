@@ -1,5 +1,5 @@
 %% \main.m
-%  \brief: this script tests the turbine_Darrieus_tubo_flusso_multiplo.m function
+%  \brief: this script tests the Multiple_Streamtube_Darrieus_Turbines_Theory.m function
 %  \author: Luciano Roncioni - Camilla Scotto di Carlo
 %  \version: 1.1
 %
@@ -73,7 +73,7 @@ switch n
         N = test_n1(5);
         cd = test_n1(6);
         %% Function
-        [cp,cq,lambdav]=turbine_Darrieus_tubo_flusso_multiplo(alphamax,c,R,cla,N,cd);
+        [cp,cq,lambdav] = Multiple_Streamtube_Darrieus_Turbines_Theory(alphamax,c,R,cla,N,cd);
         %% Plot
         plot(lambda1,cp1,'kv'); hold on; grid on;
         plot(lambdav,cp,'k-');  
@@ -91,7 +91,7 @@ switch n
         N = test_n2(5);
         cd = test_n2(6);
         %% Function
-        [cp,cq,lambdav]=turbine_Darrieus_tubo_flusso_multiplo(alphamax,c,R,cla,N,cd);
+        [cp,cq,lambdav] = Multiple_Streamtube_Darrieus_Turbines_Theory(alphamax,c,R,cla,N,cd);
         %% Plot
         plot(lambda2,cp2,'kv'); hold on; grid on;
         plot(lambdav,cp,'k-');  
@@ -109,7 +109,7 @@ switch n
         N = test_n3(5);
         cd = test_n3(6);
         %% Function
-        [cp,cq,lambdav]=turbine_Darrieus_tubo_flusso_multiplo(alphamax,c,R,cla,N,cd);
+        [cp,cq,lambdav] = Multiple_Streamtube_Darrieus_Turbines_Theory(alphamax,c,R,cla,N,cd);
         %% Plot
         plot(lambda3,cp3,'kv'); hold on; grid on;
         plot(lambdav,cp,'k-');  
@@ -127,7 +127,7 @@ switch n
         N = test_n4(5);
         cd = test_n4(6);
         %% Function
-        [cp,cq,lambdav]=turbine_Darrieus_tubo_flusso_multiplo(alphamax,c,R,cla,N,cd);
+        [cp,cq,lambdav] = Multiple_Streamtube_Darrieus_Turbines_Theory(alphamax,c,R,cla,N,cd);
         %% Plot
         plot(lambda4,cp4,'kv'); hold on; grid on;
         plot(lambdav,cp,'k-');  

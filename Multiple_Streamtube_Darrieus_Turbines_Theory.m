@@ -39,7 +39,7 @@
 % |Note        :                                                                               |
 % ==============================================================================================
 
-function [cp,cq,lambdav] = turbine_Darrieus_tubo_flusso_multiplo(alphamax,c,R,cla,N,cd)
+function [cp,cq,lambdav] = Multiple_Streamtube_Darrieus_Turbines_Theory(alphamax,c,R,cla,N,cd)
 %% Initialization of vectors used in the code
 phiv = linspace(0,360,100); %phi domain [deg]
 phiv = deg2rad(phiv); % [rad]
