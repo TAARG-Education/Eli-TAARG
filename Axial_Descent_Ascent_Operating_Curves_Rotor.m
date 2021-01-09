@@ -226,11 +226,13 @@ elseif nargin==3 % In Output only value of Power and Induction
         w= w_tilde_discesa(V_inf,hnew)*wh(hnew);
         P  = (M*g)*(V_inf + w);
     else
+        %output
         errordlg('Simply Impulsive Rotor Theory not respected','ERROR!!');
         Power = [];
         Induction = [];
         return
     end
+    %output
     ff = msgbox(sprintf('Power= %d [kW], \n Induction= %d [m/s]', P/1000, w),...
         'Power and Induction at the altitude and velocity of interest');
     set(ff, 'position', [500 250 400 65]);
