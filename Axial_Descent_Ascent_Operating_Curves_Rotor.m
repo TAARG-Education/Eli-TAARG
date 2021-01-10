@@ -37,7 +37,7 @@
 % |Output      : w(V_infty) and P(V_infty) plots                                         |
 % |Note        :                                                                         |
 % ==============================================================================================
-function [Power,Induction] =Axial_Descent_Ascent_Operating_Curves_Rotor(M,R,V_inf)
+function [Power,Induction] =Axial_Descent_Ascent_Operating_Curves_Rotor(M,R,hnew,V_inf)
 
 g = 9.81;
 %Altitude Range
@@ -56,10 +56,7 @@ V_tilde = @(V,h) V/wh(h);
 w_tilde_salita  = @(V,h) (-V_tilde(V,h)/2) + sqrt((V_tilde(V,h)/2)^2+1);
 w_tilde_discesa = @(V,h) (-V_tilde(V,h)/2) - sqrt((V_tilde(V,h)/2)^2-1);
 
-P_tilde_salita   = @(V,h) V_tilde(V,h) + w_tilde_salita(V,h);
-P_tilde_discesa  = @(V,h) V_tilde(V,h) + w_tilde_discesa(V,h);
-
-if nargin==2
+if nargin==3
     VVs   = linspace(0, 50, 100);
     VVd   = linspace(-50, 0, 7000);
     
@@ -88,6 +85,8 @@ if nargin==2
     end
     
     %Non-Dimensional Power
+    P_tilde_salita   = @(V,h) V_tilde(V,h) + w_tilde_salita(V,h);
+    P_tilde_discesa  = @(V,h) V_tilde(V,h) + w_tilde_discesa(V,h);
     PTS = zeros(length(hh),length(VVs)); %Ascent Power
     PTD = zeros(length(hh),length(VVd)); %Descent Power
     bb  = zeros(1,length(hh));           %Control Paramenter
@@ -148,12 +147,6 @@ if nargin==2
     
     %% Insertion of Interes Altitude;
     
-    prompt = {'Insert interest altitude in metres [min=0,Max=6000]: '};
-    dlgtitle = 'Altitude';
-    dims = [1 35];
-    answer = inputdlg(prompt,dlgtitle,dims);
-    hnew = str2double(answer{1});
-    
     WTSnew = zeros(1,length(VVs));  %Vector Inizialization of axial ascent induction related to velocity
     WTDnew = zeros(1,length(VVd));  %Vector Inizialization of axial descent induction related to velocity
     
@@ -210,14 +203,9 @@ if nargin==2
     %% Numerical Output of Power and Induction for the interest altitude;
     Power = [PTDnew(1:bbnew), PTSnew];
     Induction = [WTDnew(1:aanew), WTSnew];
-  
-elseif nargin==3 % In Output only value of Power and Induction
-                 % at altitude and velocity of interest;
-    prompt = {'Insert interest altitude in metres [min=0,Max=6000]: '};
-    dlgtitle = 'Altitude';
-    dims = [1 35];
-    answer = inputdlg(prompt,dlgtitle,dims);
-    hnew = str2double(answer{1});
+    
+elseif nargin==4 % In Output only value of Power and Induction
+    % at altitude and velocity of interest;
     
     if V_tilde(V_inf,hnew) >= 0
         w = w_tilde_salita(V_inf,hnew)*wh(hnew);
@@ -227,6 +215,7 @@ elseif nargin==3 % In Output only value of Power and Induction
         P  = (M*g)*(V_inf + w);
     else
         errordlg('Simply Impulsive Rotor Theory not respected','ERROR!!');
+        %Output
         Power = [];
         Induction = [];
         return
@@ -234,7 +223,7 @@ elseif nargin==3 % In Output only value of Power and Induction
     ff = msgbox(sprintf('Power= %d [kW], \n Induction= %d [m/s]', P/1000, w),...
         'Power and Induction at the altitude and velocity of interest');
     set(ff, 'position', [500 250 400 65]);
-    
+    %Output
     Power = P;
     Induction = w;
 end
