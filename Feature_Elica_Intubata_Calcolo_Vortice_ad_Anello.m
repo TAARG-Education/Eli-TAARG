@@ -1,4 +1,4 @@
-function [fx] = Feature_Elica_Intubata_Calcolo_Vortice_ad_Anello(ch,Di,De)
+function [f] = Feature_Elica_Intubata_Calcolo_Vortice_ad_Anello(ch,Di,De)
 %Funzione per il calcolo della velocità indotta da un vortice ad anello. Si
 %utilizza la legge di Biot-Savart per il calcolo delle tre componenti,
 %scritta in un riferimento cilindrico.
@@ -28,7 +28,7 @@ Di=4.5; %m
 De=1.20; %m
 
 % [f1,c_D14,RatioD,D14,D34] = Universale2(Di,De,ch);
-t=linspace(0,1,100);                            %commentare da riga 31 a 40 se si utilizza la funzione 30 per il calcolo dei rapporti c_D14 e RatioD 
+t=linspace(0,1,100);             %commentare da riga 31 a 40 se si utilizza la funzione 30 per il calcolo dei rapporti c_D14 e RatioD 
 for i=1:length(t) 
 xs(i)=0+t(i)*(ch);
 ys(i)=Di/2+t(i)*(De/2-Di/2);
@@ -39,7 +39,7 @@ D34=2*ys(75);
 c_D14=ch/D14 ;
 RatioD=D34/D14;
 
-r=(D14/2)*0.95;
+r=(D14/2);
 x=D34/2;
 z=ch*(3/4);
 y=0;
