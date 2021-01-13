@@ -1,8 +1,6 @@
-function [Cl, Cd] = CdCl_xfoil(NACA, ext_AF, numPanel, Re_number, iter, FirstAlfa, LastAlfa, DeltaAlfa)
-
 %% \xfoil_polar.m
 %  \brief: evaluation of the Cd(Cl) polar through the software xfoil
-%  \author(s): Lorenzo Frascino - Palma Caputo
+%  \author(s): Palma Caputo - Lorenzo Frascino
 %  \version: 1.0
 %
 % Eli-TAARG is free software; you can redistribute it and/or
@@ -24,7 +22,7 @@ function [Cl, Cd] = CdCl_xfoil(NACA, ext_AF, numPanel, Re_number, iter, FirstAlf
 %
 % ==============================================================================================
 % |Name        : CdCl_xfoil.m                                                                    |
-% |Author(s)   : Lorenzo Frascino - Palma Caputo                                                 |
+% |Author(s)   : Palma Caputo - Lorenzo Frascino                                                 |
 % |              University of Naples Federico II.                                               |
 % |Version     : 1.0                                                                             |
 % |Date        : 03/01/2020                                                                      |
@@ -44,6 +42,7 @@ function [Cl, Cd] = CdCl_xfoil(NACA, ext_AF, numPanel, Re_number, iter, FirstAlf
 % |              (Cd) = drag coefficent vector                                                   |
 % |Note        : The function must be in the same directory of xfoil.exe!                        |
 % ==============================================================================================
+function [Cl, Cd] = CdCl_xfoil(NACA, ext_AF, numPanel, Re_number, iter, FirstAlfa, LastAlfa, DeltaAlfa)
 
 Alfa_vec   = str2num(FirstAlfa):str2num(DeltaAlfa):str2num(LastAlfa);
 saveGeometry = 'Airfoil_geometry.txt';  % Create .txt file to save airfoil coordinates
@@ -65,8 +64,8 @@ end
 f_input = fopen('xfoil_input.txt','w');            % Create input file for xfoil 
 
 if ext_AF == 0
-        fprintf(f_input,'y\n');
-        fprintf(f_input,['naca ' NACA '\n']);
+    fprintf(f_input,'y\n');
+    fprintf(f_input,['naca ' NACA '\n']);
 end
 if ext_AF == 1
     fprintf(f_input,'y\n');
@@ -87,8 +86,7 @@ fprintf(f_input,'pacc\n');
 fprintf(f_input,[savePolar '\n\n']);
 
 for i = 1:length(Alfa_vec)
-    
-        fprintf(f_input,'a %2.4f\n', Alfa_vec(i));
+    fprintf(f_input,'a %2.4f\n', Alfa_vec(i));
 end
 
 fprintf(f_input,'pacc\n\n');
