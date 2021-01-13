@@ -105,18 +105,18 @@ for h = 1 : numel(phiv)
     max_v(h) = max(alphadeg(h,:));
 end
 
-contatorelambdamin = 0; %intial value for lambda min index
+counterlambdamin = 0; %intial value for lambda min index
 
 %check on stall angle
 for f = 1 : numel(phiv)
     if alphamax < max_v(f)
-        contatorelambdamin = contatorelambdamin + 1;
+        counterlambdamin = counterlambdamin + 1;
     end
 end
 
 %cp, cq and lambdav are downsized according to conditions
 % of stall and positive power value
-cq = cqv(contatorelambdamin:j,1);
-cp = cpv(contatorelambdamin:j,1);
-lambdav = lambdav(1,contatorelambdamin:j);
+cq = cqv(counterlambdamin:j,1);
+cp = cpv(counterlambdamin:j,1);
+lambdav = lambdav(1,counterlambdamin:j);
 end
