@@ -38,7 +38,7 @@
 %                 the cp and cq coefficients                                                   |
 % |Note        :  The function works                                                           |
 % ==============================================================================================
-function [cp2, lambda2] = Darrieus_singolo(Cla, c, R, N, cd,alphamax)
+function [cp2, lambda2] = Turbine_single_tube(Cla, c, R, N, cd,alphamax)
 
 %Domain vector, initial values. 
 y1=linspace(0.01,20,100);       %Introduction of the variable y
