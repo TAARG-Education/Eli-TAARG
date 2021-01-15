@@ -1,7 +1,7 @@
-%% \flapping_test.m
+%% \flappingtest.m
 %  \brief: this script test the flappingangles.m function
 %  \authors: Matteo Cassetta, Pasquale Antonio Federico
-%  \version: 1.00
+%  \version: 1.01
 %
 % Eli-TAARG is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public
@@ -21,13 +21,13 @@
 % <http://www.gnu.org/licenses/>.
 %
 % ==============================================================================================
-% |Name        : flapping_test.m                                                         |
+% |Name        : flappingtest.m                                                         |
 % |Authors     : Matteo Cassetta                                                         |
 %                Pasquale Antonio Federico                                               |
 % |              University of Naples Federico II                                        |
-% |Version     : 1.0                                                                     |
+% |Version     : 1.01                                                                     |
 % |Date        : 08/01/2021                                                              |
-% |Modified    : 13/01/2021                                                              |
+% |Modified    : 15/01/2021                                                              |
 % |Description : Rotor blade flapping angles                                             |     
 % |Reference   : Prouty, R.W. - Helicopter Performance, Stability and Control            |
 %                Johnson, W.  - Helicopter Theory                                        |
@@ -41,16 +41,20 @@
 % |Note        :                                                                         |
 % ==============================================================================================
 
-clear all; close all; clc;
+clearvars; close all; clc;
 
 % Declare velocity array and flapping coefficients arrays
-[b0,b1c,b1s,v] = deal(linspace(0,120,200));
+[b0,b1c,b1s,v] = deal(linspace(0,120,50));
+psi = linspace(0,360,50);
 
 % Calculation
 for i = 1:length(v)
     [b0(i),b1c(i),b1s(i)] = flappingangles(v(i),0,33523.27,8,0.1,-8,5.7,213,0,4,...
         'output','coefficients');
 end
+
+[~,beta,beta_dot] = flappingangles(100,0,33523.27,8,0.1,-8,5.7,213,0,4,...
+        'sample',psi);
 
 % Plots
 figure; subplot(2,2,[1 2]);
@@ -71,5 +75,10 @@ xlim([v(1) v(end)])
 xlabel('$V$','Interpreter','latex','fontsize',14);
 ylabel('$-\beta_{1s} \ [\circ]$','Interpreter','latex','fontsize',14);
 
-
-
+figure; hold on; box on;
+plot(psi,beta,'-k');
+plot(psi,beta_dot,'--k');
+xlim([0 360]);
+xlabel('$\psi$','Interpreter','latex','fontsize',14);
+l = legend('$\beta \ [\circ]$','$\frac{d\beta}{d\psi}$','location','best');
+set(l,'interpreter','latex','fontsize',14);
