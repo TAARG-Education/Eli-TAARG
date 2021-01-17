@@ -30,11 +30,9 @@
 % |Description : evaluation of the Cd(Cl) polar by using the software xfoil                      |     
 % |Reference   : xfoil user's Guide                                                              |
 % |              <https://web.mit.edu/drela/Public/web/xfoil/xfoil_doc.txt>                      |                                                         
-% |Input       : (NACA) = NACA airfoil                                                           |
-% |              (ext_AF) = flag if airfoil geometry must be imported from external file         |  
+% |Input       : (NACA) = NACA airfoil                                                           |  
 % |              (numPanel) = numver of panels for the geometry                                  |
 % |              (Re_number) = Reynolds number                                                   |
-% |              (iter) = number of iterations                                                   |
 % |              (FirstAlfa) = first value of the angle of attack                                |
 % |              (LastAlfa) = last value of the angle of attack                                  |
 % |              (DeltaAlfa) = pace between the angles of attack                                 |
@@ -42,8 +40,9 @@
 % |              (Cd) = drag coefficent vector                                                   |
 % |Note        : The function must be in the same directory of xfoil.exe!                        |
 % ==============================================================================================
-function [Cl, Cd] = CdCl_xfoil(NACA, ext_AF, numPanel, Re_number, iter, FirstAlfa, LastAlfa, DeltaAlfa)
+function [Cl, Cd] = CdCl_xfoil(NACA, numPanel, Re_number, FirstAlfa, LastAlfa, DeltaAlfa)
 
+iter = '100';
 Alfa_vec   = str2num(FirstAlfa):str2num(DeltaAlfa):str2num(LastAlfa);
 saveGeometry = 'Airfoil_geometry.txt';  % Create .txt file to save airfoil coordinates
 savePolar  = 'Polar.txt';               % Create .txt file to save the polar
@@ -63,15 +62,8 @@ end
 % Create the airfoil
 f_input = fopen('xfoil_input.txt','w');            % Create input file for xfoil 
 
-if ext_AF == 0
-    fprintf(f_input,'y\n');
-    fprintf(f_input,['naca ' NACA '\n']);
-end
-if ext_AF == 1
-    fprintf(f_input,'y\n');
-    fprintf(f_input,'load\n');
-    fprintf(f_input, 'my_airfoil.txt\n');          % .txt file with airfoil coordinates
-end
+fprintf(f_input,'y\n');
+fprintf(f_input,['naca ' NACA '\n']);
 
 fprintf(f_input,'PPAR\n');                          
 fprintf(f_input,['N ' numPanel '\n']);
