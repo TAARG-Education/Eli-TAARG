@@ -1,7 +1,7 @@
 %% \xfoil_polar.m
 %  \brief: evaluation of the Cd(Cl) polar through the software xfoil
 %  \author(s): Palma Caputo - Lorenzo Frascino
-%  \version: 1.0
+%  \version: 1.4
 %
 % Eli-TAARG is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public
@@ -108,5 +108,6 @@ figure(1);
 plot(Cd,Cl,'k.-')
 xlabel('Drag coefficient C_d');
 ylabel('Lift coefficient C_l');
+grid on;
 end
 
