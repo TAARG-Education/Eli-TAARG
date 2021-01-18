@@ -56,7 +56,7 @@ gamma...                              % Lock's number
 theta_tw...                           % [rad], pitch gradient along the blade (linear variation is assumed)
 f...                                  % [m^2] equivalent wet area
 rho...                                % [Kg/m^3], density (SML)
-M...                                  % [kg], mass
+M...                                  % [kg], helicopter mass
 %"global" shares these data with the function workspace
 
 W = M*9.81;                           % [N], weight
