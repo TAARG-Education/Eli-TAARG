@@ -1,5 +1,5 @@
 function [fx] = RVortexInt(ch,Di,De)
-%% \RVortexInt.m
+% % \RVortexInt.m
 %  \The function evaluates the dimensionless radial velocity component
 %   of the ring vortex by means of integration of Biot-Savar law
 %  \Olino Massimiliano, Marino Giuseppe
@@ -27,8 +27,8 @@ function [fx] = RVortexInt(ch,Di,De)
 % |Author      : Olino Massimiliano, Marino Giuseppe                                           |
 % |              University of Naples Federico II.                                             |
 % |Version     : 1.0                                                                           |
-% |Date        : data di creazione                                                             |
-% |Modified    : data ultima modifica                                                          |
+% |Date        : 01/12/2020                                                                    |
+% |Modified    : 20/01/2021                                                                    |
 % |Description : The function evaluates the dimensionless radial velocity component            |
 % |              of the ring vortex by means of integration of Biot-Savar law                  |
 % |Reference   : McCormick, B.W.,(1967), Aerodynamics of V/STOL Flight, Academic Press.        |
@@ -82,8 +82,16 @@ f=sqrt(fx^2+fy^2+fz^2);
 figure(1);
 plot(f,f)
 axis ([0 1 0 1]);
-text(0.25,1,'Velocity induced by vortex ring');
+text(0.25,1,'Velocity induced by vortex ring:');
 text(0.25,0.90,['fx= ',num2str(fx)]);
 axis off;
+
+    if Di>De
+        warndlg('The shroud is a convergent duct.');
+    elseif Di<De
+     warndlg('The shroud is a divergent duct.');
+    else De=Di;
+     warndlg('The shroud is a cylindrical duct.');
+    end
 end
 
