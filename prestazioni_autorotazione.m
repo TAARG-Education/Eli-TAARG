@@ -56,7 +56,7 @@ X = deg2rad(X);                       % [rad], descent angle
 lambda_c = -mu*sin(X);                % Descent ratio (<0)
 A = 3.14*R^2;                         % [m^2], swept area
 sigma = N*c/(pi*R);                   % rotor solidity
-W = 1120*9.81;                        % [N], weight
+W = M*9.81;                           % [N], weight
 
 
 %% Beginning of the procedure.
