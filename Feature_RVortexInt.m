@@ -1,7 +1,7 @@
 function [fx] = RVortexInt(ch,Di,De)
 % % \RVortexInt.m
 %  \The function evaluates the dimensionless radial velocity component
-%   of the ring vortex by means of integration of Biot-Savar law
+%   of the ring vortex by means of integration of Biot-Savart law
 %  \Olino Massimiliano, Marino Giuseppe
 %  \1.0
 %
@@ -30,7 +30,7 @@ function [fx] = RVortexInt(ch,Di,De)
 % |Date        : 01/12/2020                                                                    |
 % |Modified    : 20/01/2021                                                                    |
 % |Description : The function evaluates the dimensionless radial velocity component            |
-% |              of the ring vortex by means of integration of Biot-Savar law                  |
+% |              of the ring vortex by means of integration of Biot-Savart law                  |
 % |Reference   : McCormick, B.W.,(1967), Aerodynamics of V/STOL Flight, Academic Press.        |
 % |              Tognaccini, R., (2020), Lezioni di AERODINAMICA DELL'ALA ROTANTE.             |
 % |Input       : ch (chord), Di (inlet diameter), De (exit diameter) of the shroud             |
