@@ -48,15 +48,26 @@
 
 function [T_C, H_C, alpha_deg, omega, V_inf ] = prestazioni_autorotazione(mu,X)
 
-global  R N c gamma theta_tw f rho M
+%Supposing helicopter data:
+global  R...                          % [m], rotorblade radius
+N...                                  % number of blades
+c...                                  % [m], chord length
+gamma...                              % Lock's number
+theta_tw...                           % [rad], pitch gradient along the blade (linear variation is assumed)
+f...                                  % [m^2] equivalent wet area
+rho...                                % [Kg/m^3], density (SML)
+M...                                  % [kg], mass
+%"global" shares these data with the function workspace
 
+W = M*9.81;                           % [N], weight
 Cl_a = 2*pi;                          % [1/rad], lift coefficient gradient (from thin airfoil theory)
 Cd = 0.01;                            % Average drag coefficient along the blade
+A = pi*R^2;                           % [m^2], swept area
+sigma = N*c/(pi*R);                   % rotor solidity
+
 X = deg2rad(X);                       % [rad], descent angle
 lambda_c = -mu*sin(X);                % Descent ratio (<0)
-A = 3.14*R^2;                         % [m^2], swept area
-sigma = N*c/(pi*R);                   % rotor solidity
-W = M*9.81;                           % [N], weight
+
 
 
 %% Beginning of the procedure.
