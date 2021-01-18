@@ -46,7 +46,7 @@ ch=str2double(answer{1});
 Di=str2double(answer{2});
 De=str2double(answer{3});
 
-% Creation of chroud geometry
+% Creation of shroud geometry
 t=linspace(0,1,1000);      
     for i=1:length(t) 
         xs(i)=0+t(i)*(ch);
@@ -54,17 +54,20 @@ t=linspace(0,1,1000);
     end
 D14=2*ys(250);               % Diameter at 1/4 of the shroud
 D34=2*ys(750);               % Diameter at 3/4 of the shroud
-c_D14=ch/D14 ;
-RatioD=D34/D14;
+c_D14=ch/D14 ;               % Ratio between chord and diameter at 1/4
+RatioD=D34/D14;              % Ratio between diameter at 3/4 and 1/4
 
 r=(D14/2);                   % flow radius
-x=D34/2;
-z=ch*(3/4);
-y=0;
+x=D34/2;                     % |                                 |
+z=ch*(3/4);                  % | Speed control point coordinates |
+y=0;                         % |                                 | 
 
+% Anonymous Function
 R1=@(t) cos(t)./(((x-r.*cos(t)).^2 +((y-r.*sin(t)).^2)+z^2)).^(3/2);
 R2=@(t) sin(t)./(((x-r.*cos(t)).^2 +(y-r.*sin(t)).^2+z^2)).^(3/2);
 R3=@(t) ((x-r.*cos(t)).*cos(t)+(y-r.*sin(t)).*sin(t))./(((x-r.*cos(t)).^2 +(y-r.*sin(t)).^2+z^2)).^(3/2);
+
+% Integrals
 Ix=integral(R1,0,2*pi);
 Iy=integral(R2,0,2*pi);
 Iz=integral(R3,0,2*pi);
@@ -86,6 +89,7 @@ text(0.25,1,'Velocity induced by vortex ring:');
 text(0.25,0.90,['fx= ',num2str(fx)]);
 axis off;
 
+% Warnings
     if Di>De
         warndlg('The shroud is a convergent duct.');
     elseif Di<De
