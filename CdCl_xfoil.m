@@ -1,7 +1,7 @@
 %% \xfoil_polar.m
 %  \brief: evaluation of the Cd(Cl) polar through the software xfoil
 %  \author(s): Palma Caputo - Lorenzo Frascino
-%  \version: 1.4
+%  \version: 1.5
 %
 % Eli-TAARG is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public
@@ -30,19 +30,22 @@
 % |Description : evaluation of the Cd(Cl) polar by using the software xfoil                      |     
 % |Reference   : xfoil user's Guide                                                              |
 % |              <https://web.mit.edu/drela/Public/web/xfoil/xfoil_doc.txt>                      |                                                         
-% |Input       : (NACA) = NACA airfoil                                                           |  
-% |              (numPanel) = numver of panels for the geometry                                  |
-% |              (Re_number) = Reynolds number                                                   |
-% |              (FirstAlfa) = first value of the angle of attack                                |
-% |              (LastAlfa) = last value of the angle of attack                                  |
-% |              (DeltaAlfa) = pace between the angles of attack                                 |
+% |Input       : (airfoil) = it is possible to insert a NACA number (ie. '2412')                 |
+% |                          or an external geometry file (ie. 'myairfoil.txt')                  |
+% |              (numPanel) = number of panels for the geometry   (ie. '160')                    |
+% |              (Re_number) = Reynolds number (ie. '1e6')                                       |
+% |              (FirstAlfa) = first value of the angle of attack (deg) (ie. '-10')              |
+% |              (LastAlfa) = last value of the angle of attack (deg)   (ie. '10')               |
+% |              (DeltaAlfa) = pace between the angles of attack        (ie. '1')                |
 % |Output      : (Cl) = lift coefficient vector                                                  |
 % |              (Cd) = drag coefficent vector                                                   |
 % |Note        : The function must be in the same directory of xfoil.exe!                        |
 % ==============================================================================================
-function [Cl, Cd] = CdCl_xfoil(NACA, numPanel, Re_number, FirstAlfa, LastAlfa, DeltaAlfa)
+function [Cl, Cd] = CdCl_xfoil(airfoil, numPanel, Re_number, FirstAlfa, LastAlfa, DeltaAlfa)
 
 iter = '100';
+k = str2double(airfoil);
+
 Alfa_vec   = str2num(FirstAlfa):str2num(DeltaAlfa):str2num(LastAlfa);
 saveGeometry = 'Airfoil_geometry.txt';  % Create .txt file to save airfoil coordinates
 savePolar  = 'Polar.txt';               % Create .txt file to save the polar
@@ -61,9 +64,13 @@ end
 %% WRITING XFOIL COMMANDS
 % Create the airfoil
 f_input = fopen('xfoil_input.txt','w');            % Create input file for xfoil 
-
 fprintf(f_input,'y\n');
-fprintf(f_input,['naca ' NACA '\n']);
+
+if isnan(k)~= 1
+    fprintf(f_input,['naca ' airfoil '\n']);
+else
+    fprintf(f_input,['load ' airfoil '\n']);
+end
 
 fprintf(f_input,'PPAR\n');                          
 fprintf(f_input,['N ' numPanel '\n']);
@@ -102,7 +109,6 @@ fclose(filePol);
 alfa = A{1}(:,1);
 Cl   = A{2}(:,1);
 Cd   = A{3}(:,1);
-
 
 figure(1);
 plot(Cd,Cl,'k.-')
