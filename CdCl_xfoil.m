@@ -44,7 +44,6 @@
 function [Cl, Cd] = CdCl_xfoil(airfoil, numPanel, Re_number, FirstAlfa, LastAlfa, DeltaAlfa)
 
 iter = '100';
-k = str2double(airfoil);
 
 Alfa_vec   = str2num(FirstAlfa):str2num(DeltaAlfa):str2num(LastAlfa);
 saveGeometry = 'Airfoil_geometry.txt';  % Create .txt file to save airfoil coordinates
@@ -65,6 +64,8 @@ end
 % Create the airfoil
 f_input = fopen('xfoil_input.txt','w');            % Create input file for xfoil 
 fprintf(f_input,'y\n');
+
+k = str2double(airfoil);
 
 if isnan(k)~= 1
     fprintf(f_input,['naca ' airfoil '\n']);
