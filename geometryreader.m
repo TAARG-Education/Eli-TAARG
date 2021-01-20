@@ -27,7 +27,7 @@
 % |              University of Naples Federico II.                                             |
 % |Version     : 1.0                                                                           |
 % |Date        : 16/11/2020                                                                    |
-% |Modified    : 29/12/2020                                                                    |
+% |Modified    : 20/01/2020                                                                    |
 % |Description : the function reads the geometry of a propeller and analyzes it using xrotor   |
 % |Reference   : http://web.mit.edu/drela/Public/web/xrotor/                                   |
 % |Input       : standard .txt file that contains informations about propeller geometry        |
@@ -40,7 +40,7 @@
 %                - the standard 'propgeometry.txt' file with the geometry parameters           |           
 % ==============================================================================================
 
-classdef geometryreader < handle
+classdef geometryreader < handle 
 properties 
 
 Name = 'geometryreader';
@@ -61,7 +61,9 @@ P       %Power, (W)
 %------------------------------------------------------------------
 % Aerodynamics
 %------------------------------------------------------------------
-Cl_ave  %Average lift coefficient
+Cl_ave      %Average lift coefficient
+lock_number %Lock number
+f
 
 %------------------------------------------------------------------
 % Flight conditions
@@ -80,11 +82,11 @@ theta       %Pitch
 %------------------------------------------------------------------
 %ANALYSIS PARAMETERS
 %------------------------------------------------------------------
-iter
-Powerchoice
-firstadv
-lastadv
-advstep
+iter          %Number of iterations
+Powerchoice   %Choice between Power and Thrust
+firstadv      %first advance ratio value
+lastadv       %last advance ratio value
+advstep       %advance ratio step
 
 %------------------------------------------------------------------
 %ANALYSIS RESULTS
@@ -140,7 +142,9 @@ for i=1:4
  fgetl(f_id);
 end
 %% Aerodynamics
-obj.Cl_ave = fscanf(f_id,'%f'); fgetl(f_id);
+obj.Cl_ave = fscanf(f_id,'%f'); fgetl(f_id); 
+obj.lock_number= fscanf(f_id,'%f'); fgetl(f_id); 
+obj.f=fscanf(f_id,'%f'); fgetl(f_id); 
 for i=1:4
  fgetl(f_id);
 end
@@ -189,7 +193,6 @@ obj.Powerchoice = fscanf(f_id,'%f');fgetl(f_id);
 obj.firstadv = fscanf(f_id,'%f');fgetl(f_id);
 obj.lastadv = fscanf(f_id,'%f');fgetl(f_id);
 obj.advstep = fscanf(f_id,'%f');fgetl(f_id);
-
 %% finally, sets the error tag
 obj.err = 0;
 end

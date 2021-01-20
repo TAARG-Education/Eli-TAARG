@@ -60,6 +60,6 @@ clc; clear; close all;
 PropDataFileName='propgeometry.txt';    %.txt standard geometry file
 myProp=geometryreader(PropDataFileName);       %class call
 %myProp.xRotorAnalysis;
-%myProp.plotResults;
+myProp.plotResults;
 
 

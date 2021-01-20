@@ -15,7 +15,9 @@ PROPELLER PERFORMANCE
 ----------------------------------------------------------------------
 AERODYNAMICS
 ----------------------------------------------------------------------
-1      medium lift coefficient, (adimensional)
+1      Medium lift coefficient, (adimensional)
+0      Lock number
+0      Equivalent parasite area
 
 ----------------------------------------------------------------------
 FLIGHT CONDITIONS
@@ -40,5 +42,7 @@ XROTOR ANALYSIS PARAMETERS
 0.143   First advance ratio value
 0.363   Last advance ratio value
 0.006   Advance ratio step
+
+
 
 
