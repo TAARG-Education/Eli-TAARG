@@ -24,30 +24,36 @@
 % |Name        : CdCl_xfoil.m                                                                    |
 % |Author(s)   : Palma Caputo - Lorenzo Frascino                                                 |
 % |              University of Naples Federico II.                                               |
-% |Version     : 1.0                                                                             |
+% |Version     : 1.5                                                                             |
 % |Date        : 03/01/2020                                                                      |
 % |Modified    : 03/01/2020                                                                      |
 % |Description : evaluation of the Cd(Cl) polar by using the software xfoil                      |     
 % |Reference   : xfoil user's Guide                                                              |
 % |              <https://web.mit.edu/drela/Public/web/xfoil/xfoil_doc.txt>                      |                                                         
-% |Input       : (airfoil) = it is possible to insert a NACA number (ie. '2412')                 |
+% |Input       : (airfoil) = it is possible to insert a NACA number (ie. 2412)                   |
 % |                          or an external geometry file (ie. 'myairfoil.txt')                  |
-% |              (numPanel) = number of panels for the geometry   (ie. '160')                    |
-% |              (Re_number) = Reynolds number (ie. '1e6')                                       |
-% |              (FirstAlfa) = first value of the angle of attack (deg) (ie. '-10')              |
-% |              (LastAlfa) = last value of the angle of attack (deg)   (ie. '10')               |
-% |              (DeltaAlfa) = pace between the angles of attack        (ie. '1')                |
+% |              (numPanel) = number of panels for the geometry   (ie. 160)                      |
+% |              (Re_number) = Reynolds number (ie. 1e6)                                         |
+% |              (FirstAlfa) = first value of the angle of attack (deg) (ie. -10)                |
+% |              (LastAlfa) = last value of the angle of attack (deg)   (ie. 10)                 |
+% |              (DeltaAlfa) = pace between the angles of attack        (ie. 1)                  |
 % |Output      : (Cl) = lift coefficient vector                                                  |
 % |              (Cd) = drag coefficent vector                                                   |
 % |Note        : The function must be in the same directory of xfoil.exe!                        |
 % ==============================================================================================
-function [Cl, Cd] = CdCl_xfoil(airfoil, numPanel, Re_number, FirstAlfa, LastAlfa, DeltaAlfa)
+function [Cl, Cd] = CdCl_xfoil_buona(airfoil, numPanel, Re_number, FirstAlfa, LastAlfa, DeltaAlfa)
+
+numPanel_st  = num2str(numPanel);
+Re_number_st = num2str(Re_number);
+FirstAlfa_st = num2str(FirstAlfa);
+LastAlfa_st  = num2str(LastAlfa);
+DeltaAlfa_st = num2str(DeltaAlfa);
 
 iter = '100';
+Alfa_vec = FirstAlfa:DeltaAlfa:LastAlfa;
 
-Alfa_vec   = str2num(FirstAlfa):str2num(DeltaAlfa):str2num(LastAlfa);
 saveGeometry = 'Airfoil_geometry.txt';  % Create .txt file to save airfoil coordinates
-savePolar  = 'Polar.txt';               % Create .txt file to save the polar
+savePolar    = 'Polar.txt';             % Create .txt file to save the polar
 
 
 % Delete files if they exist
@@ -65,23 +71,22 @@ end
 f_input = fopen('xfoil_input.txt','w');            % Create input file for xfoil 
 fprintf(f_input,'y\n');
 
-k = str2double(airfoil);
-
-if isnan(k)~= 1
-    fprintf(f_input,['naca ' airfoil '\n']);
+if isnumeric(airfoil)
+    airfoil_1 = num2str(airfoil);
+    fprintf(f_input,['naca ' airfoil_1 '\n']);
 else
     fprintf(f_input,['load ' airfoil '\n']);
 end
 
 fprintf(f_input,'PPAR\n');                          
-fprintf(f_input,['N ' numPanel '\n']);
+fprintf(f_input,['N ' numPanel_st '\n']);
 fprintf(f_input,'\n\n');
 
 % Data for the polar
 fprintf(f_input,'OPER\n');                        
 fprintf(f_input,'visc\n');                            
-fprintf(f_input,[Re_number '\n']);                  
-fprintf(f_input,['iter' iter '\n']);
+fprintf(f_input,[Re_number_st '\n']);                  
+fprintf(f_input,['iter ' iter '\n']);
 fprintf(f_input,'pacc\n');
 fprintf(f_input,[savePolar '\n\n']);
 
@@ -102,7 +107,6 @@ fclose(f_input);
 cmd = 'xfoil.exe < xfoil_input.txt';
 [status,result] = system(cmd);
 
-
 %% READ DATA FILE
 filePol = fopen(savePolar);
 A = textscan(filePol,'%f %f %f %f %f %f %f', 'Headerlines',12);
@@ -117,4 +121,3 @@ xlabel('Drag coefficient C_d');
 ylabel('Lift coefficient C_l');
 grid on;
 end
-
