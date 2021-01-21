@@ -59,7 +59,7 @@ RatioD=D34/D14;              % Ratio between diameter at 3/4 and 1/4
 
 r=(D14/2);                   % flow radius
 x=D34/2;                     % |                                 |
-z=ch*(3/4);                  % | Speed control point coordinates |
+z=ch*(3/4)-ch*(1/4);         % | Speed control point coordinates |
 y=0;                         % |                                 | 
 
 % Anonymous Function
