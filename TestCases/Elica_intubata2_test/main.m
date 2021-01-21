@@ -1,5 +1,5 @@
 %% \main.m
-%  \brief:  It is a test to validate elica_intubata.m
+%  \brief:  It is a test to validate ducted_prop_thrust.m
 %  \author: Claudio Mirabella, Christian Salzano
 %  \version: 1.04
 %
@@ -41,8 +41,6 @@
 % |Note        :                                                                         |
 % ==============================================================================================
 
-T = 0;
-TS = 0;
 Dquarter = 2;                   
 Gamma = 30;
 Vinf = 35;                      
@@ -50,4 +48,4 @@ rho = 1.225;
 R = .9;                         
 TR = 500;                       
 
-[T,TS] = elica_intubata(rho,Gamma,Vinf,Dquarter,R,TR)
+[T,TS] = ducted_prop_thrust(rho,Gamma,Vinf,Dquarter,R,TR)
