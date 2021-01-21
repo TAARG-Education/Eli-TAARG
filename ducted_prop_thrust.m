@@ -1,4 +1,4 @@
-%% \elica_intubata.m
+%% \ducted_prop_thrust.m
 %  \brief:  A function that calculates total thrust of a ducted propeller. 
 %   It generates a vector with total thrust and shroud thrust as output.
 %  \author: Claudio Mirabella, Christian Salzano
@@ -22,7 +22,7 @@
 % <http://www.gnu.org/licenses/>.
 %
 % ==============================================================================================
-% |Name        : elica_intubata.m                                                                  |
+% |Name        : ducted_prop_thrust.m                                                                  |
 % |Author      : Claudio Mirabella, Christian Salzano                                    |
 % |              University of Naples Federico II.                                       |
 % |Version     : 1.04                                                                    |
@@ -43,21 +43,17 @@
 % |Note        :                                                                         |
 % ==============================================================================================
 
-function [T, TS] = elica_intubata(rho, Gamma, Vinf, Dquarter, R, TR)
+function [T, TS] = ducted_prop_thrust(rho, Gamma, Vinf, Dquarter, R, TR)
 % ---------------------------------------------------------------------
 % Propeller's induced velocity calculations
-%  eq 4.24
 w0 = .5*(-Vinf + sqrt(Vinf^2 + 2*TR/(rho*pi*R^2)));
 % ---------------------------------------------------------------------
 % Streamtube's radius rt calculated via the continuity
-%  eq 4.20
 A = pi*R^2;
-const=0;
 const = (Vinf + w0)*A;
 rt = sqrt(const/(Vinf*pi));
 % ---------------------------------------------------------------------
 % Radial velocity component induced by the rotor at c/4
-%  eq 4.23
 cquarter=1/4;
 viRquarter = -.5*rt*w0*R^2/((R^2+cquarter^2)^1.5);
 % ---------------------------------------------------------------------
