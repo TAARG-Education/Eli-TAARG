@@ -1,3 +1,6 @@
+clc;clear all;close all
+
+
 %%% Test case
 %%% Agusta Bell AB 206 Helicopter in forward flight
 % Advance ratio = 0.12
@@ -6,9 +9,7 @@
 
 % User input
 %%
-clc;clear all;close all
-global M R N c gamma theta_tw f rho      
-
+     
 M = 1120;                             % [Kg], mass
 R = 5.1;                              % [m], rotorblade radius
 N = 2;                                % number of blades
@@ -18,5 +19,14 @@ theta_tw = -0.2313;                   % [rad], pitch gradient along the blade (l
 f = 0.007;                            % [m^2] equivalent wet area
 rho = 1.225;                          % [Kg/m^3], density (SML)
 
+%Advance ratio
+mu = 0.12;
+
+%Descend angle
+X = 20;
+
 %% Function output
-[T_C H_C alpha_deg omega V_inf]=autorot_performaces(0.12,20);
+[T_C H_C alpha_deg omega V_inf]=autorot_performaces(mu,X,R,N,c,gamma,theta_tw,f,rho,M);
+
+
+
