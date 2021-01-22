@@ -19,4 +19,4 @@ f = 0.007;                            % [m^2] equivalent wet area
 rho = 1.225;                          % [Kg/m^3], density (SML)
 
 %% Function output
-[T_C H_C alpha_deg omega V_inf]=prestazioni_autorotazione(0.12,20);
+[T_C H_C alpha_deg omega V_inf]=autorot_performaces(0.12,20);

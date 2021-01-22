@@ -1,4 +1,4 @@
-%% \file prestazioni_autorotazione
+%% \file autorot_performances
 %  \brief Autorotation performances
 %  \author Giulio Guarino - Emanuele Soreca
 %  \version 1.0.0
@@ -21,7 +21,7 @@
 % <http://www.gnu.org/licenses/>.
 %
 % ==============================================================================================
-% |Name        : prestazioni_autorotazione                                                     |
+% |Name        : autorot_performances                                                          |
 % |Author      : Giulio Guarino - Emanuele Soreca                                              |
 % |              University of Naples Federico II.                                             |
 % |Version     : 1.0.0                                                                         |
@@ -35,39 +35,39 @@
 %                reference, page 110) which are here dealt with                                | 
 %                by means of the Matlab Symbolic Toolbox. Once solved                          | 
 %                in respect to the intake ratio, expressions of thrust                         |
-%                coefficient, angle of attack, angular velocity, tip                           | 
-%                velocity, freestream velocity can be evaluated.                               | 
+%                coefficient, angle of attack, angular velocity,                               | 
+%                freestream velocity can be evaluated.                                         | 
 % |Reference   : Lezioni di Aerodinamica dell'Ala Rotante a.a. 2019/2020                       |
 %                Renato Tognaccini                                                             | 
-% |Input       : Advance ratio, descent ratio values (to be assigned).                         |
-% |Output      : Numerical values of thrust coefficient, angle of                              |
-%                attack, angular velocity, freestream velocity, tip                            |
-%                velocity.                                                                     | 
+% |Input       : Advance ratio, mu                                                             |
+%                Descent angle, X [deg]                                                        | 
+%                Rotorblade radius, R [m]                                                      |
+%                Number of blades, N                                                           |     
+%                Chord length, c [m]                                                           |
+%                Lock's number, gamma                                                          |
+%                Pitch gradient along the blade, theta_tw [rad] (assuming                      | 
+%                linear variation)                                                             | 
+%                Equivalent wet area, f [m^2]                                                  |
+%                Air density, rho [kg/m^3]                                                     |
+%                Helicopter mass, M [kg]                                                       | 
+% |Output      : Thrust coefficient, T_C                                                       |
+%                Rotor drag coefficient, H_C                                                   |
+%                Angle of attack, alpha_deg [deg]                                              | 
+%                Angular velocity, omega [rad/s]                                               |
+%                Freestream velocity, V_inf [m/s]                                              | 
 % |Note        : note addizionali                                                              |
 % ==============================================================================================
 
-function [T_C, H_C, alpha_deg, omega, V_inf ] = prestazioni_autorotazione(mu,X)
+function [T_C, H_C, alpha_deg, omega, V_inf ] = autorot_performances(mu,X,R,N,c,gamma,theta_tw,f,rho,M)
 
-%Supposing helicopter data:
-global  R...                          % [m], rotorblade radius
-N...                                  % number of blades
-c...                                  % [m], chord length
-gamma...                              % Lock's number
-theta_tw...                           % [rad], pitch gradient along the blade (linear variation is assumed)
-f...                                  % [m^2] equivalent wet area
-rho...                                % [Kg/m^3], density (SML)
-M...                                  % [kg], helicopter mass
-%"global" shares these data with the function workspace
 
-W = M*9.81;                           % [N], weight
 Cl_a = 2*pi;                          % [1/rad], lift coefficient gradient (from thin airfoil theory)
 Cd = 0.01;                            % Average drag coefficient along the blade
-A = pi*R^2;                           % [m^2], swept area
-sigma = N*c/(pi*R);                   % rotor solidity
-
 X = deg2rad(X);                       % [rad], descent angle
 lambda_c = -mu*sin(X);                % Descent ratio (<0)
-
+A = 3.14*R^2;                         % [m^2], swept area
+sigma = N*c/(pi*R);                   % rotor solidity
+W = M*9.81;                           % [N], weight
 
 
 %% Beginning of the procedure.
@@ -145,5 +145,3 @@ V_inf     = mu*omega*R/cos(alpha)                                               
 
 alpha_deg = convang(alpha,'rad','deg')                                          % [deg] Angle of attack in degrees
 end
-
-
