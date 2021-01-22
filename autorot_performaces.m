@@ -58,7 +58,7 @@
 % |Note        : note addizionali                                                              |
 % ==============================================================================================
 
-function [T_C, H_C, alpha_deg, omega, V_inf ] = autorot_performances(mu,X,R,N,c,gamma,theta_tw,f,rho,M)
+function [T_C, H_C, alpha_deg, omega, V_inf ] = autorot_performances(mu,X,R,N,c,gamma,theta_tw,f,M)
 
 
 Cl_a = 2*pi;                          % [1/rad], lift coefficient gradient (from thin airfoil theory)
@@ -68,6 +68,7 @@ lambda_c = -mu*sin(X);                % Descent ratio (<0)
 A = 3.14*R^2;                         % [m^2], swept area
 sigma = N*c/(pi*R);                   % rotor solidity
 W = M*9.81;                           % [N], weight
+rho = 1.225;                          % [Kg/m^3], density (SML)
 
 
 %% Beginning of the procedure.
