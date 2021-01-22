@@ -1,4 +1,4 @@
-function [fx] = RVortexInt(ch,Di,De)
+function [fx] = RVortexInt(ch,D14,D34)
 % % \RVortexInt.m
 %  \The function evaluates the dimensionless radial velocity component
 %   of the ring vortex by means of integration of Biot-Savart law
@@ -28,39 +28,24 @@ function [fx] = RVortexInt(ch,Di,De)
 % |              University of Naples Federico II.                                             |
 % |Version     : 1.0                                                                           |
 % |Date        : 01/12/2020                                                                    |
-% |Modified    : 20/01/2021                                                                    |
+% |Modified    : 22/01/2021                                                                    |
 % |Description : The function evaluates the dimensionless radial velocity component            |
 % |              of the ring vortex by means of integration of Biot-Savart law                 |
 % |Reference   : McCormick, B.W.,(1967), Aerodynamics of V/STOL Flight, Academic Press.        |
 % |              Tognaccini, R., (2020), Lezioni di AERODINAMICA DELL'ALA ROTANTE.             |
-% |Input       : ch (chord), Di (inlet diameter), De (exit diameter) of the shroud             |
+% |Input       : ch (chord), D14, D34 (The diameters at 1/4 and 3/4 of the shroud)             |
 % |Output      : fx (the dimensionless radial velocity component of the ring vortex )          |
 % |Note        :                                                                               |
 % ==============================================================================================
 %
-%Gui for the input by users.
-title='Input Data';
-prompt={'Shroud chord [m]','Inlet diameter [m]','Exit diameter [m]'};
-answer=inputdlg(prompt,title,[1 55;1 55;1 55]);
-ch=str2double(answer{1});
-Di=str2double(answer{2});
-De=str2double(answer{3});
 
-% Creation of shroud geometry
-t=linspace(0,1,1000);      
-    for i=1:length(t) 
-        xs(i)=0+t(i)*(ch);
-        ys(i)=Di/2+t(i)*(De/2-Di/2);
-    end
-D14=2*ys(250);               % Diameter at 1/4 of the shroud
-D34=2*ys(750);               % Diameter at 3/4 of the shroud
-c_D14=ch/D14 ;               % Ratio between chord and diameter at 1/4
+c_D14=ch/D14;                % Ratio between chord and diameter at 1/4
 RatioD=D34/D14;              % Ratio between diameter at 3/4 and 1/4
 
 r=(D14/2);                   % flow radius
-x=D34/2;                     % |                                 |
-z=ch*(3/4)-ch*(1/4);         % | Speed control point coordinates |
-y=0;                         % |                                 | 
+x=D34/2;                     % x coordinate of the Speed control point                                  
+z=ch*(3/4)-ch*(1/4);         % distance along the z-axis between the vortex and the control point
+y=0;                         % y coordinate of the Speed control point 
 
 % Anonymous Function
 R1=@(t) cos(t)./(((x-r.*cos(t)).^2 +((y-r.*sin(t)).^2)+z^2)).^(3/2);
@@ -90,11 +75,11 @@ text(0.25,0.90,['fx= ',num2str(fx)]);
 axis off;
 
 % Warnings
-    if Di>De
+    if D14>D34
         warndlg('The shroud is a convergent duct.');
-    elseif Di<De
+    elseif D14<D34
      warndlg('The shroud is a divergent duct.');
-    else De=Di;
+    else D14=D34;
      warndlg('The shroud is a cylindrical duct.');
     end
 end
