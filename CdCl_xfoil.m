@@ -41,7 +41,7 @@
 % |              (Cd) = drag coefficent vector                                                   |
 % |Note        : The function must be in the same directory of xfoil.exe!                        |
 % ==============================================================================================
-function [Cl, Cd] = CdCl_xfoil_buona(airfoil, numPanel, Re_number, FirstAlfa, LastAlfa, DeltaAlfa)
+function [Cl, Cd] = CdCl_xfoil(airfoil, numPanel, Re_number, FirstAlfa, LastAlfa, DeltaAlfa)
 
 numPanel_st  = num2str(numPanel);
 Re_number_st = num2str(Re_number);
