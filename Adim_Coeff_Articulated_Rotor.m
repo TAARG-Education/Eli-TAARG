@@ -1,15 +1,8 @@
-function [Tc,Hc,Yc,Qc,Pc,alfa] = Adim_Coeff_Articulated_Rotor(V_inf,altitude,Lock,f,X)
-%% Adim_Coeff_Articulated_Rotor
-% Determination of adimensional aerodynamics coefficients: 
-% - Tc   thrust coefficient 
-% - Hc   rotor drag force coefficient 
-% - Yc   lateral force coefficient 
-% - Qc   torque coefficient
-% - Pc   power coefficient
-% - alfa angle of attack
-%
-% Marco Artiano - Luca Angelino
-% version 1.0.0
+%% Adim_Coeff_Articulated_Rotor.m
+%  \brief: the function evaluates the adimensional coefficients of an
+%  articulated rotor
+%  \author: Marco Artiano, Luca Angelino
+%  \version: 1.03
 %
 % Eli-TAARG is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public
@@ -32,38 +25,26 @@ function [Tc,Hc,Yc,Qc,Pc,alfa] = Adim_Coeff_Articulated_Rotor(V_inf,altitude,Loc
 % |Name        : Adim_Coeff_Articulated_Rotor                                                   |
 % |Author      : Marco Artiano & Luca Angelino                                                  |
 % |              University of Naples Federico II.                                              |
-% |Version     : 1.0.0                                                                          |
+% |Version     : 1.0.3                                                                          |
 % |Date        : 25/11/20                                                                       |
-% |Modified    : 06/12/20                                                                       |
+% |Modified    : 24/01/21                                                                       |
 % |Description : Determination of adimensional aerodynamics coefficients                        |
 % |Reference   : 'Lezioni di AERODINAMICA DELL'ALA ROTANTE a.a. 2019-2020 - Renato Tognaccini'  |
-% |Input       : Velocity with respect to the air (V_inf), Altitude(altitude)                   |
-% |Output      : Tc, Hc, Yc, Qc, Pc and CM                                                      |
-% |Note        : Missing geometry and aerodynamics input and determination of moment coefficient|
+% |Input       : Velocity V_inf [m/s], Altitude h [m], Lock number L [~],                       |            
+% |              Equivalent drag area f [m^2], Rate of climb X [deg]                            |                                                             
+% |Output      : Tc, Hc, Yc, Qc, Pc and the angle of attack [deg]                               |
+% |Note        : Missing geometry and aerodynamics input                                        |
 % ===============================================================================================
 
-%% Input parameters
-%  V_inf     [m/s]     Rotor or helicopter velocity with respect to the air
-%  altitude  [m]       Altitude
-%  W         [kg]      Helicopter or rotor gross weight
-%  N         [~]       Number of blades
-%  D         [m]       Rotor diameter
-%  c         [m]       Rectangular blade chord
-%  theta_tw  [rad]     Linear twist rate
-%  Cl_alpha  [1/rad]   Lift coefficient slope
-%  Cd_mean   [~]       Mean drag coefficient 
-%  Omega     [rad/s]   Rotor rotational speed
-%  f         [m^2]     Equivalent drag area of helicopter fuselage and hub
-%  Lock      [~]       Lock number
-%  X         [deg]     Rate of climb 
- 
-%% Note
-% W,N,D,c,theta_tw,Cl_alfa,Cd_mean,Omega,f and Lock. We think that all these
+function [Tc,Hc,Yc,Qc,Pc,alfa] = Adim_Coeff_Articulated_Rotor(V_inf,h,Lock,f,X)
+%% Reading geometry and aerodynamics input data
+% W,N,D,c,theta_tw,Cl_alfa,Cd_mean and Omega. We think that all these
 % parameters should be obtained by a geometry input function, that is not
 % yet available. 
 
 %% Input data for local test
-% It will be replaced with a function that reads input parameters listed below
+% It will be replaced with a function that reads input parameters listed
+% below.
  N        = 4;
  W        = 2600;
  R        = 11.9/2;
@@ -72,23 +53,10 @@ function [Tc,Hc,Yc,Qc,Pc,alfa] = Adim_Coeff_Articulated_Rotor(V_inf,altitude,Loc
  Omega    = 40.3361;
  theta_tw = -0.0799;
  Cd_mean  = 0.01;
- A        = pi*R^2; 
- 
- %% Test values  
- if nargin == 0
- f        = 0.007*A;
- Lock     = 8;
- X        = convang(18,'deg','rad'); 
- V_inf    = 20;
- altitude = 0;
- end
 
-%% Reading geometry and aerodynamics input data
-%  not yet available 
-%
 %% Data
- [~,~,~,rho_inf] = atmosisa(altitude);                                      % International Standard Atmosphere model
- g               = (6.674*10^(-11))*(5.972*10^24)/(6371000+altitude)^2;     % Gravitational acceleration with respect to the altitude
+ [~,~,~,rho_inf] = atmosisa(h);                                             % International Standard Atmosphere model
+ g               = 9.8195;                                                  % Gravitational acceleration
  sigma           = N*c/(pi*R);                                              % Rotor solidity
  W               = W*g;                                                      
  A               = pi*R^2;                                                  % Rotor disk area
@@ -97,7 +65,7 @@ function [Tc,Hc,Yc,Qc,Pc,alfa] = Adim_Coeff_Articulated_Rotor(V_inf,altitude,Loc
 %% Initialization
  i        = 0;                            % Count iteration
  err      = 1;                            % Error initialization
- err_stop = 1e-3;                         % Error tollerance 
+ err_stop = 1e-5;                         % Error tollerance 
  alfa     = convang(0,'deg','rad');       % Initialization for the angle of attack
  Tc       = W/(rho_inf*(Omega*R)^2*A);    % Thrust coefficient                                      
  X        = convang(X,'deg','rad');       % Rate of climb
@@ -149,7 +117,8 @@ end
     err        = (lambda - lambda_old)/lambda;                                                % Evaluating the error
     i          = i + 1;                                                                       % Increasing the count iteration 
 end
-
+%%
+alfa = convang(alfa,'rad','deg');
 %% Determination of induced and parasite coefficients  
 % Qc0 = sigma*Cd_mean*(1 + mu^2)/8; 
 % Pc0 = sigma*Cd_mean*(1 + 3*mu^2)/8;
@@ -157,20 +126,4 @@ end
 % Pci = Pc - Pc0;
 % Yci = Yc;
 % Yc0 = 0;
-
-%% Plotting inputs and outputs
- table_disp_in = table([V_inf; altitude; W/g; N; 2*R; c; theta_tw; Cl_alpha; Cd_mean; Omega; f/A; Lock],...
-                 categorical(["m/s";" m ";" kg ";" ~ ";" m ";" m ";" rad ";" 1/rad ";" ~ ";" rad/s ";" ~ ";" ~ "]),...
-                 'VariableNames',{'Value','Measure unit'},...
-                 'RowName',{'V_inf';'Altitude';'W';'N';'D';'c';'theta_tw';'Cl_alpha';'Cd_mean';'Omega';'f/A';'Lock'});
-            
- table_disp_ou = table([Tc; Hc; Yc; Qc; Pc; alfa*57.3],...
-                 'VariableNames',{'Value'},...
-                 'RowName',{'Tc';'Hc';'Yc';'Qc';'Pc';'alfa [deg]'});
- fprintf('\n');
- disp('<strong>Input data:</strong>');
- disp(table_disp_in);
- disp('<strong>Output data:</strong>');
- disp(table_disp_ou);
-
 end
