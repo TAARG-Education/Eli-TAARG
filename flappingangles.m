@@ -28,7 +28,7 @@
 % |              University of Naples Federico II                                        |
 % |Version     : 1.0                                                                     |
 % |Date        : 08/01/2021                                                              |
-% |Modified    : 13/01/2021                                                              |
+% |Modified    : 26/01/2021                                                              |
 % |Description : Rotor blade flapping angles                                             |
 % |Reference   : Prouty, R.W. - Helicopter Performance, Stability and Control            |
 % |Input       : Airspeed, angle of attack (deg), rotor/helicopter gross weight,         |
@@ -62,18 +62,20 @@ arguments
 end
 
 %% Preliminary calculations
+altitude = 0;
+[~,~,~,rho] = atmosisa(altitude);
 
 % Converting to radians
-theta_tw = theta_tw*pi/180;
+theta_tw = convang(theta_tw,'deg','rad');
 
 % Thrust coefficient
-Tc = W/(1.225*omegaR^2*pi*R^2);
+Tc = W/(rho*omegaR^2*pi*R^2);
 
 % Advance ratio
 mi = V*cosd(alpha)/omegaR;
 
 % Adimensional inflow
-lambda_i = sqrt(-.5*V.^2+.5*sqrt(V.^4+4*(W/(2*1.225*pi*R^2)).^2))/omegaR;
+lambda_i = sqrt(-.5*V.^2+.5*sqrt(V.^4+4*(W/(2*rho*pi*R^2)).^2))/omegaR;
 lambda   = mi.*tand(alpha)+ lambda_i;
 
 % Collective pitch
@@ -99,12 +101,15 @@ beta_1s = -4/3*mi.*beta_0.*(1+eR/2)./((1+mi.^2/2)*(1-eR)^2)...
 %% Output
 
 if strcmpi(options.output,'coefficients')
-    varargout = {beta_0*180/pi,beta_1c*180/pi,beta_1s*180/pi};
+    varargout = {convang(beta_0,'rad','deg'),...
+        convang(beta_1c,'rad','deg'),...
+        convang(beta_1s,'rad','deg')};
 else
     psi    = options.sample;
     beta = (beta_0 + beta_1c.*cosd(psi) + beta_1s.*sind(psi))*180/pi;
     beta_dot = ( -beta_1c.*sind(psi) + beta_1s.*cosd(psi))*180/pi;
-    varargout = {psi,beta,beta_dot};
+    varargout = {psi,convang(beta,'rad','deg'),...
+        convang(beta_dot,'rad','deg')};
 end
 
 end
