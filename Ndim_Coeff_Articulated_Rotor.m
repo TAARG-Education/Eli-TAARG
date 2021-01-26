@@ -1,5 +1,5 @@
-%% Adim_Coeff_Articulated_Rotor.m
-%  \brief: the function evaluates the adimensional coefficients of an
+%% Ndim_Coeff_Articulated_Rotor.m
+%  \brief: the function evaluates the non-dimensional coefficients of an
 %  articulated rotor
 %  \author: Marco Artiano, Luca Angelino
 %  \version: 1.03
@@ -22,13 +22,13 @@
 % <http://www.gnu.org/licenses/>.
 %
 % ===============================================================================================
-% |Name        : Adim_Coeff_Articulated_Rotor                                                   |
+% |Name        : Ndim_Coeff_Articulated_Rotor                                                   |
 % |Author      : Marco Artiano & Luca Angelino                                                  |
 % |              University of Naples Federico II.                                              |
 % |Version     : 1.0.3                                                                          |
 % |Date        : 25/11/20                                                                       |
 % |Modified    : 24/01/21                                                                       |
-% |Description : Determination of adimensional aerodynamics coefficients                        |
+% |Description : Determination of non-dimensional aerodynamics coefficients                     |
 % |Reference   : 'Lezioni di AERODINAMICA DELL'ALA ROTANTE a.a. 2019-2020 - Renato Tognaccini'  |
 % |Input       : Velocity V_inf [m/s], Altitude h [m], Lock number L [~],                       |            
 % |              Equivalent drag area f [m^2], Rate of climb X [deg]                            |                                                             
@@ -36,7 +36,7 @@
 % |Note        : Missing geometry and aerodynamics input                                        |
 % ===============================================================================================
 
-function [Tc,Hc,Yc,Qc,Pc,alfa] = Adim_Coeff_Articulated_Rotor(V_inf,h,Lock,f,X)
+function [Tc,Hc,Yc,Qc,Pc,alfa] = Ndim_Coeff_Articulated_Rotor(V_inf,h,Lock,f,X)
 %% Reading geometry and aerodynamics input data
 % W,N,D,c,theta_tw,Cl_alfa,Cd_mean and Omega. We think that all these
 % parameters should be obtained by a geometry input function, that is not
