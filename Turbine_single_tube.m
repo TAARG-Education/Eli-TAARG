@@ -41,7 +41,7 @@
 function [cp2, lambda2] = Turbine_single_tube(Cla, c, R, N, cd,alphamax)
 
 %Domain vector, initial values. 
-y1=linspace(0.01,20,100);       %Introduction of the variable y
+y1=linspace(1,20,100);       %Introduction of the variable y
 phiv = linspace(0,360,100);     %Phi domain (deg)
 phiv = deg2rad(phiv);           %Phi domain (rad)  
 
@@ -52,7 +52,6 @@ for i = 1:length(y1)            % a, lambda, cp, cq computing
     y=y1(i);
     
 %   Computing of the induction factor a
-
     Y= ((y-sin(phiv)).^2+cos(phiv).^2).*Cla.*atan(cos(phiv)./(y+sin(phiv))).*...
         cos(phiv+atan(cos(phiv)./(y+sin(phiv))));   
     A =   trapz(phiv,Y);
@@ -60,7 +59,6 @@ for i = 1:length(y1)            % a, lambda, cp, cq computing
     a= 1-1/x; 
 
 %   Determination of tip speed ratio
-
     lambda = y.*(1-a);
     lambda2(i,1)=lambda;
 
@@ -75,11 +73,8 @@ for i = 1:length(y1)            % a, lambda, cp, cq computing
        cost_p = (N*c*lambda)./(4*pi*R);            % Costant part 
        cpint =trapz(phiv,(v_vinf.^2.*Cla.*alpha.*sin(alpha).*...
            (1-(cd./(Cla.*alpha)).*cot(alpha))));   % Integral
-        
-%       
        cp=cost_p.*cpint;                           % Cp value
        cq = cp/lambda;                             % Cq value
-        
        cp2(i,1)=cp;
 end
 

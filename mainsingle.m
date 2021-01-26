@@ -3,13 +3,13 @@ clear; clc; close all;
 % This is the main code written to validate the function.
 
 %Input data
-        Cla=6.28;
-        alphamax = 14;
-        c = 1;
-        R = 30;
-        N = 3;
-        cd = 0.01;
-        
+        Cla=6.28;           %
+        alphamax = 14;      %Maximun angle of attack
+        c = 1;              %Chord
+        R = 30;             %Radius
+        N = 3;              %Number of blade
+        cd = 0.01;          %Drag coefficient
+            
  %Function 
  [cp2, lambda2] = Turbine_single_tube(Cla, c, R, N, cd, alphamax);
  
