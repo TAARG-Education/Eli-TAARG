@@ -38,10 +38,10 @@
 %                 the cp and cq coefficients                                                   |
 % |Note        :  The function works                                                           |
 % ==============================================================================================
-function [cp2, lambda2] = Turbine_single_tube(Cla, c, R, N, cd,alphamax)
+function [Cp, Lambda] = Turbine_single_tube(Cla, c, R, N, cd,alphamax)
 
 %Domain vector, initial values. 
-y1=linspace(1,20,100);       %Introduction of the variable y
+y1=linspace(0.1,20,100);       %Introduction of the variable y
 phiv = linspace(0,360,100);     %Phi domain (deg)
 phiv = deg2rad(phiv);           %Phi domain (rad)  
 
@@ -60,7 +60,7 @@ for i = 1:length(y1)            % a, lambda, cp, cq computing
 
 %   Determination of tip speed ratio
     lambda = y.*(1-a);
-    lambda2(i,1)=lambda;
+    Lambda(i,1)=lambda;
 
 %   Determination of velocity ratio
       v_vinf = sqrt((lambda + (1-a).*sin(phiv)).^2 +...
@@ -75,7 +75,7 @@ for i = 1:length(y1)            % a, lambda, cp, cq computing
            (1-(cd./(Cla.*alpha)).*cot(alpha))));   % Integral
        cp=cost_p.*cpint;                           % Cp value
        cq = cp/lambda;                             % Cq value
-       cp2(i,1)=cp;
+       Cp(i,1)=cp;
 end
 
     max_v = zeros(numel(lambda),1);
