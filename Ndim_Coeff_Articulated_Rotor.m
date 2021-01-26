@@ -32,11 +32,11 @@
 % |Reference   : 'Lezioni di AERODINAMICA DELL'ALA ROTANTE a.a. 2019-2020 - Renato Tognaccini'  |
 % |Input       : Velocity V_inf [m/s], Altitude h [m], Lock number L [~],                       |            
 % |              Equivalent drag area f [m^2], Rate of climb X [deg]                            |                                                             
-% |Output      : Tc, Hc, Yc, Qc, Pc and the angle of attack [deg]                               |
+% |Output      : Tc, Hc, Yc, Qc, Pc, the angle of attack [deg] and the rotor inflow ratio       |
 % |Note        : Missing geometry and aerodynamics input                                        |
 % ===============================================================================================
 
-function [Tc,Hc,Yc,Qc,Pc,alfa] = Ndim_Coeff_Articulated_Rotor(V_inf,h,Lock,f,X)
+function [Tc,Hc,Yc,Qc,Pc,alfa,lambda] = Ndim_Coeff_Articulated_Rotor(V_inf,h,Lock,f,X)
 %% Reading geometry and aerodynamics input data
 % W,N,D,c,theta_tw,Cl_alfa,Cd_mean and Omega. We think that all these
 % parameters should be obtained by a geometry input function, that is not
@@ -76,7 +76,7 @@ while abs(err) > err_stop
     mu = V_inf*cos(alfa)/(Omega*R);                                                           % Rotor advance ratio
     
 %% To overcome the problems due to the divergence of lambda_i at low speed, a different formula provided by Eng. Di Giorgio has been used.    
-if V_inf <= 20       
+if mu <= 0.1       
     if i == 0
         lambda_i = sqrt(-V_inf^2/2+sqrt(V_inf^4/4+(W/(2*rho_inf*A))^2))/(Omega*R);            % First attempt value of induced inflow ratio at low speed
     else
@@ -84,7 +84,7 @@ if V_inf <= 20
     end    
 end
        
-if V_inf > 20        
+if mu > 0.1        
     if i == 0
         lambda_i = Tc/(2*mu);                                                                 % First attempt value of induced inflow ratio at high speed
     else
