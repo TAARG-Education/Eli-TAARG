@@ -1,4 +1,4 @@
-%% \file autorot_performances
+%% \file autorot_performance
 %  \brief Autorotation performances
 %  \author Giulio Guarino - Emanuele Soreca
 %  \version 1.0.0
@@ -58,7 +58,7 @@
 % |Note        : note addizionali                                                              |
 % ==============================================================================================
 
-function [T_C, H_C, alpha_deg, omega, V_inf ] = autorot_performances(mu,X,R,N,c,gamma,theta_tw,f,M)
+function [T_C, H_C, alpha_deg, omega, V_inf ] = autorot_performance(mu,X,R,N,c,gamma,theta_tw,f,M)
 
 
 Cl_a = 2*pi;                          % [1/rad], lift coefficient gradient (from thin airfoil theory)
