@@ -124,13 +124,15 @@ alpha = atan(1/mu*(lambda-T_C/(2*sqrt(mu^2+lambda^2))));                    % an
 
 % We can now solve an equation for lambda
 
-lambda_i = T_C/(2*mu);
-%lambda_i = T_C/(2*sqrt(mu^2+lambda^2))
+%lambda_i = T_C/(2*mu);
+lambda_i = T_C/(2*sqrt(mu^2+lambda^2));
 
 P_C = T_C*lambda_i+lambda_c*T_C+...                                         % This expression is obtained from the Pc expression
       mu*0.5*f/A*(mu/cos(alpha))^3+H_C0+Q_c0;
 
 lambda = vpasolve(P_C==0,lambda);
+
+Lambda_i = double(subs(lambda_i))
 
 %% Evaluating output
 
