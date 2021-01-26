@@ -106,8 +106,8 @@ if strcmpi(options.output,'coefficients')
         convang(beta_1s,'rad','deg')};
 else
     psi    = options.sample;
-    beta = (beta_0 + beta_1c.*cosd(psi) + beta_1s.*sind(psi))*180/pi;
-    beta_dot = ( -beta_1c.*sind(psi) + beta_1s.*cosd(psi))*180/pi;
+    beta = (beta_0 + beta_1c.*cosd(psi) + beta_1s.*sind(psi));
+    beta_dot = ( -beta_1c.*sind(psi) + beta_1s.*cosd(psi));
     varargout = {psi,convang(beta,'rad','deg'),...
         convang(beta_dot,'rad','deg')};
 end
