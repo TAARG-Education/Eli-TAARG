@@ -46,7 +46,7 @@
 %                of the rotor.
 % ==============================================================================================
 
-function [alpha_e] = Angolo_Attacco_Effettivo(lambda,r_segn,beta,dbeta,mu,psi,theta,alpha_stall_up,alpha_stall_lo)
+function [alpha_e] = BladeSection_AngleOfAttack(lambda,r_segn,beta,dbeta,mu,psi,theta,alpha_stall_up,alpha_stall_lo)
 
 % Creation of the mesh grid.
 [r_2d,psi_2d] = meshgrid(linspace(0,r_segn(1),length(r_segn)),psi);
