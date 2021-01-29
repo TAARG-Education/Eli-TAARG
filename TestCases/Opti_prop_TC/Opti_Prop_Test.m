@@ -1,7 +1,7 @@
 %% \Opti_Prop_TEST.m
 %  \brief: Test function
 %  \authors : Francesco Gervasio, Nicola Russo
-%  \version: 1.06
+%  \version: 1.08
 %
 % Eli-TAARG is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public
@@ -24,9 +24,9 @@
 % |Name        : Opti_Prop.m                                                   |
 % |Authors     : Francesco Gervasio, Nicola Russo                              |
 % |              University of Naples Federico II.                             |
-% |Version     : 1.06                                                          |
+% |Version     : 1.08                                                          |
 % |Date        : 28/11/2020                                                    |
-% |Modified    : 05/01/2021                                                    |
+% |Modified    : 29/01/2021                                                    |
 % |Description : this function provides the axial and the rotational           |
 % inductions of the optimal propeller as well as the thrust and power          |
 % coefficient distributions vs the adimensional radius                         |
@@ -49,16 +49,50 @@
 clear all; close all; clc;
 
 %% INPUT
-N_blade = 3;        %[ ]
+N_blade = 2;        %[ ]
 R_hub   = 0.15;     %[%]
 R_tip   = 0.9;      %[m]
-n_rpm   = 1710;     %[rpm]
+n_rpm   = 2500;     %[rpm]
 V_inf   = 58.33 ;   %[m/s]
-Ct = 0.1081;        %[]
-Cp = 0.1345;         %[]
+Ct = 0.0740;        %[]
 h = 4510;           %[m]
 
-[r_adim_T,a_chi_T,a_first_chi_T,dCt,w0_T,k_T,Ct_new,dCp] = Opti_prop_T(N_blade,R_hub,R_tip,n_rpm,V_inf,Ct,h); 
-[r_adim_P,a_chi_P,a_first_chi_P,dCp,w0_P,k_P,Cp_new,dCt] = Opti_prop_P(N_blade,R_hub,R_tip,n_rpm,V_inf,Cp,h); 
- 
+r = linspace(R_hub*R_tip,R_tip,1000)/R_tip;
+[r_adim_T,chi_T,a_corr_T,a_first_corr_T,dCt_dradim_T,dCp_dradim_T,Cp] = Opti_prop_T(N_blade,R_hub,R_tip,n_rpm,V_inf,Ct,h); 
+[r_adim_P,chi_P,a_corr_P,a_first_corr_P,dCp_dradim_P,dCt_dradim_P,Ct] = Opti_prop_P(N_blade,R_hub,R_tip,n_rpm,V_inf,Cp,h); 
 
+
+%% Plot
+figure
+plot(chi_T,a_corr_T,'-k')
+hold on
+plot(chi_T,a_first_corr_T,'--k')
+hold on;
+plot(chi_P,a_corr_P,'ob','markersize',2)
+hold on
+plot(chi_P,a_first_corr_P,'or','markersize',2)
+xlabel('$\chi$','interpreter','latex');
+legend('$a_{T}$','$a^{''}_{T}$','$a_{P}$','$a^{''}_{P}$','interpreter','latex')
+;grid on;
+title('Axial induction $ a$ and rotational induction $a^{''}$ vs $\chi$','interpreter','latex');
+
+figure
+plot(r_adim_T,dCt_dradim_T,'-k');
+hold on;
+plot(r_adim_P,dCt_dradim_P,'ob','markersize',2);
+grid on;
+hold on;
+xlabel('$\bar{r}$','interpreter','latex');
+ylabel('$\frac{dC_{T}}{d\bar{r}}$','interpreter','latex');
+title('Thrust coefficient distribution $\frac{dC_{T}}{d\bar{r}}$ vs $\bar{r}$','interpreter','latex');
+
+
+figure
+plot(r_adim_T,dCp_dradim_T,'-k');
+hold on;
+plot(r_adim_P,dCp_dradim_P,'ob','markersize',2);
+grid on;
+hold on;
+xlabel('$\bar{r}$','interpreter','latex');
+ylabel('$\frac{dC_{P}}{d\bar{r}}$','interpreter','latex');
+title('Thrust coefficient distribution $\frac{dC_{P}}{d\bar{r}}$ vs $\bar{r}$','interpreter','latex');
