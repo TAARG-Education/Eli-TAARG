@@ -50,6 +50,10 @@ function [alpha_e] = Angolo_Attacco_Effettivo(lambda,r_segn,beta,dbeta,mu,psi,th
 
 % Creation of the mesh grid.
 [r_2d,psi_2d] = meshgrid(linspace(0,r_segn(1),length(r_segn)),psi);
+x_hub = r_2d.*cos(psi_2d-pi/2);
+y_hub = r_2d.*sin(psi_2d-pi/2);
+
+[r_2d,psi_2d] = meshgrid(r_segn,psi);
 x = r_2d.*cos(psi_2d-pi/2);
 y = r_2d.*sin(psi_2d-pi/2);
 
@@ -72,7 +76,7 @@ stall = zeros(length(r_segn),length(psi)); % stalled region of the rotor blade.
 non_stall = NaN(length(r_segn),length(psi)); % non-stalled region of the rotor blade.
 for iii = 1:length(r_segn)
     for jjj = 1:length(psi)
-        if alpha_e(iii,jjj) - alpha_stall_up > 0 || alpha_e(iii,jjj) - alpha_stall_lo < 0
+        if alpha_e(iii,jjj) - convang(alpha_stall_up,'deg','rad') > 0 || alpha_e(iii,jjj) - convang(alpha_stall_lo,'deg','rad') < 0
             stall(iii,jjj) = alpha_e(iii,jjj);
         else
             non_stall(iii,jjj) = alpha_e(iii,jjj);
@@ -84,7 +88,7 @@ end
 figure(1)
 set(figure(1),'Color','w');
 clf
-fill(x,y,'k'); hold on; axis equal; axis off; grid off
-text(0.6,0.9,['\mu = ',num2str(mu)],'Color','r','FontSize',16);
-contourf(x,y,convang(non_stall','rad','deg'),25,'ShowText','on'); drawnow; axis equal;
+fill(x_hub,y_hub,'k'); hold on; axis equal; axis off; grid off
+text(r_segn(end-10),r_segn(end),['\mu = ',num2str(mu)],'Color','r','FontSize',12);
+contourf(x,y,convang(non_stall','rad','deg'),20,'ShowText','on'); drawnow; axis equal;
 end
