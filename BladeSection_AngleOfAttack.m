@@ -38,8 +38,8 @@
 %                < mu > rotor advance ratio.
 %                < psi > azimuth angle of the blade.
 %                < theta > blade pitch.
-%                < alpha_stall_up > maximum blade section angle of attack.
-%                < alpha_stall_lo > minimum blade section angle of attack.
+%                < alpha_stall_up > positive stall angle of attack.
+%                < alpha_stall_lo > negative stall angle of attack.
 % |Output      : blade section angle of attack.
 % |Note        : u_R was calculated to be thorough; stall angles are
 %                imposed in order to visualize only the non-stalled region
