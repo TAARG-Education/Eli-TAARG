@@ -168,7 +168,6 @@ w       = (w_1*error_0-w_0*error_1)/(error_0-error_1);
 k       = k+1;
 
 end
-k1 = k;
 a_corr = a.*F;
 a_first_corr = a_first.*F;
 dCp_dradim = dT_dradim*(V_inf+w)/((rho*(n_rps^3)*(D^5)));

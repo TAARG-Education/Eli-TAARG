@@ -82,6 +82,7 @@ hold on;
 plot(r_adim_P,dCt_dradim_P,'ob','markersize',2);
 grid on;
 hold on;
+legend('Opti\_Prop\_T','Opti\_Prop\_P','interpreter','latex')
 xlabel('$\bar{r}$','interpreter','latex');
 ylabel('$\frac{dC_{T}}{d\bar{r}}$','interpreter','latex');
 title('Thrust coefficient distribution $\frac{dC_{T}}{d\bar{r}}$ vs $\bar{r}$','interpreter','latex');
@@ -95,4 +96,5 @@ grid on;
 hold on;
 xlabel('$\bar{r}$','interpreter','latex');
 ylabel('$\frac{dC_{P}}{d\bar{r}}$','interpreter','latex');
-title('Thrust coefficient distribution $\frac{dC_{P}}{d\bar{r}}$ vs $\bar{r}$','interpreter','latex');
+legend('Opti\_Prop\_T','Opti\_Prop\_P','interpreter','latex')
+title('Power coefficient distribution $\frac{dC_{P}}{d\bar{r}}$ vs $\bar{r}$','interpreter','latex');
