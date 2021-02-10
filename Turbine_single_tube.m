@@ -65,7 +65,7 @@ for i = 1:length(y1)            % a, lambda, cp, cq computing
     
 %   Determination of tip speed ratio
     lambda = y.*(1-a);
-    Lambda(i,1)=lambda;
+    
 
 %   Determination of velocity ratio
       v_vinf = sqrt((lambda + (1-a).*sin(phiv)).^2 +...
@@ -75,6 +75,9 @@ for i = 1:length(y1)            % a, lambda, cp, cq computing
        alpha = atan2(((1-a).*cos(phiv)),(lambda + (1-a).*sin(phiv)));    
 
        if alpha < alphamax
+       
+       Lambda(i,1)=lambda;
+       
        
 %   Computing Cp - numerical integration
        cost_p = (N*c*lambda)./(4*pi*R);            % Costant part 
