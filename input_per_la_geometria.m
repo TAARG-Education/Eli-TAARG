@@ -57,14 +57,24 @@ function [X]= input_per_la_geometria(txt)
     massa=500;
     theta=0;
     thrust=10;
+    cp=1;
     h=200;
+    alpha=2;
+    locknum=2;
+    sigma=3; %solidità
+    twist=3; %svergolamento
+    cla=3;
+    omega=3;
+    e=10; %eccentricity
+    alphamax=3;
+    Cd=3;
     
 function_name=txt;
 switch function_name    
     case 'BEMT'
         X=struct('blades',numdipale, 'r',raggio, 'sections', n_sec, 'hub_radius', hub_radius, 'velocity', v, 'rpm',rpm);
     case 'Darrieus_flusso_multiplo'
-        X=struct('pitch',pitch, 'Reynolds',Reynolds);
+        X=struct('max alpha', alphamax,'corda', corda, 'R', r,'Cl gradient', cla, 'blades',numdipale,'Cd', Cd);
     case 'Axial_rotor'
         X=struct('mass',massa,'r',raggio);
     case 'Ang_attacco_effettivo'
@@ -74,9 +84,20 @@ switch function_name
     case 'adim_coeff'
         X=struct('velocity',v,'altitude',h,'blades', numdipale);
     case 'Opti_Prop'
-        X=struct('blades',numdipale,'hub_radius', hub_radius,'tip_radius',tip_radius,'rpm',rpm,'altitude',h,'velocity', v,'thrust',thrust);
-        
-
+        X=struct('blades',numdipale,'hub_radius', hub_radius,'tip_radius',tip_radius,'rpm',rpm,'altitude',h,'velocity', v,'thrust',thrust, 'CP', cp);
+    case 'RvortexInt'
+        X=struct('corda',corda); %diametro a 1/4 e a 3/4
+    case 'flappingangles'
+        X=struct('velocity',v,'angle of attack', alpha, 'mass', massa, 'Lock number', locknum, 'solidity',sigma, 'Cl gradient', cla, 'omega', omega, 'e', e,'R',r); 
+    case 'Cdcl_xfoil'
+        X=struct('airfoil', airfoil, 'numPanel',numPanel, 'Reynolds number', Reynolds); %FirstAlfa, LastAlfa, DeltaAlfa
+    case 'RotorFF'
+        X=struct('angle of attack',alpha);
+    case 'Axial_Descent_Ascent'
+        X=struct('mass', massa, 'R',r);
+    case 'Cdcl_xrotor'
+        X=struct('Reynolds_number', Reynolds);    %Cd_min   dCd_dCl2  Cl_Cd_min Re_ref   Re_inf   f        Cl_max   Cl_min    
+            
 end
 
 
