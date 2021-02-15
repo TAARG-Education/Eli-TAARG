@@ -38,7 +38,7 @@
 % |Note        :                                                               		             |
 % ==============================================================================================
 
-function [y1,y2] = FunzionidiOutput(txt,v1,v2)
+function [y1,y2] = Outputfunction(txt,v1,v2)
 
 %% Default case
 % function y = FunzionidiOutput(input1,input2,axisname)
