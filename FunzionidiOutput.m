@@ -38,10 +38,84 @@
 % |Note        :                                                               		             |
 % ==============================================================================================
 
-function [outputArg1,outputArg2] = FunzionidiOutput(inputArg1,inputArg2)
-%FUNZIONIDIOUTPUT Summary of this function goes here
-%   Detailed explanation goes here
-outputArg1 = inputArg1;
-outputArg2 = inputArg2;
+function [y1,y2] = FunzionidiOutput(txt,v1,v2)
+
+%% Default case
+% function y = FunzionidiOutput(input1,input2,axisname)
+% [rows,columns]=size(input1);
+% for i=1:rows
+%     xaxisname=string(axisname(1,i));
+%     yaxisname=string(axisname(2,i));
+%     y(i)=figure(i);
+%     plot(x(i,:),y(i,:),'-k');
+%     grid on;
+%     xlabel(xaxisname);
+%     ylabel(yaxisname);
+% end
+% end
+
+%% Specifics cases
+function_name=txt;
+switch function_name
+case 'ClCd_XRotor'
+    y1=figure(1)
+    plot(v1,v2,'linewidth',1.1);
+    grid on;
+    xlabel('C_d');
+    ylabel('C_l');
+    y2=[];
+    case 'Axial_Descent_Ascent'
+    y1=figure(1)
+    plot(v1,v2,'linewidth',1.1);
+    grid on;
+    xlabel('$\widetilde{V}$','Interpreter','latex','FontSize',15);
+    ylabel('$\widetilde{w}$','Interpreter','latex','FontSize',15);
+    y2=figure(2)
+    plot(v1,v2,'linewidth',1.1);
+    grid on;
+    xlabel('$\widetilde{V}$','Interpreter','latex','FontSize',15);
+    ylabel('$\widetilde{P}$','Interpreter','latex','FontSize',15);
+    case 'RVortexInt'
+    y1=figure(1)
+    plot(v1,v2);
+    grid on;
+    axis ([0 1 0 1]);
+    text(0.25,1,'Velocity induced by vortex ring:');
+    text(0.25,0.90,['fx= ',num2str(fx)]);
+    y2=[];
+    case 'CdCl_xfoil'
+    y1=figure(1)
+    plot(v1,v2);
+    grid on;
+    xlabel('Drag coefficient C_d');
+    ylabel('Lift coefficient C_l');
+    grid on;
+    y2=[];
+    case 'RotorFF' %subplot
+    case 'Opti_prop_P'
+    y1 = ['Data_Opti_Prop_P.txt'];
+    fid = fopen(y1, 'wt');
+    fprintf(fid, '%s\t%s','  efficiency =',eta,' at J =', J);  % header
+    fprintf(fid,'\n');
+    fprintf(fid, '%s\t%s','  w_conv =',w);  % header
+    fprintf(fid,'\n');
+    fprintf(fid, '%s\t%s\t%s\t%s\t%s\t%s\n', '  r_adim','  chi','      a(chi)','  a''(chi)','  dCt/dr_adim',' dCp/dr_adim');  % header
+    fclose(fid);
+    dlmwrite(y1,DATA,'delimiter','\t','precision',['%10.',num2str(6),'f'],'-append');
+    y2=[];
+    case 'Opti_prop_T'
+    y1 = ['Data_Opti_Prop_T.txt'];
+    fid = fopen(y1, 'wt');
+    fprintf(fid, '%s\t%s','  efficiency =',eta,' at J =', J);  % header
+    fprintf(fid,'\n');
+    fprintf(fid, '%s\t%s','  w_conv =',w);  % header
+    fprintf(fid,'\n');
+    fprintf(fid, '%s\t%s\t%s\t%s\t%s\t%s\n', '  r_adim','  chi','      a(chi)','  a''(chi)','  dCt/dr_adim',' dCp/dr_adim');  % header
+    fclose(fid);
+    dlmwrite(y1,DATA,'delimiter','\t','precision',['%10.',num2str(6),'f'],'-append');  
+    y2=[];
 end
+end
+
+
 
