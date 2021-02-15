@@ -38,7 +38,7 @@
 % |Note        :                                                                                |
 % ==============================================================================================
 
-function [X]= input_per_la_geometria(txt)
+function [X]= Geometry_input_data(txt)
 % PropDataFileName='propgeometry.txt';    %.txt standard geometry file
 % myProp=geometryreader(PropDataFileName);       %class call
 %      numdipale = myProp.N ;

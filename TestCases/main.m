@@ -38,5 +38,5 @@
 % |Note        :                                                                                |
 % ==============================================================================================
 clc; close all; clear all;
-X= input_per_la_geometria('Opti_Prop');
+X= Geometry_input_data('Opti_Prop');
 
