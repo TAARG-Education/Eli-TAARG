@@ -37,14 +37,13 @@
 % |                                                                                            |
 % |Note        :                                                               		           |
 % ==============================================================================================
-close all; clear all; clc;
+close all; clc;
 
 % the following script is only created to test the Output Function
 
 % input for the function: these vectors are randomly invented to test the function but there is no case ClCd_Xrotor reference 
-cd=linspace(0,1000,1000);
-cl=linspace(-1,1,1000);
-
+cl=matrix(:,2);
+cd=matrix(:,3);
 % calling the output function to give a plot
 [y1,y2,y3]=Outputfunction('ClCd_XRotor',cd,cl,[],[],[],[]);
 
