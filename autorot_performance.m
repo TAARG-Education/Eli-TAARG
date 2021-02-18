@@ -36,7 +36,12 @@
 %                by means of the Matlab Symbolic Toolbox. Once solved                          | 
 %                in respect to the intake ratio, expressions of thrust                         |
 %                coefficient, angle of attack, angular velocity,                               | 
-%                freestream velocity can be evaluated.                                         | 
+%                freestream velocity can be evaluated. Please note that                        | 
+%                it is not sure to find a solution: it simply means that                       |
+%                autorotation cannot be achieved under the assigned                            |
+%                conditions. This is taken into account by means of                            | 
+%                an "if-else" construct, which yields a warning message.                       | 
+%                NaN is assigned to output values.                                             |                
 % |Reference   : Lezioni di Aerodinamica dell'Ala Rotante a.a. 2019/2020                       |
 %                Renato Tognaccini                                                             | 
 % |Input       : Advance ratio, mu                                                             |
@@ -45,7 +50,7 @@
 %                Number of blades, N                                                           |     
 %                Chord length, c [m]                                                           |
 %                Lock's number, gamma                                                          |
-%                Pitch gradient along the blade, theta_tw [rad] (assuming                      | 
+%                Pitch twist from root to tip, theta_tw [rad] (assuming                        | 
 %                linear variation)                                                             | 
 %                Equivalent wet area, f [m^2]                                                  |
 %                Air density, rho [kg/m^3]                                                     |
@@ -55,20 +60,22 @@
 %                Angle of attack, alpha_deg [deg]                                              | 
 %                Angular velocity, omega [rad/s]                                               |
 %                Freestream velocity, V_inf [m/s]                                              | 
+%                Collective pitch angle, Theta_0 [°]
 % |Note        : note addizionali                                                              |
 % ==============================================================================================
 
-function [T_C, H_C, alpha_deg, omega, V_inf ] = autorot_performance(mu,X,R,N,c,gamma,theta_tw,f,M)
+function [T_C, H_C, alpha_deg, omega, V_inf Theta_0] = autorot_performance(mu,X,R,N,c,gamma,theta_tw,f,M)
 
 
 Cl_a = 2*pi;                          % [1/rad], lift coefficient gradient (from thin airfoil theory)
-Cd = 0.01;                            % Average drag coefficient along the blade
-X = deg2rad(X);                       % [rad], descent angle
-lambda_c = -mu*sin(X);                % Descent ratio (<0)
-A = 3.14*R^2;                         % [m^2], swept area
+Cd = 0.011;                           % Average drag coefficient along the blade
+A = pi*R^2;                           % [m^2], swept area
 sigma = N*c/(pi*R);                   % rotor solidity
+theta_tw = deg2rad(theta_tw);         % adimensional pitch gradient along the blade
 W = M*9.81;                           % [N], weight
 rho = 1.225;                          % [Kg/m^3], density (SML)
+X = deg2rad(X);                       % [rad], descent angle
+lambda_c = -mu*sin(X);                % Descent ratio (<0)
 
 
 %% Beginning of the procedure.
@@ -97,18 +104,18 @@ H_ci = 0.5*sigma*Cl_a*(theta_0*(-1/3*b_1c+0.5*mu*lambda)...                  % i
 %from the definition of autorotation:
 P_c = lambda*T_c+Q_c0-mu*H_ci;                                               % Equation to solve in respect to theta_0
 
-THETA_0 = solve(P_c==0,theta_0);                                             % Two solutions
+THETA_0 = vpasolve(P_c==0,theta_0);                                          % Two solutions
 
 THETA_0 = THETA_0(2);                                                        % We choose the second one
 
 % It is possible now to find Tc=Tc(lambda),Hc=Hc(lambda),alfa=alfa(lambda)
 
-T_C = 0.5*sigma*Cl_a*(THETA_0/3*(1+3/2*mu^2)...                             % Tc as a function of lambda only
+T_C = 0.5*sigma*Cl_a*(THETA_0/3*(1+3/2*mu^2)...                              % Tc as a function of lambda only
     +theta_tw/4*(1+mu^2) -lambda/2); 
 
-H_C0 = sigma*Cd*mu/4;                                                       % parasitic rotor drag coefficient
+H_C0 = sigma*Cd*mu/4;                                                        % parasitic rotor drag coefficient
 
-B_0 = gamma*(THETA_0/8*(1+mu^2)+theta_tw/10*(1+5/6*mu^2)...                 % flapping coefficients as a function of lambda only
+B_0 = gamma*(THETA_0/8*(1+mu^2)+theta_tw/10*(1+5/6*mu^2)...                  % flapping coefficients as a function of lambda only
     -lambda/6);    
 
 B_1c = -2*mu*(4/3*THETA_0+theta_tw-lambda)/(1-0.5*mu^2);
@@ -120,31 +127,47 @@ H_Ci = 0.5*sigma*Cl_a*(THETA_0*(-1/3*B_1c...                                 % i
     +3/4*lambda*B_1c+1/6*B_0*B_1s_lambda...
     +1/4*mu*(B_0^2+B_1c^2));
 
-alpha = atan(1/mu*(lambda-T_C/(2*sqrt(mu^2+lambda^2))));                    % angle of attack as a function of lambda only
+alpha = atan(1/mu*(lambda-T_C/(2*sqrt(mu^2+lambda^2))));                     % angle of attack as a function of lambda only
 
 % We can now solve an equation for lambda
 
-%lambda_i = T_C/(2*mu);
 lambda_i = T_C/(2*sqrt(mu^2+lambda^2));
 
-P_C = T_C*lambda_i+lambda_c*T_C+...                                         % This expression is obtained from the Pc expression
+P_C = T_C*lambda_i+lambda_c*T_C+...                                          % This expression is obtained from the Pc expression
       mu*0.5*f/A*(mu/cos(alpha))^3+H_C0+Q_c0;
 
-lambda = vpasolve(P_C==0,lambda);
+lambda = vpasolve(P_C==0,lambda);                                            % This equation could have no solution
+                                                                             % depending on flying condition. This is dealt 
+                                                                             % with by means of an if else construct.
+                                                                            
+if isempty(lambda)                                  % If lambda is empty, then previous equation has no solution.
+    
+    warning('Autorotation cannot be achieved under user specified conditions')
+    T_C = NaN;
+    H_C = NaN;
+    alpha_deg = NaN;
+    omega = NaN;
+    V_inf = NaN;
+    Theta_0 = NaN;
+    
+else
 
-Lambda_i = double(subs(lambda_i))
+Lambda_i  = double(subs(lambda_i));
 
 %% Evaluating output
 
-T_C       = double(subs(T_C))                                                   % Thrust coefficient
+T_C       = double(subs(T_C))                                                % Thrust coefficient
 
-H_C       = double(subs(H_Ci))+H_C0                                             % Rotor drag coefficient
+H_C       = double(subs(H_Ci))+H_C0                                          % Rotor drag coefficient
 
-alpha     = double(subs(alpha));                                                % [rad] Angle of attack
+omega     = double(sqrt(W/(rho*A*T_C*R^2)))                                  % [rad/s] Angular velocity
 
-omega     = double(sqrt(W/(rho*A*T_C*R^2)))                                     % [rad/s] Angular velocity
+alpha     = double(subs(alpha));                                             % [rad] Angle of attack
 
-V_inf     = mu*omega*R/cos(alpha)                                               % [m/s] Freestream velocity
+alpha_deg = convang(alpha,'rad','deg')                                       % [deg] Angle of attack in degrees
 
-alpha_deg = convang(alpha,'rad','deg')                                          % [deg] Angle of attack in degrees
+V_inf     = mu*omega*R/cos(alpha)                                            % [m/s] Freestream velocity
+
+Theta_0   = rad2deg(double(subs(THETA_0)))
+end
 end
