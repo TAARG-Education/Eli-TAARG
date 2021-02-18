@@ -38,7 +38,7 @@
 % |Note        :                                                               		             |
 % ==============================================================================================
 
-function [y1,y2] = Outputfunction(txt,v1,v2)
+function [y1,y2,y3] = Outputfunction(txt,v1,v2,v3,v4,v5,v6)
 
 %% Default case
 % function y = FunzionidiOutput(input1,input2,axisname)
@@ -57,13 +57,31 @@ function [y1,y2] = Outputfunction(txt,v1,v2)
 %% Specifics cases
 function_name=txt;
 switch function_name
-case 'ClCd_XRotor'
+    case 'ClCd_XRotor'
     y1=figure(1)
     plot(v1,v2,'linewidth',1.1);
     grid on;
     xlabel('C_d');
     ylabel('C_l');
+    v3==v4==v5==v6==[];
     y2=[];
+    y3=[];
+    case 'Characteristics_Curve_HO_Windmill'
+    y1=figure(1)
+    plot(v1,v2,'linewidth',1.1);
+    grid on;
+    xlabel('\lambda')
+    ylabel('C_T')
+    y2=figure(2)
+    plot(v3,v4,'linewidth',1.1);
+    grid on;
+    xlabel('\lambda')
+    ylabel('C_Q')
+    y3=figure(3)
+    plot(v5,v6,'linewidth',1.1);
+    grid on;
+    xlabel('\lambda')
+    ylabel('C_P')
     case 'Axial_Descent_Ascent'
     y1=figure(1)
     plot(v1,v2,'linewidth',1.1);
@@ -71,10 +89,12 @@ case 'ClCd_XRotor'
     xlabel('$\widetilde{V}$','Interpreter','latex','FontSize',15);
     ylabel('$\widetilde{w}$','Interpreter','latex','FontSize',15);
     y2=figure(2)
-    plot(v1,v2,'linewidth',1.1);
+    plot(v3,v4,'linewidth',1.1);
     grid on;
     xlabel('$\widetilde{V}$','Interpreter','latex','FontSize',15);
     ylabel('$\widetilde{P}$','Interpreter','latex','FontSize',15);
+    v5==v6==[];
+    y3=[];
     case 'RVortexInt'
     y1=figure(1)
     plot(v1,v2);
@@ -82,15 +102,18 @@ case 'ClCd_XRotor'
     axis ([0 1 0 1]);
     text(0.25,1,'Velocity induced by vortex ring:');
     text(0.25,0.90,['fx= ',num2str(fx)]);
+    v3==v4==v5==v6==[];
     y2=[];
+    y3=[];
     case 'CdCl_xfoil'
     y1=figure(1)
     plot(v1,v2);
-    grid on;
     xlabel('Drag coefficient C_d');
     ylabel('Lift coefficient C_l');
     grid on;
+    v3==v4==v5==v6==[];
     y2=[];
+    y3=[];
     case 'RotorFF' %subplot
     case 'Opti_prop_P'
     y1 = ['Data_Opti_Prop_P.txt'];
@@ -102,7 +125,9 @@ case 'ClCd_XRotor'
     fprintf(fid, '%s\t%s\t%s\t%s\t%s\t%s\n', '  r_adim','  chi','      a(chi)','  a''(chi)','  dCt/dr_adim',' dCp/dr_adim');  % header
     fclose(fid);
     dlmwrite(y1,DATA,'delimiter','\t','precision',['%10.',num2str(6),'f'],'-append');
+    v3==v4==v5==v6==[];
     y2=[];
+    y3=[];
     case 'Opti_prop_T'
     y1 = ['Data_Opti_Prop_T.txt'];
     fid = fopen(y1, 'wt');
@@ -113,7 +138,9 @@ case 'ClCd_XRotor'
     fprintf(fid, '%s\t%s\t%s\t%s\t%s\t%s\n', '  r_adim','  chi','      a(chi)','  a''(chi)','  dCt/dr_adim',' dCp/dr_adim');  % header
     fclose(fid);
     dlmwrite(y1,DATA,'delimiter','\t','precision',['%10.',num2str(6),'f'],'-append');  
+    v3==v4==v5==v6==[];
     y2=[];
+    y3=[];
 end
 end
 

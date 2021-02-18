@@ -46,8 +46,7 @@ cd=linspace(0,1000,1000);
 cl=linspace(-1,1,1000);
 
 % calling the output function to give a plot
-[y1,y2]=FunzionidiOutput('ClCd_XRotor',cd,cl);
-% calling the output function to give a text file
-[y1,y2]=FunzionidiOutput('Opti_prop_T');
+[y1,y2,y3]=Outputfunction('ClCd_XRotor',cd,cl,[],[],[],[]);
+
 
 
