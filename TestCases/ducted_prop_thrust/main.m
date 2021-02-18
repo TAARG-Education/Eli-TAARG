@@ -26,26 +26,30 @@
 % |              University of Naples Federico II.                                       |
 % |Version     : 1.04                                                                    |
 % |Date        : 25/11/2020                                                              |
-% |Modified    : 11/01/2021                                                              |
+% |Modified    : 18/02/2021                                                              |
 % |Description : It is a test to validate elica_intubata.m                               |     
 % |Reference   : Lezioni di Aerodinamica dell'Ala Rotante                                |                                                         
 % |Input       :                                                                         |
 % |              (rho) = 1.225 [kg/m^3]                                                  |
-% |              (Gamma) = 30 [m^2/s]                                                    |  
+% |              (ch) = 2.4 [m]                                                          | 
 % |              (Vinf) = 35 [m/s]                                                       |
-% |              (Dquarter) = 2 [m]                                                      |
-% |              (R) = .9 [m]                                                            |
+% |              (D14) = 1.5 [m]                                                         |
+% |              (D34) = 1.5 [m]                                                         |
+% |              (theta) = 0 [deg]                                                       |
+% |              (R) = .75 [m]                                                           |
 % |              (TR) = 500 [N]                                                          |
-% |Output      : (T) = 729.6644 [N]                                                      |
-% |              (TS) = 229.6644 [N]                                                     |
+% |Output      : (T) = 566.3129 [N]                                                      |
+% |              (TS) = 66.3129 [N]                                                      |
 % |Note        :                                                                         |
 % ==============================================================================================
 
-Dquarter = 2;                   
-Gamma = 30;
-Vinf = 35;                      
-rho = 1.225;                    
-R = .9;                         
+rho = 1.225;
+ch = 2.40;
+Vinf = 35;
+D14 = 1.50;
+D34 = 1.50;
+theta = 0;                   
+R = .75;                         
 TR = 500;                       
 
-[T,TS] = ducted_prop_thrust(rho,Gamma,Vinf,Dquarter,R,TR)
+[T,TS] = ducted_prop_thrust(rho, ch, Vinf, D14, D34, theta, R, TR)
