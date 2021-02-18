@@ -44,27 +44,25 @@
 %                NaN is assigned to output values.                                             |                
 % |Reference   : Lezioni di Aerodinamica dell'Ala Rotante a.a. 2019/2020                       |
 %                Renato Tognaccini                                                             | 
-% |Input       : Advance ratio, mu                                                             |
-%                Descent angle, X [deg]                                                        | 
+% |Input       : Helicopter mass, W [kg]                                                       | 
 %                Rotorblade radius, R [m]                                                      |
 %                Number of blades, N                                                           |     
 %                Chord length, c [m]                                                           |
 %                Lock's number, gamma                                                          |
-%                Pitch twist from root to tip, theta_tw [rad] (assuming                        | 
-%                linear variation)                                                             | 
+%                Blade twist, theta_tw [rad] (assuming linear variation)                       |                                       | 
 %                Equivalent wet area, f [m^2]                                                  |
-%                Air density, rho [kg/m^3]                                                     |
-%                Helicopter mass, M [kg]                                                       | 
+%                Advance ratio, mu                                                             |
+%                Descent angle, X [deg]                                                        | 
 % |Output      : Thrust coefficient, T_C                                                       |
 %                Rotor drag coefficient, H_C                                                   |
 %                Angle of attack, alpha_deg [deg]                                              | 
 %                Angular velocity, omega [rad/s]                                               |
 %                Freestream velocity, V_inf [m/s]                                              | 
-%                Collective pitch angle, Theta_0 [°]
+%                Collective pitch, Theta_0 [°]                                                 |               
 % |Note        : note addizionali                                                              |
 % ==============================================================================================
 
-function [T_C, H_C, alpha_deg, omega, V_inf Theta_0] = autorot_performance(mu,X,R,N,c,gamma,theta_tw,f,M)
+function [T_C, H_C, alpha_deg, omega, V_inf, Theta_0] = autorot_performance(mu,X,R,N,c,gamma,theta_tw,f,W)
 
 
 Cl_a = 2*pi;                          % [1/rad], lift coefficient gradient (from thin airfoil theory)
@@ -72,7 +70,7 @@ Cd = 0.011;                           % Average drag coefficient along the blade
 A = pi*R^2;                           % [m^2], swept area
 sigma = N*c/(pi*R);                   % rotor solidity
 theta_tw = deg2rad(theta_tw);         % adimensional pitch gradient along the blade
-W = M*9.81;                           % [N], weight
+W = W*9.81;                           % [N], weight
 rho = 1.225;                          % [Kg/m^3], density (SML)
 X = deg2rad(X);                       % [rad], descent angle
 lambda_c = -mu*sin(X);                % Descent ratio (<0)
@@ -160,11 +158,11 @@ T_C       = double(subs(T_C))                                                % T
 
 H_C       = double(subs(H_Ci))+H_C0                                          % Rotor drag coefficient
 
-omega     = double(sqrt(W/(rho*A*T_C*R^2)))                                  % [rad/s] Angular velocity
-
 alpha     = double(subs(alpha));                                             % [rad] Angle of attack
 
 alpha_deg = convang(alpha,'rad','deg')                                       % [deg] Angle of attack in degrees
+
+omega     = double(sqrt(W/(rho*A*T_C*R^2)))                                  % [rad/s] Angular velocity
 
 V_inf     = mu*omega*R/cos(alpha)                                            % [m/s] Freestream velocity
 

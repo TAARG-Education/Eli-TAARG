@@ -9,12 +9,12 @@ clc;clear all;close all
 % User input:
 
 %Helicopter
-M = 1120;                             % [Kg], mass
+W = 1120;                             % [Kg], mass
 R = 5.1;                              % [m], rotorblade radius
 N = 2;                                % number of blades
 c = 0.34;                             % [m], chord length
 gamma = 9;                            % Lock's number
-theta_tw = -13.2;                     % [rad], pitch gradient along the blade (linear variation is assumed)
+theta_tw = -13.2;                     % [°],blade twist (linear variation is assumed)
 f = 0.007;                            % [m^2] equivalent wet area
 
 %Advance ratio
@@ -24,7 +24,7 @@ mu = 0.15;
 X = 20;
 
 %% Function output
-[T_C H_C alpha_deg omega V_inf Theta_0]=autorot_performance(mu,X,R,N,c,gamma,theta_tw,f,M);
+[T_C H_C alpha_deg omega V_inf Theta_0]=autorot_performance(mu,X,R,N,c,gamma,theta_tw,f,W);
 
 
 
