@@ -62,7 +62,7 @@
 % |Note        : note addizionali                                                              |
 % ==============================================================================================
 
-function [T_C, H_C, alpha_deg, omega, V_inf, Theta_0] = autorot_performance(mu,X,R,N,c,gamma,theta_tw,f,W)
+function [T_C, H_C, alpha, omega, V_inf, Theta_0] = autorot_performance(mu,X,R,N,c,gamma,theta_tw,f,W)
 
 
 Cl_a = 2*pi;                          % [1/rad], lift coefficient gradient (from thin airfoil theory)
@@ -158,13 +158,11 @@ T_C       = double(subs(T_C))                                                % T
 
 H_C       = double(subs(H_Ci))+H_C0                                          % Rotor drag coefficient
 
-alpha     = double(subs(alpha));                                             % [rad] Angle of attack
-
-alpha_deg = convang(alpha,'rad','deg')                                       % [deg] Angle of attack in degrees
+alpha     = double(subs(rad2deg(alpha)))                                   % [°] Angle of attack
 
 omega     = double(sqrt(W/(rho*A*T_C*R^2)))                                  % [rad/s] Angular velocity
 
-V_inf     = mu*omega*R/cos(alpha)                                            % [m/s] Freestream velocity
+V_inf     = mu*omega*R/cos(deg2rad(alpha))                                            % [m/s] Freestream velocity
 
 Theta_0   = rad2deg(double(subs(THETA_0)))
 end

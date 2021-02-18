@@ -1,12 +1,11 @@
 clc;clear all;close all
-%% Test case
-
+%Test case
 %% Agusta Bell AB 206 Helicopter in forward flight
-% Advance ratio = 0.15
-% Descent angle = 20°
+%  Advance ratio = 0.15
+%  Descent angle = 20°
 
 
-% User input:
+%User input:
 
 %Helicopter
 W = 1120;                             % [Kg], mass
@@ -24,7 +23,7 @@ mu = 0.15;
 X = 20;
 
 %% Function output
-[T_C H_C alpha_deg omega V_inf Theta_0]=autorot_performance(mu,X,R,N,c,gamma,theta_tw,f,W);
+[T_C H_C alpha omega V_inf Theta_0]=autorot_performance(mu,X,R,N,c,gamma,theta_tw,f,W);
 
 
 

@@ -21,4 +21,4 @@ mu = 0.15;
 X = 15;
 
 %% Function output
-[T_C H_C alpha_deg omega V_inf Theta_0]=autorot_performance(mu,X,R,N,c,gamma,theta_tw,f,W);
+[T_C H_C alpha omega V_inf Theta_0]=autorot_performance(mu,X,R,N,c,gamma,theta_tw,f,W);
