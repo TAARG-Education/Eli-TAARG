@@ -49,7 +49,7 @@
 %                Number of blades, N                                                           |     
 %                Chord length, c [m]                                                           |
 %                Lock's number, gamma                                                          |
-%                Blade twist, theta_tw [rad] (assuming linear variation)                       |                                       | 
+%                Blade twisting, theta_tw [rad] (assuming linear variation)                    |                                       | 
 %                Equivalent wet area, f [m^2]                                                  |
 %                Advance ratio, mu                                                             |
 %                Descent angle, X [deg]                                                        | 
@@ -62,14 +62,14 @@
 % |Note        : note addizionali                                                              |
 % ==============================================================================================
 
-function [T_C, H_C, alpha, omega, V_inf, Theta_0] = autorot_performance(mu,X,R,N,c,gamma,theta_tw,f,W)
+function [T_C, H_C, alpha, omega, V_inf, Theta_0] = autorot_performance(W,R,N,c,gamma,theta_tw,f,mu,X)
 
 
 Cl_a = 2*pi;                          % [1/rad], lift coefficient gradient (from thin airfoil theory)
 Cd = 0.011;                           % Average drag coefficient along the blade
 A = pi*R^2;                           % [m^2], swept area
 sigma = N*c/(pi*R);                   % rotor solidity
-theta_tw = deg2rad(theta_tw);         % adimensional pitch gradient along the blade
+theta_tw = deg2rad(theta_tw);         % [1/rad] pitch twist
 W = W*9.81;                           % [N], weight
 rho = 1.225;                          % [Kg/m^3], density (SML)
 X = deg2rad(X);                       % [rad], descent angle
