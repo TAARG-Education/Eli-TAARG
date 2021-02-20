@@ -57,7 +57,7 @@ lambda_first=2;                   %First Lambda
 lambda_end=15;                    %Last Lambda
 
 %Construction of the aerodynamic characteristics of blade stations 
-Aero_matrix=ones(length(r),12);
+Aero_matrix=ones(length(r),11);
 Aero_matrix(:,1) = Aero_matrix(:,1)*0.0090;     %Cd_min
 Aero_matrix(:,2) = Aero_matrix(:,2)*0.004;      %dCd_dCl2
 Aero_matrix(:,3) = Aero_matrix(:,3)*0.3;        %Cl_Cd_min
