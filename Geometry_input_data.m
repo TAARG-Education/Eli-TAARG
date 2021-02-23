@@ -39,44 +39,39 @@
 % ==============================================================================================
 
 function [X]= Geometry_input_data(txt)
-% PropDataFileName='propgeometry.txt';    %.txt standard geometry file
-% myProp=geometryreader(PropDataFileName);       %class call
-%      numdipale = myProp.N ;
-    numdipale=3;
-    diametro = 2;
-    raggio=5;
-    corda=5;
-    pitch=[2 3 5 7];
-    Reynolds=[ 10e5 20e6];
-    Mach=5;
-    rpm=3;
-    hub_radius=5;
-    tip_radius=5;
-    v=50;
-    n_sec=3;
-    massa=500;
-    theta=0;
-    thrust=10;
-    cp=1;
-    h=200;
-    alpha=2;
-    locknum=2;
-    sigma=3; %solidità
-    twist=3; %svergolamento
-    cla=3;
-    omega=3;
-    e=10; %eccentricity
-    alphamax=3;
-    Cd=3;
-    
+
+PropDataFileName='propgeometry.txt';    %.txt standard geometry file
+myProp=geometryreader(PropDataFileName);       %class call
+
+numdipale = myProp.N ;
+raggio= myProp.r ; %adimensional
+corda=myProp.c; %adimensional
+chords=myProp.chords; %distribution along the radius
+radius=myProp.radius; %distribution along the radius
+tip_radius= myProp.t_r ;
+hub_radius=myProp.h_r ;
+thrust=myProp.T;
+power=myProp.P;
+locknum=myProp.lock_number;
+v=myProp.v_inf;
+h=myProp.h;
+theta=myProp.theta;
+pitch=myProp.pitch;
+Reynolds=myProp.Reynolds;
+Mach=myProp.Mach;
+Cd=myProp.Cd;
+rpm=myProp.rpm;
+f=myProp.f;
+advanceratio=myProp.advanceratio;
+
 function_name=txt;
-switch function_name    
+switch function_name
     case 'BEMT'
-        X=struct('blades',numdipale, 'r',raggio, 'sections', n_sec, 'hub_radius', hub_radius, 'velocity', v, 'rpm',rpm);
+        X=struct('blades',numdipale, 'r',raggio, 'hub_radius', hub_radius, 'velocity', v, 'rpm',rpm);
     case 'Darrieus_flusso_multiplo'
-        X=struct('max alpha', alphamax,'corda', corda, 'R', r,'Cl gradient', cla, 'blades',numdipale,'Cd', Cd);
+        X=struct('corda', corda, 'R', r, 'blades',numdipale,'Cd', Cd);
     case 'Axial_rotor'
-        X=struct('mass',massa,'r',raggio);
+        X=struct('r',raggio);
     case 'Ang_attacco_effettivo'
         X=struct('theta',theta);
     case 'elica_intubata'
@@ -84,20 +79,20 @@ switch function_name
     case 'adim_coeff'
         X=struct('velocity',v,'altitude',h,'blades', numdipale);
     case 'Opti_Prop'
-        X=struct('blades',numdipale,'hub_radius', hub_radius,'tip_radius',tip_radius,'rpm',rpm,'altitude',h,'velocity', v,'thrust',thrust, 'CP', cp);
+        X=struct('blades',numdipale,'hub_radius', hub_radius,'tip_radius',tip_radius,'rpm',rpm,'altitude',h,'velocity', v,'thrust',thrust, 'power', power);
     case 'RvortexInt'
-        X=struct('corda',corda); %diametro a 1/4 e a 3/4
+        X=struct('corda',corda);
     case 'flappingangles'
-        X=struct('velocity',v,'angle of attack', alpha, 'mass', massa, 'Lock number', locknum, 'solidity',sigma, 'Cl gradient', cla, 'omega', omega, 'e', e,'R',r); 
+        X=struct('velocity',v, 'Lock number', locknum,'R',r);
     case 'Cdcl_xfoil'
-        X=struct('airfoil', airfoil, 'numPanel',numPanel, 'Reynolds number', Reynolds); %FirstAlfa, LastAlfa, DeltaAlfa
+        X=struct('Reynolds number', Reynolds);
     case 'RotorFF'
-        X=struct('angle of attack',alpha);
+        X=[]; %they only need in input the angle of attack
     case 'Axial_Descent_Ascent'
-        X=struct('mass', massa, 'R',r);
+        X=struct('R',r);
     case 'Cdcl_xrotor'
-        X=struct('Reynolds_number', Reynolds);    %Cd_min   dCd_dCl2  Cl_Cd_min Re_ref   Re_inf   f        Cl_max   Cl_min    
-            
+        X=struct('Reynolds_number', Reynolds, 'f',f);
+        
 end
 
 
