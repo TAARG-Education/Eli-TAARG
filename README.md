@@ -6,4 +6,3 @@ The main scope of this library is the collection of MatLab’s functions for edu
 
 Eli-TAARG is a free software. You can distribute it and/or modify it under the terms of the GNU General Public License as published by the Free Soft- ware Foundation, either version 3 of the License, or (at your option) any later version. Eli-TAARG is developed by the TAARG Educational organization for learning purposes only. Theoretical and Applied Aerodynamic Research Group - University of Naples Federico II.
 Eli-TAARG is distributed in the hope that it will be useful, but without any warranty. It lacks the implied warranty of merchantability or fitness for a particular purpose. See the GNU General Public License for more details: http://www.gnu.org/licenses
-
