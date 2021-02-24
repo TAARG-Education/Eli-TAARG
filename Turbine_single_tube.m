@@ -17,7 +17,7 @@
 % |Name        : turbine_Darrieus_tubo_flusso_singolo.m                                        |
 % |Author      : Marco Gugliucciello - Angelo Dasco                                            |
 % |              University of Naples Federico II.                                             |
-% |Version     : 2.1                                                                           |
+% |Version     : 2.3                                                                           |
 % |Date        : 05/06/2020                                                                    |
 % |Modified    : 15/01/2021                                                                    |
 % |Description : characteristic curves evaluation for a Darrieus turbine through the           |
