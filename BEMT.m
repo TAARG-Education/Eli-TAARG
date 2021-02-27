@@ -127,7 +127,7 @@ epsi    = 1e-10;
 for j= 1:ns
     i=0;
 if value(j) < epsi
-    w_t_B(j)= w_t_B(j)-(y(j)/dy(j));
+   w_t_B(j)= w_t_B(j)-(y(j)/dy(j));
 else
     
 while [value(j)> epsi , i<max_iter+1]
