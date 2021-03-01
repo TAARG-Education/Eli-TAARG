@@ -1,5 +1,6 @@
 %% BEMT_function Summary
-%
+%  
+% 
 % Eli-TAARG is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public
 % License as published by the Free Software Foundation; either
@@ -98,10 +99,10 @@ alpha_i = 0.5*(-(lam./r_ndim + sigma.*Cl_alpha./(8*r_ndim.*F.*cos(phi))) + ...
 
 alpha_i_spline = interp1(r,alpha_i,x,'spline');
 else
-%% METODO 3
+%% METHOD N3
 if l==3
    max_iter=1000;
-   warndlg('WARNING: questo metodo è da rivedere ai posteri... o forse no');
+   warndlg('WARNING: THIS METHOD MAY BE INCORRECT...');
     
        if phi(ns)== 0
        F= ones (1, ns);
