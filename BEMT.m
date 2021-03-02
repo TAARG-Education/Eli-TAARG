@@ -34,7 +34,7 @@
 % |Note        :                                                                              |
 % ==============================================================================================
 
-function [alpha_i_deg, beta_deg, c, Cl_alpha]=BEMT(V, rpm, R, r_hub, N, ns)
+function [alpha_i_deg, beta_deg, c, Cl_alpha]=BEMT(V, rpm, R, r_hub, N, ns, l)
 
 p = 1;
 while p < ns+1
@@ -56,7 +56,7 @@ p = p+1;
 end
 
 omega  = convangvel(rpm, 'rpm', 'rad/s');
-r      = linspace(r_hub, R*0.99, ns);
+r      = linspace(r_hub, R, ns);
 beta   = convang(beta_deg, 'deg', 'rad');
 r_ndim = r/R;
 x      = linspace(r_hub,R,100);
@@ -65,14 +65,7 @@ lam    = V/(omega*R);
 sigma  = N*c./(pi*R);
 Vt     = omega*R;
 Vr     = sqrt((V^2)+ (omega*R.*r_ndim).^2);
-phi    = atan((V)./(omega*r)); 
-
-disp('Which theory do you want to use?')
-disp('1 - IMPULSIVE THEORY')
-disp('2 - WHIRLING THEORY WITH SMALL DISTURBANCES')
-disp('3 - WHIRLING THEORY')
-
-l= input(['']);
+phi    = atan((V)./(omega*r));
     
 %% METHOD N1
 if l==1
@@ -101,7 +94,6 @@ else
 %% METHOD N3
 if l==3
    max_iter=1000;
-   warndlg('WARNING: THIS METHOD MAY BE INCORRECT...');
     
        if phi(ns)== 0
        F= ones (1, ns);
