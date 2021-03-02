@@ -1,5 +1,4 @@
 %% BEMT_function Summary
-%  
 % 
 % Eli-TAARG is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public
@@ -114,9 +113,9 @@ alpha_i_B = 0.5*(-(lam./r_ndim + sigma.*Cl_alpha./(8*r_ndim.*F.*cos(phi))) ...
           + sqrt((lam./r_ndim + sigma.*Cl_alpha./(8*r_ndim.*F.*cos(phi))).^2 ...
           + sigma.*Cl_alpha.*(beta-phi)./(2*r_ndim.*F.*cos(phi))));
 
-w_t_B = Vr.*alpha_i_B.*sin(phi+alpha_i_B); % formula C-8
+w_t_B = Vr.*alpha_i_B.*sin(phi+alpha_i_B); 
 w_t_C = sigma.*Cl_alpha./(8*r.*F).*Vr.*(beta- phi-alpha_i_B); 
-w_a_B = Vr.*alpha_i_B.*cos(phi+alpha_i_B); % formula C-9
+w_a_B = Vr.*alpha_i_B.*cos(phi+alpha_i_B); 
 
 alfaisa = alpha_i_B;
 wtsa    = w_t_B;
@@ -133,27 +132,26 @@ else
     
 while [value(j)> epsi , i<max_iter+1]
     i= i+1;
-    test1(j)= V^2+ (4*w_t_B(j).*((omega*R*r_ndim(j))- w_t_B(j))); %radice della C-15         
-    test2(j)= lam^2+ (4*w_t_B(j)./(Vt)).*(r_ndim(j)-(w_t_B(j)./(Vt))); %radice della C-17    
+    test1(j)= V^2+ (4*w_t_B(j).*((omega*R*r_ndim(j))- w_t_B(j)));          
+    test2(j)= lam^2+ (4*w_t_B(j)./(Vt)).*(r_ndim(j)-(w_t_B(j)./(Vt)));     
 
 if (test1 <0 | test2 <0)
      w_t_B(j)=wtsa(j);
      w_a_B(j)=wasa(j);
 else
 
-term1(j)= (sqrt(test1(j))-V);  %2*w_a_C dalla C-15          
-term2(j)= lam+ sqrt(test2(j)); %seconda radice di C-17       
+term1(j)= (sqrt(test1(j))-V);           
+term2(j)= lam+ sqrt(test2(j));       
 
-aa(j)= beta(j)-(atan((w_t_B(j)*2)./(term1(j)))); % termine in parentesi nella C-14
-bb(j)= sqrt((0.25*(term2(j).^2)+((r_ndim(j)-w_t_B(j)./Vt)).^2)); %tutto il termine sotto radice della C-17
-cc(j)= 8*r_ndim(j).*F(j).*w_t_B(j)./Vt; % ha portato al primo membro tutti i termini della C-17 tranne sigma,..
-                      % Cl_alpha, aa, bb 
+aa(j)= beta(j)-(atan((w_t_B(j)*2)./(term1(j)))); 
+bb(j)= sqrt((0.25*(term2(j).^2)+((r_ndim(j)-w_t_B(j)./Vt)).^2)); 
+cc(j)= 8*r_ndim(j).*F(j).*w_t_B(j)./Vt; 
 
-da(j)= ((-2)./(((term1(j)).^2)+ 4*w_t_B(j).*w_t_B(j))).*(term1(j)... %derivata di aa
+da(j)= ((-2)./(((term1(j)).^2)+ 4*w_t_B(j).*w_t_B(j))).*(term1(j)... 
      -(w_t_B(j).*(((2*omega*R*r_ndim(j))-(4*w_t_B(j)))./(term1(j)+V))));
-db(j)= (((term2(j).*((r_ndim(j)./Vt)-((2*w_t_B(j))./((Vt).^2))))...  %derivata di bb
+db(j)= (((term2(j).*((r_ndim(j)./Vt)-((2*w_t_B(j))./((Vt).^2))))...  
     ./(2*(term2(j)- lam)))+ (w_t_B(j)./((Vt).^2))-(r_ndim(j)./Vt))./bb(j);
-dc(j)= 8*r_ndim(j).*F(j)./Vt;  %derivata di cc
+dc(j)= 8*r_ndim(j).*F(j)./Vt;  
 
 y(j)= (sigma(j).*Cl_alpha(j).*aa(j).*bb(j))- cc(j);
 dy(j)= (sigma(j).*Cl_alpha(j).*((aa(j).*db(j))+(bb(j).*da(j))))-dc(j);
