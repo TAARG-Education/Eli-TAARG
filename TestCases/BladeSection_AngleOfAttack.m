@@ -91,4 +91,8 @@ clf
 fill(x_hub,y_hub,'k'); hold on; axis equal; axis off; grid off
 text(r_segn(end-10),r_segn(end),['\mu = ',num2str(mu)],'Color','r','FontSize',12);
 contourf(x,y,convang(non_stall','rad','deg'),20,'ShowText','on'); drawnow; axis equal;
+
+quiver([0 0],[1 1.3],[0 0],[0 -4],'r','LineWidth',3)
+text(-0.15,1.25,'$V_\infty$','Interpreter','latex','FontSize',12)
+
 end
