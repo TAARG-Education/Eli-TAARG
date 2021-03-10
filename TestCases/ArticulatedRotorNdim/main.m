@@ -24,25 +24,30 @@
 % |Name        : main.m                                                                         |
 % |Author      : Marco Artiano & Luca Angelino                                                  |
 % |              University of Naples Federico II.                                              |
-% |Version     : 1.0.1                                                                          |
-% |Date        : 24/01/21                                                                       |
+% |Version     : 1.0.3                                                                          |
+% |Date        : 25/11/20                                                                       |
 % |Modified    : 24/01/21                                                                       |
-% |Description : Ndim_Coeff_Articulated_Rotor.m function testing                                |
+% |Description : Ndim_Coeff_Articulated_Rotor function testing                                  |
 % |Reference   : 'Lezioni di AERODINAMICA DELL'ALA ROTANTE a.a. 2019-2020 - Renato Tognaccini'  |
-% |Input       : Velocity with respect to the air (V_inf), Altitude(altitude)                   |
-% |Output      : Tc, Hc, Yc, Qc, Pc and the angle of attack                                     |
-% |Note        :                                                                                |
+% |Input       : Velocity V_inf [m/s], Altitude h [m], Lock number L [~],                       |            
+% |              Equivalent drag area f [m^2], Rate of climb X [deg]                            |                                                             
+% |Output      : Tc, Hc, Yc, Qc, Pc, the angle of attack [deg] and the rotor inflow ratio       |
+% |Note        : Missing geometry and aerodynamics input                                        |
 % ===============================================================================================
 close all; clear all; clc;
 
 % the following script is only aimed to test the Ndim_Coeff_Articulated_Rotor function
 
 % Input values
-V_inf    = 30;      % [m/s]
-altitude = 3000;    % [m]
-Lock     = 8;       % [~]  
-f        = 0.7785;  % [m^2]
-X        = 0;       % [rad]
+Np       = 30;                    % Number of points
+V_max    = 80;                    % Maximum speed [m/s]
+V_inf    = linspace(0,V_max,Np); 
+altitude = 3000;                  % [m]
+Lock     = 8;                     % [~]  
+f        = 0.7785;                % [m^2]
+X        = 0;                     % [rad]
 
-[Tc,Hc,Yc,Qc,Pc,alfa] = Ndim_Coeff_Articulated_Rotor(V_inf,altitude,Lock,f,X);
+for i = 1:length(V_inf)
+[Tc(i),Hc(i),Yc(i),Qc(i),Pc(i),alfa(i),lambda(i)] = Ndim_Coeff_Articulated_Rotor(V_inf(i),altitude,Lock,f,X);
+end
 
