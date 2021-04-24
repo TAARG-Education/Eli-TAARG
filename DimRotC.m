@@ -1,7 +1,6 @@
 %% \file DimRotC.m
-%  \brief: 
-%
-%  \author: 
+%  \brief: function for sizing the helicopter's tail rotor
+%  \author: Verdiana Bottino, Gianpietro Cinque
 %  \version: 1.00
 %
 % Eli-TAARG is free software; you can redistribute it and/or
@@ -23,15 +22,16 @@
 %
 % ==============================================================================================
 % |Name        : DimRotC.m                                                           |
-% |Author      :                                                         |
+% |Author      : Verdiana Bottino, Gianpietro Cinque                                                        |
 % |              University of Naples Federico II.                                       |
 % |Version     : 1.00                                                                    |
-% |Date        :                                                               |
-% |Modified    :                                                               |
-% |Description :                     |     
-% |Reference   :                                                     |
+% |Date        : 24/04/2021                                                              |
+% |Modified    : 24/04/2021                                                              |
+% |Description : Given the ......., the function derives and retrives the.....           |     
+% |Reference   : "Teoria del volo dell'elicottero" - Giovanni di Giorgio, 
+% |              Aracne Editrice
 % |                          |                                                         |
-% |Input       :                                                                         |
+% |Input  ????     :                                                                         |
 % |                                                                                  |
 % |                              |  
 % |                                           |
