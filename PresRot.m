@@ -48,7 +48,7 @@
 % |Note        :                                                                         |
 % ==============================================================================================
 
-function [] = DimRotC()
+function [] = PresRot()
 %funzione inizializzata
 end
 
