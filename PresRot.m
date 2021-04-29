@@ -87,7 +87,7 @@ end
 % Find Tc & Qc
 %--------------------------------------------------------------------------
 
-for i = 1 : Ns
+for i = 9 : Ns
     
     theta = thetaVet( i );
     r = rVet( i );
@@ -133,6 +133,6 @@ Qc = sum( dQdr );
 % viscosty in funzione della quota
 % miglior approssimazione della Veffettiva
 %
-%
+%in CdCl_xfoil manca il comando per uscire alla fine di xfoil
 end
 

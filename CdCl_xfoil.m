@@ -49,7 +49,7 @@ FirstAlfa_st = num2str(FirstAlfa);
 LastAlfa_st  = num2str(LastAlfa);
 DeltaAlfa_st = num2str(DeltaAlfa);
 
-iter = '100';
+iter = '1000';
 Alfa_vec = FirstAlfa:DeltaAlfa:LastAlfa;
 
 saveGeometry = 'Airfoil_geometry.txt';  % Create .txt file to save airfoil coordinates
