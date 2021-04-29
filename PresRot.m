@@ -132,5 +132,7 @@ Qc = sum( dQdr );
 % rho che varia con la quota
 % viscosty in funzione della quota
 % miglior approssimazione della Veffettiva
+%
+%
 end
 
