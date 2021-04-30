@@ -72,6 +72,7 @@ function [ Tc, Qc ] = PresRot( Rr, Rt, thetaT, deltaTheta,omega, chord, N, Vc, r
 Ns = 100;                                        % Number of blades
 thetaVet = linspace( thetaT, thetaT - deltaTheta, Ns );
 rVet = linspace( Rr / Rt, 1, Ns );
+dr = rVet( 2 ) - rVet( 1 );                      
 mu = Vc / ( omega * Rt );
 Cla = 2 * pi;
 Np = 200;                                        % Number of panels, Xfoil
@@ -145,8 +146,8 @@ for i = 1 : Ns
     
 end
 
-Tc = sum( dTdr );
-Qc = sum( dQdr );
+Tc = sum( dTdr ) * dr;
+Qc = sum( dQdr ) * dr;
 
 end
 
