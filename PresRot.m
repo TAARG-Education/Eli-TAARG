@@ -10,7 +10,7 @@
 %
 % Eli-TAARG is developed by the TAARG Educational organization for
 % educational purposes only.
-% Theoretical and Applied Aerodynamic Research Group - University of 
+% Theoretical and Applied Aerodynamic Research Group - University of
 % Naples Federico II.
 %
 % Eli-TAARG GitHub link: <https://github.com/TAARG-Education/Eli-TAARG>
@@ -28,10 +28,10 @@
 % |Version     : 1.00                                                                    |
 % |Date        : 24/04/2021                                                              |
 % |Modified    : 29/04/2021                                                              |
-% |Description : Given the main geometric and aerodynamic parameters, the 
-% |function retrives thrust and torque coefficients using the blade element 
-% |theory           
-% |Reference   : "Teoria del volo dell'elicottero" - Giovanni di Giorgio, 
+% |Description : Given the main geometric and aerodynamic parameters, the
+% |function retrives thrust and torque coefficients using the blade element
+% |theory
+% |Reference   : "Teoria del volo dell'elicottero" - Giovanni di Giorgio,
 % |              Aracne Editrice
 % |                                                                                      |                                                           |
 % |Input       : Rr [m] - hub radius
@@ -43,18 +43,18 @@
 % |              N - number of blades
 % |              Vc [m/s] - rate of climb
 % |              rho [kg/m^3]- air density
-% |              airfoil - airfoil 'filename'; this file must be placed in 
+% |              airfoil - airfoil 'filename'; this file must be placed in
 % |              the running directory and consistent with Xfoil input
 % |              requirements                                                            |
 % |                                                                                      |
-% |                                                                                      |  
 % |                                                                                      |
 % |                                                                                      |
 % |                                                                                      |
 % |                                                                                      |
 % |                                                                                      |
 % |                                                                                      |
-% |                                                                                      | 
+% |                                                                                      |
+% |                                                                                      |
 % |                                                                                      |
 % |Output      : Tc - thrust coefficient
 % |              Qc - torque coefficient
@@ -63,7 +63,8 @@
 % |Note        :                                                                         |
 % ========================================================================================
 
-function [ Tc, Qc ] = PresRot( Rr, Rt, thetaT, deltaTheta,omega, chord, N, Vc, rho, airfoil, vargin )
+function [ Tc, Qc ] = PresRot( Rr, Rt, thetaT, deltaTheta,omega, chord, N, Vc, rho, airfoil, varargin )
+
 
 %--------------------------------------------------------------------------
 % VARIABLES
@@ -73,13 +74,24 @@ thetaVet = linspace( thetaT, thetaT - deltaTheta, Ns );
 rVet = linspace( Rr / Rt, 1, Ns );
 mu = Vc / ( omega * Rt );
 Cla = 2 * pi;
-sigma = N * chord / ( 2 * pi * Rt );
 Np = 200;                                        % Number of panels, Xfoil
-viscosity = 1.78e-5;                               
+viscosity = 1.78e-5;
+
+%--------------------------------------------------------------------------
+% VARIABLE INPUT
+%--------------------------------------------------------------------------
+n = length( varargin );
+
+if isempty( varargin )
+    cVet = chord * ones( 1, Ns );
+else
+    
+end
 
 %--------------------------------------------------------------------------
 % ALLOCATE VARIABLES
 %--------------------------------------------------------------------------
+sigmaVet = N * cVet / ( 2 * pi * Rt );
 lambdaVet=zeros(1,Ns);
 phiVet=zeros(1,Ns);
 alphaVet=zeros(1,Ns);
@@ -104,26 +116,28 @@ for i = 1 : Ns
     
     theta = thetaVet( i );
     r = rVet( i );
+    chordi = cVet( i );
+    sigma = sigmaVet( i );
     
     a = 1;
     b = mu + Cla *(sigma/8);
     c = -(r * Cla *(sigma/8)*(theta-(mu/r)));
     
     % Assemble lambda vector, accept only the positive root
-    lambdaVet(i) = max( roots( [ a b c ] ) );       
-    phiVet(i) = lambdaVet(i)/ rVet(i);         % inflow angle 
+    lambdaVet(i) = max( roots( [ a b c ] ) );
+    phiVet(i) = lambdaVet(i)/ rVet(i);         % inflow angle
     alpha = theta - phiVet(i);                 % effective aoa
     alphaVet(i) = alpha;
     
     % Effective velocity computation through the blade element theory
     Ve = sqrt( Vc^2 + ( omega * r * Rt )^2 );
     Ve = ( omega * r ) / ( cosd( phiVet( i ) ) );
-    % Reynolds number computation 
-    Re = ( rho * Ve * chord ) / ( viscosity );
+    % Reynolds number computation
+    Re = round( ( rho * Ve * chordi ) / ( viscosity ) );
     ReVet( i ) = Re;
     
-    [ ClVet( i ), CdVet( i ) ] = ... 
-      CdCl_xfoil( airfoil, Np, Re, alpha, alpha, 1 );
+    [ ClVet( i ), CdVet( i ) ] = ...
+        CdCl_xfoil( airfoil, Np, Re, alpha, alpha, 1 );
     
     dTdr(i)=1/2*sigma*ClVet(i)*rVet(i)^2;
     dQdr(i)=1/2*sigma*(ClVet(i)*phiVet(i)+CdVet(i))*(rVet(i)^3);
@@ -136,6 +150,18 @@ Qc = sum( dQdr );
 
 end
 
+function [ Ni ] = inputN ( name )
+
+switch name
+    case 'variableChord'
+        Ni = 2;
+    case 'variableTheta'
+        Ni = 2;
+    otherwise
+        error(message('MATLAB:PresRot:wrongVariableName'));
+end
+
+end
 
 
 
