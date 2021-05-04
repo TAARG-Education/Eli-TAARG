@@ -1,15 +1,16 @@
 clc; clear; close all
 
-Rt = 5.42;
-Rr = Rt * .132;
-thetaT = 13.5;
-deltaTheta = 5;
-omega = 240;
-chord = .31;
-N = 4;
+Rt = 2.286 / 2;
+Rh = .178;
+thetaT = 5;
+deltaTheta = 0;
+omega = 237;
+chord = .38;
+N = 2;
 Vc = 0;
 rho = 1.225;
-airfoil = 4412;
+airfoil = 0012;
 
 
-PresRot( Rr, Rt, thetaT, deltaTheta, omega, chord, N, Vc, rho, airfoil );
+[ Tc , Qc ] = ...
+    PresRot( Rh, Rt, thetaT, deltaTheta, omega, chord, N, Vc, rho, airfoil )
