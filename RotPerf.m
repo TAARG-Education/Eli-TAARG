@@ -1,4 +1,4 @@
-%% \file PresRot.m
+%% \file RotPerf.m
 %  \brief: Rotor performance analysis in hoverig and climbing conditions
 %  \author: Gianpietro Cinque, Verdiana Bottino
 %  \version: 1.00
@@ -63,13 +63,13 @@
 % |Note        :                                                                         |
 % ========================================================================================
 
-function [ Tc, Qc ] = PresRot( Rr, Rt, thetaT, deltaTheta,omega, chord, N, Vc, rho, airfoil, varargin )
+function [ Tc, Qc ] = RotPerf( Rr, Rt, thetaT, deltaTheta,omega, chord, N, Vc, rho, airfoil, varargin )
 
 
 %--------------------------------------------------------------------------
 % VARIABLES
 %--------------------------------------------------------------------------
-Ns = 10;                                        % Number of blades
+Ns = 18;                                        % Number of blades
 thetaVet = linspace( thetaT, thetaT - deltaTheta, Ns );
 rVet = linspace( Rr / Rt, 1, Ns );
 dr = rVet( 2 ) - rVet( 1 );                      
