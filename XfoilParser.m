@@ -9,8 +9,6 @@ else
     plotFlag = false;
 end
 
-
-
 % Variable initialization
 Cl = nan;
 Cd = nan;
@@ -21,7 +19,7 @@ step = .5;
 alfaVet = alfa - span : step : alfa + span;
 Np = 200;                                  % number of panel
 
-[ ClVet , CdVet, alfarVet ] = CdCl_xfoil( airfoil, Np, Re, alfaVet, 'plot' );
+[ ClVet , CdVet, alfarVet ] = CdCl_xfoil( airfoil, Np, Re, alfaVet  );
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Two angles have to converge at least
@@ -47,7 +45,7 @@ Cd = spline( alfarVet, CdVet, alfa );
 if plotFlag
     f1 = figure( 1 );
     movegui( f1, 'northeast' );
-    plot( alfarVet, ClVet, alfa, Cl, 'o' );
+    plot( alfarVet, ClVet,'.-', alfa, Cl, 'o' );
     xlabel('Angle of attach \alpha');
     ylabel('Lift coefficient C_{l}');
 end

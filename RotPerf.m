@@ -36,8 +36,8 @@
 % |                                                                                      |                                                           |
 % |Input       : Rr [m] - hub radius
 % |              Rt [m] - tip radius
-% |              thetaR [°] - collective pitch
-% |              deltaTheta [°] - rotor geometric twist
+% |              thetaR [deg] - collective pitch
+% |              deltaTheta [deg] - rotor geometric twist
 % |              omega [rad/s] - angular velocity
 % |              chord [m]
 % |              N - number of blades
@@ -63,21 +63,38 @@
 % |Note        :                                                                         |
 % ========================================================================================
 
-function [ Tc, Qc ] = RotPerf( Rr, Rt, thetaT, deltaTheta,omega, chord, N, Vc, rho, airfoil, varargin )
+function [ Tc, Qc ] = RotPerf( Rh, Rt, thetaHd, deltaThetad,omega, chord, N, Vc, rho, airfoil, varargin )
 
+%--------------------------------------------------------------------------
+% Conversion to rad
+%--------------------------------------------------------------------------
+
+thetaH = thetaHd / 180 * pi;
+deltaTheta = deltaThetad / 180 * pi;
 
 %--------------------------------------------------------------------------
 % VARIABLES
 %--------------------------------------------------------------------------
-Ns = 10;                                        % Number of blades
-thetaVet = linspace( thetaT, thetaT - deltaTheta, Ns );
-rVet = linspace( Rr / Rt, 1, Ns );
+Ns = 50;                                        % Number of blades
+thetaVet = linspace( thetaH, thetaH - deltaTheta, Ns );
+rVet = linspace( Rh / Rt, 1, Ns );
 dr = rVet( 2 ) - rVet( 1 );                      
 mu = Vc / ( omega * Rt );
 Cla = 2 * pi;
-Np = 200;                                        % Number of panels, Xfoil
 viscosity = 1.78e-5;
 
+
+
+
+
+
+%{
+thetaVet = linspace( thetaH, thetaH - deltaTheta, Ns );
+r2 = linspace( 0 , 1, Ns );
+rVet = .2 : .05 : 1; 
+Ns = length( rVet );
+thetaVet = spline( r2, thetaVet, rVet );
+%}
 %--------------------------------------------------------------------------
 % VARIABLE INPUT
 %--------------------------------------------------------------------------
@@ -92,7 +109,7 @@ end
 %--------------------------------------------------------------------------
 % ALLOCATE VARIABLES
 %--------------------------------------------------------------------------
-sigmaVet = N * cVet / ( 2 * pi * Rt );
+sigmaVet = N * cVet / ( pi * Rt );
 lambdaVet=zeros(1,Ns);
 phiVet=zeros(1,Ns);
 alphaVet=zeros(1,Ns);
@@ -120,16 +137,22 @@ for i = 1 : Ns
     chordi = cVet( i );
     sigma = sigmaVet( i );
     
+    %{
+    theta = .157;
+    r = .2;
+    sigma = .0824;
+   %}
+    
     a = 1;
     b = mu + Cla *(sigma/8);
     c = -(r * Cla *(sigma/8)*(theta-(mu/r)));
     
     % Assemble lambda vector, accept only the positive root
     lambdaVet(i) = max( roots( [ a b c ] ) );
-    phiVet(i) = lambdaVet(i)/ rVet(i);         % inflow angle
+    phiVet(i) = lambdaVet(i)/ r;         % inflow angle
     alpha = theta - phiVet(i);                 % effective aoa
     alphaVet(i) = alpha;
-    
+    alphad = alpha * 180 / pi;
     
     % Effective velocity computation through the blade element theory
     Ve = sqrt( Vc^2 + ( omega * r * Rt )^2 );
@@ -140,13 +163,13 @@ for i = 1 : Ns
     
     % Print to terminal
     disp( "Section n°" + num2str( i ) +"/" + num2str(Ns) +"..." );
-    disp( "alfa = " + num2str( alpha ) );
+    disp( "alfa = " + num2str( alphad ) );
     disp( "Re = " + num2str( Re ) );
     fprintf( "Calculating..." );
     
     
     [ flag, ClVet( i ), CdVet( i ) ] = ...
-        XfoilParser( airfoil, alpha, Re, 'plot' );
+        XfoilParser( airfoil, alphad, Re, 'plot' );
     switch flag
         case 1
             fprintf( 'OK!\n\n' );
@@ -161,8 +184,11 @@ for i = 1 : Ns
     
 end
 
-Tc = sum( dTdr ) * dr;
-Qc = sum( dQdr ) * dr;
+dTdrf = @( x ) spline( rVet, dTdr, x ) ;
+Tc = integral( dTdrf, rVet( 1 ), rVet( end ));
+
+dQdrf = @( x ) spline( rVet, dQdr, x ) ;
+Qc = integral( dQdrf, rVet( 1 ), rVet( end ));
 
 end
 
