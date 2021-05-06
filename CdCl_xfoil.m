@@ -41,20 +41,32 @@
 % |              (Cd) = drag coefficent vector                                                   |
 % |Note        : The function must be in the same directory of xfoil.exe!                        |
 % ==============================================================================================
-function [Cl, Cd] = CdCl_xfoil(airfoil, numPanel, Re_number, FirstAlfa, LastAlfa, DeltaAlfa)
+function [Cl, Cd, alfaVet] = CdCl_xfoil(airfoil, numPanel, Re_number, alfaVet, varargin)
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% plot flag
+Nv = length( varargin );
+plotFlag = false;
+if Nv > 0
+    if ischar( varargin{1} ) || isstring( varargin{1} )
+        if strcmp( varargin{1} , 'plot' )
+            plotFlag = true;
+        end
+    else
+        plotFlag = false;
+    end
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 numPanel_st  = num2str(numPanel);
 Re_number_st = num2str(Re_number);
-FirstAlfa_st = num2str(FirstAlfa);
-LastAlfa_st  = num2str(LastAlfa);
-DeltaAlfa_st = num2str(DeltaAlfa);
 
-iter = '1000';
-Alfa_vec = FirstAlfa:DeltaAlfa:LastAlfa;
+iter = '200';
+Na = length( alfaVet );
+
 
 saveGeometry = 'Airfoil_geometry.txt';  % Create .txt file to save airfoil coordinates
 savePolar    = 'Polar.txt';             % Create .txt file to save the polar
-
+xfoil_input = 'xfoil_input.txt';        % Xfoil input filename
 
 % Delete files if they exist
 if (exist(saveGeometry,'file'))
@@ -68,8 +80,13 @@ end
 
 %% WRITING XFOIL COMMANDS
 % Create the airfoil
-f_input = fopen('xfoil_input.txt','w');            % Create input file for xfoil 
+f_input = fopen(xfoil_input,'w');            % Create input file for xfoil 
 fprintf(f_input,'y\n');
+
+if not( plotFlag )
+    fprintf(f_input,['PLOP\n']);        %video off
+    fprintf(f_input,['G\n\n']);
+end
 
 if isnumeric(airfoil)
     airfoil_1 = num2str(airfoil);
@@ -90,10 +107,10 @@ fprintf(f_input,['iter ' iter '\n']);
 fprintf(f_input,'pacc\n');
 fprintf(f_input,[savePolar '\n\n']);
 
-for i = 1:length(Alfa_vec)
-    fprintf(f_input,'a %2.4f\n', Alfa_vec(i));
+for i = 1 : Na
+    fprintf(f_input,'a %2.4f\n', alfaVet(i));
 end
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fprintf(f_input,'pacc\n\n');
 
 % Save the airfoil data points
@@ -102,9 +119,12 @@ fprintf(f_input,'pacc\n\n');
 % QUIT
 fprintf( f_input, 'QUIT\n' );
 
+
 % Close file
 fclose(f_input);
 
+% Read xfoil input file content for checking
+command = fileread( xfoil_input );
 
 %% RUNNING XFOIL (MUST BE IN THE SAME DIRECTORY!)
 cmd = 'xfoil.exe < xfoil_input.txt';
@@ -114,13 +134,16 @@ cmd = 'xfoil.exe < xfoil_input.txt';
 filePol = fopen(savePolar);
 A = textscan(filePol,'%f %f %f %f %f %f %f', 'Headerlines',12);
 fclose(filePol);
-alfa = A{1}(:,1);
+alfaVet = A{1}(:,1);
 Cl   = A{2}(:,1);
 Cd   = A{3}(:,1);
 
-figure(1);
-plot(Cd,Cl,'k.-')
-xlabel('Drag coefficient C_d');
-ylabel('Lift coefficient C_l');
-grid on;
+% Convergence check missing
+
+if plotFlag
+        figure(1);
+        plot(Cd,Cl,'k.-')
+        xlabel('Drag coefficient C_d');
+        ylabel('Lift coefficient C_l');
+        grid on;
 end

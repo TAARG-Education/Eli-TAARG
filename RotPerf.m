@@ -69,7 +69,7 @@ function [ Tc, Qc ] = RotPerf( Rr, Rt, thetaT, deltaTheta,omega, chord, N, Vc, r
 %--------------------------------------------------------------------------
 % VARIABLES
 %--------------------------------------------------------------------------
-Ns = 18;                                        % Number of blades
+Ns = 10;                                        % Number of blades
 thetaVet = linspace( thetaT, thetaT - deltaTheta, Ns );
 rVet = linspace( Rr / Rt, 1, Ns );
 dr = rVet( 2 ) - rVet( 1 );                      
@@ -130,6 +130,7 @@ for i = 1 : Ns
     alpha = theta - phiVet(i);                 % effective aoa
     alphaVet(i) = alpha;
     
+    
     % Effective velocity computation through the blade element theory
     Ve = sqrt( Vc^2 + ( omega * r * Rt )^2 );
     Ve = ( omega * r ) / ( cosd( phiVet( i ) ) );
@@ -137,8 +138,22 @@ for i = 1 : Ns
     Re = round( ( rho * Ve * chordi ) / ( viscosity ) );
     ReVet( i ) = Re;
     
-    [ ClVet( i ), CdVet( i ) ] = ...
-        CdCl_xfoil( airfoil, Np, Re, alpha, alpha, 1 );
+    % Print to terminal
+    disp( "Section n°" + num2str( i ) +"/" + num2str(Ns) +"..." );
+    disp( "alfa = " + num2str( alpha ) );
+    disp( "Re = " + num2str( Re ) );
+    fprintf( "Calculating..." );
+    
+    
+    [ flag, ClVet( i ), CdVet( i ) ] = ...
+        XfoilParser( airfoil, alpha, Re, 'plot' );
+    switch flag
+        case 1
+            fprintf( 'OK!\n\n' );
+        case 2
+            warning( 'Be carefull! Cl & Cd extrapolation!' );
+            fprintf( '\n' );
+    end
     
     dTdr(i)=1/2*sigma*ClVet(i)*rVet(i)^2;
     dQdr(i)=1/2*sigma*(ClVet(i)*phiVet(i)+CdVet(i))*(rVet(i)^3);
