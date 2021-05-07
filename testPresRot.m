@@ -1,8 +1,9 @@
 clc; clear; close all;
 
-chord = .192;
-Rt = 3.5;
-Rh = chord;
+Rt = convlength( 26.75, 'in', 'm' );
+AR = 18.2;
+chord = Rt / AR;
+Rh = Rt * .148;
 thetaHd = 10;
 deltaThetad = 0;
 omega = 45.72;
@@ -65,4 +66,4 @@ airfoil = 0012;
     RotPerf( Rh, Rt, thetaHd, deltaThetad, omega, chord, N, Vc, rho, airfoil )
 
 T = Tc * rho * omega^2 * pi * Rt^4;
-Ct = T / ( rho * (rpm/59)^2 * (2*Rt)^4 )
+Ct = T / ( rho * (rpm/60)^2 * (2*Rt)^4 )
