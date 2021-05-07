@@ -34,7 +34,7 @@
 % |Reference   : "Teoria del volo dell'elicottero" - Giovanni di Giorgio,
 % |              Aracne Editrice
 % |                                                                                      |                                                           |
-% |Input       : Rr [m] - hub radius
+% |Input       : Rh [m] - hub radius
 % |              Rt [m] - tip radius
 % |              thetaR [deg] - collective pitch
 % |              deltaTheta [deg] - rotor geometric twist
@@ -75,7 +75,7 @@ deltaTheta = deltaThetad / 180 * pi;
 %--------------------------------------------------------------------------
 % VARIABLES
 %--------------------------------------------------------------------------
-Ns = 50;                                        % Number of blades
+Ns = 100;                                        % Number of blades
 thetaVet = linspace( thetaH, thetaH - deltaTheta, Ns );
 rVet = linspace( Rh / Rt, 1, Ns );
 dr = rVet( 2 ) - rVet( 1 );                      
@@ -167,9 +167,10 @@ for i = 1 : Ns
     disp( "Re = " + num2str( Re ) );
     fprintf( "Calculating..." );
     
-    
+    % Retrive Cl & Cd from Xfoil 
     [ flag, ClVet( i ), CdVet( i ) ] = ...
         XfoilParser( airfoil, alphad, Re, 'plot' );
+   
     switch flag
         case 1
             fprintf( 'OK!\n\n' );
