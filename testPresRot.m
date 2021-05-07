@@ -4,29 +4,21 @@ Rt = convlength( 26.75, 'in', 'm' );
 AR = 18.2;
 chord = Rt / AR;
 Rh = Rt * .148;
-thetaHd = 10;
+thetaHd = 8;
 deltaThetad = 0;
 omega = 45.72;
-
 N = 4;
 Vc = 0;
 rho = 1.225;
 airfoil = 0012;
+sigma = chord * N / ( pi * Rt );
 
 [ Tc , Qc ] = ...
     RotPerf( Rh, Rt, thetaHd, deltaThetad, omega, chord, N, Vc, rho, airfoil )
 
-Ts = Tc / .07
-Qs = Qc / .07
+Ts = Tc / sigma
+Qs = Qc / sigma
 
-%T = Tc * rho * omega^2 * pi * Rt^4;
-%Q = Qc * rho * omega^2 * pi * Rt^5;
-
-%Ct = T / ( rho * (omega/(2*pi))^2 * (2*Rt)^4 )
-%Cq = Q / ( rho * (omega/(2*pi))^2 * (2*Rt)^5 )
-
-%Cts = Ct / .07
-%Cqs = Cq / .07
 % TEST CASE 1
 
 chord = .1905;
