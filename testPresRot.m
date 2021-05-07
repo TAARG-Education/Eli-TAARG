@@ -37,9 +37,6 @@ airfoil = 0012;
 [ Tc , Qc ] = ...
     RotPerf( Rh, Rt, thetaHd, deltaThetad, omega, chord, N, Vc, rho, airfoil )
 
-T = Tc * rho * omega^2 * pi * Rt^4;
-Ct = T / ( rho * (rpm/60)^2 * (2*Rt)^4 )
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TEST CASE 3
