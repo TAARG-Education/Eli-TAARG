@@ -125,12 +125,6 @@ for i = 1 : Ns
     chordi = cVet( i );
     sigma = sigmaVet( i );
     
-    %{
-    theta = .157;
-    r = .2;
-    sigma = .0824;
-   %}
-    
     a = 1;
     b = mu + Cla *(sigma/8);
     c = -(r * Cla *(sigma/8)*(theta-(mu/r)));
