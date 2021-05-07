@@ -83,18 +83,6 @@ mu = Vc / ( omega * Rt );
 Cla = 2 * pi;
 viscosity = 1.78e-5;
 
-
-
-
-
-
-%{
-thetaVet = linspace( thetaH, thetaH - deltaTheta, Ns );
-r2 = linspace( 0 , 1, Ns );
-rVet = .2 : .05 : 1; 
-Ns = length( rVet );
-thetaVet = spline( r2, thetaVet, rVet );
-%}
 %--------------------------------------------------------------------------
 % VARIABLE INPUT
 %--------------------------------------------------------------------------
@@ -193,23 +181,6 @@ Qc = integral( dQdrf, rVet( 1 ), rVet( end ));
 
 end
 
-function [ Ni ] = inputN ( name )
-
-switch name
-    case 'variableChord'
-        Ni = 2;
-    case 'variableTheta'
-        Ni = 2;
-    otherwise
-        error(message('MATLAB:PresRot:wrongVariableName'));
-end
-
-end
-
-
-
-
-
 
 %--------------------------------------------------------------------------
 % Emprovements
@@ -219,4 +190,3 @@ end
 % variazione di rho con la quota
 % variazione della viscosty in funzione della quota
 % miglior approssimazione della Veffettiva
-% in CdCl_xfoil manca il comando per uscire alla fine di Xfoil
