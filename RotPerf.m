@@ -151,7 +151,7 @@ for i = 1 : Ns
     
     % Retrive Cl & Cd from Xfoil 
     [ flag, ClVet( i ), CdVet( i ) ] = ...
-        XfoilParser( airfoil, alphad, Re, 'plot' );
+        XfoilParser( airfoil, alphad, Re, 'Plot' );
    
     switch flag
         case 1

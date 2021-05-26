@@ -1,9 +1,14 @@
-function [ flag, Cl, Cd ] = XfoilParser( airfoil, alfa, Re, varargin)
+function [ flag, Cl, Cd ] = XfoilParser( airfoil, alfa, Re, varargin )
 
 Nv = length( varargin );
 if Nv > 0
     if ischar( varargin{1} ) || isstring( varargin{1} )
-        plotFlag = true;
+        word = string( varargin{1} );
+        if word == "Plot"
+            plotFlag = true;  
+        else 
+            plotFlag = true;  
+        end
     end
 else
     plotFlag = false;
