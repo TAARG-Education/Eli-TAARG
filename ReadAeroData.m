@@ -37,20 +37,20 @@
 % |              Through 180-Degree Angle of Attack for Use in Aerodynamic 
 % |              Analysis of Vertical Axis Wind Turbines". Sandia National
 % |              Laboratories.
-% |Input       : (filename) = string, data spreadsheet path.
+% |Input       : (filepath) = string, data spreadsheet path.
 % |Output      : -
 % |Note        : Aerodynamic data spreadsheet must be formatted as in
 % |              "sandia0012data.xlsx".
 % =========================================================================
 %
 %%
-function ReadAeroData(filename)
+function ReadAeroData(filepath)
 
 global Cl_data Cd_data ALPHA RE RADrunflag
 
 RADrunflag = true;
 
-aerodata = readtable(filename);
+aerodata = readtable(filepath);
 
 Re_data = aerodata{~isnan(aerodata{:,end}),end};
 

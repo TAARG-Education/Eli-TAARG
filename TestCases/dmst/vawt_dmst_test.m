@@ -1,3 +1,56 @@
+%% \vawt_dmst_test.m
+%  \brief: Test script for dmst.m function
+%  \author: Gabriele Lucci
+%  \version: 1.00
+%
+% Eli-TAARG is free software; you can redistribute it and/or
+% modify it under the terms of the GNU General Public
+% License as published by the Free Software Foundation; either
+% version 3 of the License, or (at your option) any later version.
+%
+% Eli-TAARG is developed by the TAARG Educational organization for
+% educational purposes only.
+% Theoretical and Applied Aerodynamic Research Group - University of Naples 
+% Federico II.
+%
+% Eli-TAARG GitHub link: <https://github.com/TAARG-Education/Eli-TAARG>
+%
+% Eli-TAARG is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+% General Public License for more details.
+% <http://www.gnu.org/licenses/>.
+%
+% =========================================================================
+% |Name        : dmst.m                                                    
+% |Author      : Gabriele Lucci                                            
+% |              University of Naples Federico II.                         
+% |Version     : 1.00                                                      
+% |Date        : 02/05/2022                                                
+% |Modified    : -                                                         
+% |Description : This script tests dmst.m function by calculating the
+% |              performances of straight-bladed Darrieus VAWT. User may
+% |              set the number of streamtube pairs, turbine geometry, TSR 
+% |              range and freestream velocity, and choose the aerodynamic 
+% |              model.
+% |Reference   : Tognaccini, R. (2020). "Lezioni di aerodinamica dell'ala 
+% |              Rotante - A.A. 2019/2020". Università degli studi di 
+% |              Napoli "Federico II".
+% |              Paraschivoiu, I. (2002). "Wind Turbine Design With 
+% |              Emphasis on Darrieus Concept". École Polytechnique de 
+% |              Montréal.
+% |              Sheldahl R. E. and Klimas P. C. (1981). "Aerodynamic 
+% |              Characteristics of Seven Symmetrical Airfoil Sections 
+% |              Through 180-Degree Angle of Attack for Use in Aerodynamic 
+% |              Analysis of Vertical Axis Wind Turbines". Sandia National
+% |              Laboratories.
+% |Input       : same input arguments of 'dmst.m' function.
+% |Output      : Power coefficient, local axial inductions, local angle of
+% |              attack and instantaneous torque coefficient.
+% =========================================================================
+%
+%%
+
 close all; clear all; clc;
 
 %% Setup

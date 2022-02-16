@@ -129,7 +129,9 @@ global RADrunflag RE
 % not previoulsy loaded.
 if strcmpi(aeroflag,'real') && isempty(RADrunflag)
     
-    ReadAeroData('sandia0012data.xlsx');
+    filename = 'sandia0012data.xlsx';
+    filepath = [cd,'/ExperimentalData/',filename];
+    ReadAeroData(filepath);
     
 end    
 
