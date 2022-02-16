@@ -2,7 +2,7 @@
 %  \brief: the function evaluates the Cd(Cl) law according to XRotor
 %  aerodynamic model
 %  \author: Crescenzo Visone
-%  \version: 1.04
+%  \version: 1.05
 %
 % Eli-TAARG is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public
@@ -25,9 +25,9 @@
 % |Name        : ClCd_XRotor.m                                                           |
 % |Author      : Crescenzo Visone                                                        |
 % |              University of Naples Federico II.                                       |
-% |Version     : 1.04                                                                    |
+% |Version     : 1.05                                                                    |
 % |Date        : 25/11/2020                                                              |
-% |Modified    : 22/12/2020                                                              |
+% |Modified    : 16/02/2022 by Gabriele Lucci (commented line 75)                                                             |
 % |Description : Cd(Cl) evaluation law according to XRotor aero model                    |     
 % |Reference   : XRotor User Guide                                                       |
 % |              <http://web.mit.edu/drela/Public/web/xrotor/xrotor_doc.txt>             |                                                         |
@@ -72,5 +72,5 @@ function [Cl_vec, Cd, Cd_bp] = ClCd_XRotor(input_v, Cl_bp)
     % blade element's polar diagram
     % along x: drag coefficient
     % along y: lift coefficient
-    plot(Cd, Cl_vec);
+    % plot(Cd, Cl_vec);
 end

@@ -1,7 +1,7 @@
 %% \vawt_dmst_test.m
 %  \brief: Test script for dmst.m function
 %  \author: Gabriele Lucci
-%  \version: 1.00
+%  \version: 1.01
 %
 % Eli-TAARG is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public
@@ -25,14 +25,14 @@
 % |Name        : dmst.m                                                    
 % |Author      : Gabriele Lucci                                            
 % |              University of Naples Federico II.                         
-% |Version     : 1.00                                                      
+% |Version     : 1.01                                                      
 % |Date        : 02/05/2022                                                
-% |Modified    : -                                                         
+% |Modified    : 02/16/2022                                                        
 % |Description : This script tests dmst.m function by calculating the
 % |              performances of straight-bladed Darrieus VAWT. User may
 % |              set the number of streamtube pairs, turbine geometry, TSR 
 % |              range and freestream velocity, and choose the aerodynamic 
-% |              model.
+% |              model (see "dmst.m" function description).
 % |Reference   : Tognaccini, R. (2020). "Lezioni di aerodinamica dell'ala 
 % |              Rotante - A.A. 2019/2020". Università degli studi di 
 % |              Napoli "Federico II".
@@ -70,7 +70,7 @@ B = 3;
 sigma = B*c/R;
 
 % Aerodynamics
-aeroflag = 'real';
+aeroflag = 'skdata';
 Vinf = 5;
 
 %% Vars init
@@ -105,12 +105,12 @@ disp(['<strong>VAWT performance analysis ', ...
     'through Double-Multiple Streamtube method</strong>',newline, ...
     'sigma = ',num2str(sigma),', Vinf = ',num2str(Vinf),' m/s']);
 
-if strcmpi(aeroflag,'simple')
+if strcmpi(aeroflag,'xrotor')
     
     aeromessage = ...
-        ['Simplified aerodynamic model.',newline];
+        ['Using a linear law for Cl and Xrotor model for Cd.',newline];
     
-elseif strcmpi(aeroflag,'real')
+elseif strcmpi(aeroflag,'skdata')
     
     aeromessage = ...
         ['Aerodynamics from NACA 0012 Sheldahl & Klimas data.',newline];

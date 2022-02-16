@@ -1,7 +1,7 @@
 %% \Cl_dmst.m
 %  \brief: Returns Cl by interpolation or using a linear law in alpha
 %  \author: Gabriele Lucci
-%  \version: 1.00
+%  \version: 1.01
 %
 % Eli-TAARG is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public
@@ -25,9 +25,9 @@
 % |Name        : Cl.m                                                    
 % |Author      : Gabriele Lucci                                            
 % |              University of Naples Federico II.                         
-% |Version     : 1.00                                                      
+% |Version     : 1.01                                                      
 % |Date        : 02/09/2022                                                
-% |Modified    : -                                                         
+% |Modified    : 02/16/2022                                                       
 % |Description : Returns Cl value in two ways:
 % |              1) through 2-variable interpolation over the data read and 
 % |              provided by "ReadAeroData.m" function in the "RE", 
@@ -40,10 +40,11 @@
 % |              Laboratories.
 % |Input       : (Re)       = double, Reynolds number;
 % |              (alpha)    = double, angle of attack;
-% |              (aeroflag) = string, 'simple' | 'real'. Choose between 
-% |                           Cl calculation through linear law (simple) 
-% |                           or through two-variable interpolation
-% |                           (realistic).
+% |              (aeroflag) = string, 'xrotor' | 'skdata'. Choose between 
+% |                           Cl calculation through linear law ('xrotor') 
+% |                           or through two-variable interpolation on 
+% |                           Sheldahl & Klimas (see references). 
+% |                           experimental data ('skdata').
 % |Output      : (Cl_val)   = lift coefficient value.
 % |Note        : -
 % =========================================================================
@@ -52,11 +53,11 @@ function Cl_val = Cl_dmst(Re,alpha,aeroflag)
 
 global RE ALPHA Cl_data
 
-if strcmpi(aeroflag,'real')
+if strcmpi(aeroflag,'skdata')
     
     Cl_val = interp2(RE,ALPHA,Cl_data,Re,alpha);
     
-elseif strcmpi(aeroflag,'simple')
+elseif strcmpi(aeroflag,'xrotor')
 
     Cl_val = 2*pi*alpha;
 
