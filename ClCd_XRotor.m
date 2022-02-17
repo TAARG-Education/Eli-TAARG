@@ -2,7 +2,7 @@
 %  \brief: the function evaluates the Cd(Cl) law according to XRotor
 %  aerodynamic model
 %  \author: Crescenzo Visone
-%  \version: 1.05
+%  \version: 1.1
 %
 % Eli-TAARG is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public
@@ -25,21 +25,21 @@
 % |Name        : ClCd_XRotor.m                                                           |
 % |Author      : Crescenzo Visone                                                        |
 % |              University of Naples Federico II.                                       |
-% |Version     : 1.05                                                                    |
+% |Version     : 1.1                                                                     |
 % |Date        : 25/11/2020                                                              |
-% |Modified    : 16/02/2022 by Gabriele Lucci (commented line 75)                                                             |
-% |Description : Cd(Cl) evaluation law according to XRotor aero model                    |     
+% |Modified    : 17/02/2022 by Gabriele Lucci                                            |
+% |Description : Cd(Cl) evaluation law according to XRotor aero model                    |  
 % |Reference   : XRotor User Guide                                                       |
-% |              <http://web.mit.edu/drela/Public/web/xrotor/xrotor_doc.txt>             |                                                         |
+% |              <http://web.mit.edu/drela/Public/web/xrotor/xrotor_doc.txt>             |                                                         
 % |Input       : * the first input must be a vector with the following components:       |
 % |              (Cd_min) = minimum blade element's drag coefficient                     |
 % |              (dCd_dCl2) = quadratic coefficient of the Cd(Cl) parable                |  
 % |              (Cl_Cd_min) = lift coefficient @ minimum Cd                             |
-% |              (Re_ref) = blade element's Reynolds number                              |
-% |              (Re_inf) = asymptotic Reynolds number                                   |
+% |              (Re_ref) = blade element's Reynolds number                              |                                |
 % |              (f) = Reynolds number scaling exponent                                  |
 % |              (Cl_max) = maximum blade element's lift coefficient                     |
 % |              (Cl_min) = minimum blade element's lift coefficient                     |
+% |              * the second input is the Reynolds number at which the forumla applies  |
 % |              * the second input can either be a scalar value or a vector equal to :  | 
 % |              (Cl_bp) = blade element's lift coefficient breakpoints                  |
 % |Output      : (Cl_vec) = lift coefficient vector used to plot the law                 |
@@ -47,21 +47,21 @@
 % |              (Cd_bp) = drag coefficient values @ requested Cl_bp                     |
 % |Note        :                                                                         |
 % ==============================================================================================
-function [Cl_vec, Cd, Cd_bp] = ClCd_XRotor(input_v, Cl_bp)
+function [Cl_vec, Cd, Cd_bp] = ClCd_XRotor(input_v,Re,Cl_bp)
 
     % taking input data
     Cd_min    = input_v(1);
     dCd_dCl2  = input_v(2);
     Cl_Cd_min = input_v(3);
     Re_ref    = input_v(4);
-    Re_inf    = input_v(5);
-    f         = input_v(6);
-    Cl_max    = input_v(7);
-    Cl_min    = input_v(8);
+    f         = input_v(5);
+    Cl_max    = input_v(6);
+    Cl_min    = input_v(7);
+    
     % lift coefficient vector creation
     Cl_vec = Cl_min:.01:Cl_max;
     % aerodynamic model building
-    Cd = (Cd_min + dCd_dCl2*(Cl_Cd_min - Cl_vec).^2)*(Re_inf/Re_ref)^f;
+    Cd = (Cd_min + dCd_dCl2*(Cl_Cd_min - Cl_vec).^2)*(Re/Re_ref)^f;
     %% evaluation of Cd values @ requested Cl breakpoints 
     % note that Cl_bp can be both a single value or a vector
     % definition of an anonymous function through the handle (@) symbol
