@@ -1,7 +1,7 @@
 %% \dmst.m
 %  \brief: VAWT performance analisys routine based on DMST theory
 %  \author: Gabriele Lucci
-%  \version: 1.00
+%  \version: 1.2
 %
 % Eli-TAARG is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public
@@ -25,9 +25,9 @@
 % |Name        : dmst.m                                                    
 % |Author      : Gabriele Lucci                                            
 % |              University of Naples Federico II.                         
-% |Version     : 1.00                                                      
+% |Version     : 1.2                                                      
 % |Date        : 02/05/2022                                                
-% |Modified    : -                                                         
+% |Modified    : 02/17/2022                                                       
 % |Description : H-Darrieus Vertical Axis Wind Turbines (VAWT) performance 
 % |              assessment through Double-Multiple Streamtube theory,
 % |              based on Ion Paraschivoiu (2002) approach.
@@ -48,10 +48,17 @@
 % |              (R)        = double, rotor radius [m];
 % |              (lambda)   = double, Tip Speed Ratio;
 % |              (Vinf)     = double, wind speed [m/s];
-% |              (aeroflag) = string, 'simple' | 'real'. Choose between 
-% |                           simplified and realistic blade aerodynamic 
-% |                           behaviour, assuming blade airfoil is a NACA 
-% |                           0012.
+% |              (aeroflag) = string, 'xrotor' | 'skdata' | 'simple'. 
+% |                           Choose between Cl and Cd calculation through 
+% |                           a linear law and through "ClCd_Xrotor.m" 
+% |                           function included in the Eli-TAARG library 
+% |                           ('xrotor'), through two-variable 
+% |                           interpolation on Sheldahl & Klimas (see 
+% |                           references) experimental data ('skdata'), or
+% |                           through a linear law and a constant 100 DC
+% |                           value ('simple').
+% |              (varargin) = 7-by-1 double array, input parameters for
+% |                           "ClCd_XRotor.m" function (see documentation).
 % |Output      : (lambda_flag_us) = boolean, 1 if a > 0.5 somewhere 
 % |                                 upwind, 0 otherwise;
 % |              (lambda_flag_ds) = boolean, 1 if a > 0.5 somewhere 
@@ -102,7 +109,7 @@
 % |                                 averaged on the whole rotor revolution;
 % |              (CP)             = double, average net power coefficient.
 % |Note        : This function capabilities are limited to the aerodynamic
-% |              data available (if the realistic aerodynamic model is
+% |              data available (if the 'skdata' aerodynamic model is
 % |              chosen), and to the extent that the hypothesis underneath 
 % |              Double-Multiple Streamtube theory are reasonably
 % |              acceptable.
@@ -121,19 +128,49 @@ function [ ...
     a_us,a_ds, ...
     instCQ_us,instCQ_ds, ...
     CP_us,CP_ds,CP ...
-    ] = dmst(n_st,B,c,R,lambda,Vinf,aeroflag)
+    ] = dmst(n_st,B,c,R,lambda,Vinf,aeroflag,varargin)
 
 global RADrunflag RE
 
-% Check wether realistic model has been chosen, but aerodynamic data was
-% not previoulsy loaded.
-if strcmpi(aeroflag,'real') && isempty(RADrunflag)
+% Input checks
+narginchk(7,8);
+
+if strcmpi(aeroflag,'xrotor')
     
-    filename = 'sandia0012data.xlsx';
-    filepath = [cd,'/ExperimentalData/',filename];
-    ReadAeroData(filepath);
-    
-end    
+    % Check wether 'xrotor' model has been chosen, but 'input_v' was not
+    % provided.
+    if nargin == 7
+
+        error(['<strong>ClCd_XRotor</strong> needs an input vector. ', ...
+            'See function documentation.']);
+
+    else
+
+        input_v = varargin{1};
+
+    end
+
+elseif ~strcmpi(aeroflag,'xrotor') 
+
+    if nargin <= 8
+
+        input_v = [];
+
+    end
+
+    if strcmpi(aeroflag,'skdata') && isempty(RADrunflag)
+
+        % Check wether realistic model has been chosen, but aerodynamic
+        % data was not previoulsy loaded.
+        input_v  = [];
+        filename = 'sandia0012data.xlsx';
+        filepath = [cd,'/ExperimentalData/',filename];
+        ReadAeroData(filepath);
+
+    end
+
+end
+% End of input checks
 
 Delta_theta = pi/n_st;
 
@@ -191,7 +228,7 @@ for ind_theta = 1:n_st
             Vinf*sqrt(Vratiosq_us(ind_theta))*c/nu;
         
         % Check if local Reynolds number outranges tabulated values
-        if strcmpi(aeroflag,'real')
+        if strcmpi(aeroflag,'skdata')
             
             if Re_us(ind_theta) < RE(1)
                 
@@ -223,7 +260,8 @@ for ind_theta = 1:n_st
             cos(alpha_us(ind_theta)) + ...
             Cd_dmst(Re_us(ind_theta), ...
             alpha_us(ind_theta), ...
-            aeroflag)* ...
+            aeroflag, ...
+            input_v)* ...
             sin(alpha_us(ind_theta));
         
         Ct_us(ind_theta) = ...
@@ -233,7 +271,8 @@ for ind_theta = 1:n_st
             sin(alpha_us(ind_theta)) - ...
             Cd_dmst(Re_us(ind_theta), ...
             alpha_us(ind_theta), ...
-            aeroflag)* ...
+            aeroflag, ...
+            input_v)* ...
             cos(alpha_us(ind_theta));
         
         
@@ -288,7 +327,8 @@ for ind_theta = 1:n_st
                     cos(alpha_us(ind_theta)) + ...
                     Cd_dmst(Re_us(ind_theta), ...
                     alpha_us(ind_theta), ...
-                    aeroflag)* ...
+                    aeroflag, ...
+                    input_v)* ...
                     sin(alpha_us(ind_theta));
                 
                 Ct_us(ind_theta) =  ...
@@ -298,7 +338,8 @@ for ind_theta = 1:n_st
                     sin(alpha_us(ind_theta)) - ...
                     Cd_dmst(Re_us(ind_theta), ...
                     alpha_us(ind_theta), ...
-                    aeroflag)* ...
+                    aeroflag, ...
+                    input_v)* ...
                     cos(alpha_us(ind_theta));
                 
             end
@@ -368,7 +409,7 @@ for ind_theta = 1:n_st
             Vinf*sqrt(Vratiosq_ds(ind_theta))/nu;
         
         % Check if local Reynolds number outranges tabulated values
-        if strcmpi(aeroflag,'real')
+        if strcmpi(aeroflag,'skdata')
             
             if Re_ds(ind_theta) < RE(1)
                 
@@ -400,7 +441,8 @@ for ind_theta = 1:n_st
             cos(alpha_ds(ind_theta)) + ...
             Cd_dmst(Re_ds(ind_theta), ...
             alpha_ds(ind_theta), ...
-            aeroflag)* ...
+            aeroflag, ...
+            input_v)* ...
             sin(alpha_ds(ind_theta));
         
         Ct_ds(ind_theta) = ...
@@ -410,7 +452,8 @@ for ind_theta = 1:n_st
             sin(alpha_ds(ind_theta)) - ...
             Cd_dmst(Re_ds(ind_theta), ...
             alpha_ds(ind_theta), ...
-            aeroflag)* ...
+            aeroflag, ...
+            input_v)* ...
             cos(alpha_ds(ind_theta));
         
         if ind_theta == 1 || ind_theta == n_st
@@ -464,7 +507,8 @@ for ind_theta = 1:n_st
                     cos(alpha_ds(ind_theta)) + ...
                     Cd_dmst(Re_ds(ind_theta), ...
                     alpha_ds(ind_theta), ...
-                    aeroflag)* ...
+                    aeroflag, ...
+                    input_v)* ...
                     sin(alpha_ds(ind_theta));
                 
                 Ct_ds(ind_theta) = ...
@@ -474,7 +518,8 @@ for ind_theta = 1:n_st
                     sin(alpha_ds(ind_theta)) - ...
                     Cd_dmst(Re_ds(ind_theta), ...
                     alpha_ds(ind_theta), ...
-                    aeroflag)* ...
+                    aeroflag, ...
+                    input_v)* ...
                     cos(alpha_ds(ind_theta));
                 
             end
