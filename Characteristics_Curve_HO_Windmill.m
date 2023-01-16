@@ -17,9 +17,9 @@
 % |Name        : Characteristics_Curve_HO_Windmill.m                                           |
 % |Author      : Nasti Giuseppe, Tomasso Armando Diego                                         |
 % |              University of Naples Federico II.                                             |
-% |Version     : 1.11                                                                           |
+% |Version     : 1.1                                                                           |
 % |Date        : 20/01/2021                                                                    |
-% |Modified    : 17/02/2022 by Gabriele Lucci                                                                    |
+% |Modified    : 14/02/2021                                                                    |
 % |Description : characteristic curves evaluation for a windmill                               |
 %                                                                                              |
 % |Reference   : Tognaccini R., (2019), "Lezioni di Aerodinamica dell'ala rotante"             |
@@ -72,13 +72,13 @@ for i=1:length(r)
     
     %Creation of input vectors for the two subroutine lift_curve and ClCd_XRotor 
     v_input_cl(i,:)=[Cl_max(i),Cl_min(i),alpha_zero_lift(i),cl_alpha(i),dcldalfastall(i)];
-    v_input_cd(i,:)=[Cd_min(i),dCd_dCl2(i),Cl_Cd_min(i),Re_ref(i),f(i),Cl_max(i),Cl_min(i)];
+    v_input_cd(i,:)=[Cd_min(i),dCd_dCl2(i),Cl_Cd_min(i),Re_ref(i),Re_inf(i),f(i),Cl_max(i),Cl_min(i)];
     
     for j=1:length(v_alpha)
         
         %Calculation of Cl and Cd for the blade station at angle v_alpha(i)
         Cl(i,j)=lift_curve(v_input_cl(i,:),convang(v_alpha(j),'rad','deg'));
-        [~,~,Cd(i,j)]=ClCd_XRotor(v_input_cd(i,:),Re_inf(i),Cl(i,j));
+        [~,~,Cd(i,j)]=ClCd_XRotor(v_input_cd(i,:), Cl(i,j));
         
         phi(i,j)=v_alpha(j)+beta(i); %inflow angle
         

@@ -1,7 +1,7 @@
 %% \vawt_dmst_test.m
 %  \brief: Test script for dmst.m function
 %  \author: Gabriele Lucci
-%  \version: 1.02
+%  \version: 1.00
 %
 % Eli-TAARG is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public
@@ -25,14 +25,14 @@
 % |Name        : dmst.m                                                    
 % |Author      : Gabriele Lucci                                            
 % |              University of Naples Federico II.                         
-% |Version     : 1.02                                                      
+% |Version     : 1.00                                                      
 % |Date        : 02/05/2022                                                
-% |Modified    : 02/17/2022                                                        
+% |Modified    : -                                                         
 % |Description : This script tests dmst.m function by calculating the
 % |              performances of straight-bladed Darrieus VAWT. User may
 % |              set the number of streamtube pairs, turbine geometry, TSR 
 % |              range and freestream velocity, and choose the aerodynamic 
-% |              model (see "dmst.m" function description).
+% |              model.
 % |Reference   : Tognaccini, R. (2020). "Lezioni di aerodinamica dell'ala 
 % |              Rotante - A.A. 2019/2020". Università degli studi di 
 % |              Napoli "Federico II".
@@ -60,35 +60,18 @@ theta_ds_seq = linspace(pi/2,3*pi/2,n_st);
 theta_seq    = [fliplr(theta_us_seq),theta_ds_seq(2:end)];
 
 lambda_seq = 1.5:0.05:5.8;
+% lambda_seq = 1:0.05:6;
 n_lambda   = length(lambda_seq);
 
 % VAWT rotor geometry
-c     = 0.2;
-R     = 2;
-B     = 3;
+c = 0.2;
+R = 2;
+B = 3;
 sigma = B*c/R;
 
 % Aerodynamics
-aeroflag   = 'skdata';
-Vinf       = 5;
-
-if strcmpi(aeroflag,'xrotor')
-
-    % Assign input parameters if XRotor aerodynamic model has to be used.
-    % See "ClCd_XRotor.m" function documentation.
-    input_v(1) = 0.005;
-    input_v(2) = 0.0040;
-    input_v(3) = 0;
-    input_v(4) = 5e6;
-    input_v(5) = -0.2;
-    input_v(6) = 1.75;
-    input_v(7) = -1.75;
-
-else
-
-    input_v = [];
-
-end
+aeroflag = 'real';
+Vinf = 5;
 
 %% Vars init
 lambda_flag_us = zeros(n_lambda,1);
@@ -122,21 +105,15 @@ disp(['<strong>VAWT performance analysis ', ...
     'through Double-Multiple Streamtube method</strong>',newline, ...
     'sigma = ',num2str(sigma),', Vinf = ',num2str(Vinf),' m/s']);
 
-if strcmpi(aeroflag,'xrotor')
+if strcmpi(aeroflag,'simple')
     
     aeromessage = ...
-        ['Using a linear law for Cl and Xrotor model for Cd.',newline];
+        ['Simplified aerodynamic model.',newline];
     
-elseif strcmpi(aeroflag,'skdata')
+elseif strcmpi(aeroflag,'real')
     
     aeromessage = ...
         ['Aerodynamics from NACA 0012 Sheldahl & Klimas data.',newline];
-
-elseif strcmpi(aeroflag,'simple')
-    
-    aeromessage = ...
-        ['Using simplified aerodynamic model ', ...
-        '(Cl = 2*pi*alpha, Cd = 0.01).',newline];    
     
 else
     
@@ -173,7 +150,7 @@ for ind_lambda = 1:n_lambda
         a_ds(:,ind_lambda), ...
         instCQ_us(:,ind_lambda),instCQ_ds(:,ind_lambda), ...
         CP_us(ind_lambda),CP_ds(ind_lambda),CP(ind_lambda) ...
-        ] = dmst(n_st,B,c,R,lambda,Vinf,aeroflag,input_v);
+        ] = dmst(n_st,B,c,R,lambda,Vinf,aeroflag);
     
     disp([newline,'--------------------------------------------------', ...
         newline]);
