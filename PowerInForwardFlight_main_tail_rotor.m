@@ -45,12 +45,12 @@
 % v_input(2) --> Main rotor's Area
 % v_input(3) --> Main rotor's Solidity
 % v_input(4) --> Main rotor's angular velocity
-% v_input(5) --> Cd of main rotor's airfoil 
+% v_input(5) --> Cd of main rotor's blade element
 % v_input(6) --> Tail rotor's radius
 % v_input(7) --> Tail rotor's Area
 % v_input(8) --> Tail rotor's Solidity
 % v_input(9) --> Tail rotor's angular velocity
-% v_input(10)--> Cd of tail rotor's airfoil 
+% v_input(10)--> Cd of tail rotor's blade element
 % v_input(11)--> b: distance between main rotor and tail rotor
 % v_input(12)--> correction factor
 % v_input(13)--> Auxiliary Power
