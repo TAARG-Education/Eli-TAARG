@@ -29,9 +29,10 @@
 % |Reference   : "Lezioni di Aerodinamica dell'ala rotante" by Renato Tognaccini.               |
 % |Input       : Altitude h, velocity vector, helicopter weigth W, Main rotor's radius,         |
 % |              Main rotor's Area, Main rotor's Solidity, Main rotor's angular velocity,       |
-% |              Cd of main rotor's airfoil, Tail rotor's radius, Tail rotor's Area,            |
-% |              Tail rotor's solidity, Tail rotor's angular velocity,Cd of tail rotor's airfoil|
-% |              b, correction factor, Auxiliary Power, Coefficient due to transmission losses, |
+% |              Cd of main rotor's blade element, Tail rotor's radius, Tail rotor's Area,      |
+% |              Tail rotor's solidity, Tail rotor's angular velocity,Cd of tail rotor's blade  |
+% |              element,b:distance between main rotor and tail rotor, correction factor,       |
+% |              Auxiliary Power, Coefficient due to transmission losses,                       |
 % |              Available Power at sea level.                                                  |  
 % |Output      : Induced Power, Parasitic Power and Required Power by the main rotor, Parasitic |
 % |              Power by the fuselage, Induced Power, Parasitic Power and Required Power       |
