@@ -58,9 +58,9 @@
 % v_input(14)--> Coefficient due to transmission losses 
 % v_input(15)--> Available Power at sea level
 
-         function [ Pind_B, Ppar_rp,Pfus,P_tot_rp,...
-                  Pind_rc,Ppar_rc,P_tot_rc,Ptot_req, Pdisp, ...
-                  V_NE, V_BE, V_BR] = PowerInForwardFlight_main_tail_rotor(h, Vinf, W,v_input)
+function [ Pind_B, Ppar_rp,Pfus,P_tot_rp,...
+         Pind_rc,Ppar_rc,P_tot_rc,Ptot_req, Pdisp, ...
+         V_NE, V_BE, V_BR] = PowerInForwardFlight_main_tail_rotor(h, Vinf, W,v_input)
 
 
          % Required Power by the main rotor in forward flight
@@ -148,5 +148,5 @@
           end
          end
 
-         end
+end
 
