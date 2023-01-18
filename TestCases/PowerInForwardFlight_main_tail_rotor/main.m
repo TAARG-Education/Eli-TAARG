@@ -1,4 +1,4 @@
-%% Elicottero SIKORSKY UH-60A %%
+%% Helicopter SIKORSKY UH-60A %%
 
  clc; close all; clear all;
 
@@ -142,4 +142,34 @@ for i = 1:length(h)
     grid on;
 
 end
+%%% Validation: total power at different altitudes and weights
+v_WTO2 = [5443*9.81,7257*9.81, 9071*9.81];       
+h2     = [0,2100,4200];
+
+v_input = [R_rp,A_rp,sigma_rp, Omega_rp, Cd_rp,...
+          R_rc, A_rc, sigma_rc, Omega_rc, Cd_rc,...
+          br, k, P_aus, eta_rc, Pd_sl ];
+
+ for i = 1:length(h2)
+   for j = 1:length(v_WTO2)
+    
+     [Pindotta_B,  Pparassita_rp,Pfus,Ptot_rp(j,:),...
+      Pindotta_rc,  Pparassita_rc, Ptot_rc,Ptot_richiesta(j,:),Pdisp,...
+      V_NE,V_BE, V_BR] = PowerInForwardFlight_main_tail_rotor(h2(i), Vinf, v_WTO2(j),v_input);
+
+ 
+     Pdisponibile(j,:) = Pdisp*ones(1,length(Vinf));
+    end
+
+    figure
+    plot(Vinf,Ptot_rp(1,:),'.-r',...
+        Vinf,Ptot_rp(2,:),'.-b',...
+        Vinf,Ptot_rp(3,:),'.-k');
+        hold on;
+    xlabel('V_∞ [m/s]'); ylabel('P [W]'); title('Required Power of the main rotor in forward flight');
+    subtitle(['altitude h = ',num2str(h2(i)), 'm']);
+    legend('5443 kg','7257 kg','9071 kg')
+    grid on
+
+ end
 
