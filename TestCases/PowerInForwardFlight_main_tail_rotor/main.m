@@ -1,4 +1,4 @@
-%% Elicottero SIKORSKY UH-60A %%
+%% Helicopter SIKORSKY UH-60A %%
 
  clc; close all; clear all;
 
@@ -142,4 +142,5 @@ for i = 1:length(h)
     grid on;
 
 end
+
 
