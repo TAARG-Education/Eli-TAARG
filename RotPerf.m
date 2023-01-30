@@ -131,7 +131,7 @@ for i = 1 : Ns
     
     % Assemble lambda vector, accept only the positive root
     lambdaVet(i) = max( roots( [ a b c ] ) );
-    phiVet(i) = lambdaVet(i)/ r;         % inflow angle
+    phiVet(i) = lambdaVet(i)/ r + mu/r;         % inflow angle
     alpha = theta - phiVet(i);                 % effective aoa
     alphaVet(i) = alpha;
     alphad = alpha * 180 / pi;
