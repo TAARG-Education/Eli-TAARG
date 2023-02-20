@@ -1,4 +1,4 @@
-%% \file AUTOGIRO_FUN
+%% \file autogiro_performances
 %  \brief Autogiro performances
 %  \author Filippo Borriello - Alessandro Furno
 %  \version 1.0.0
@@ -21,7 +21,7 @@
 % <http://www.gnu.org/licenses/>.
 %
 % ==============================================================================================
-% |Name        : AUTOGIRO_FUN                                                                |
+% |Name        : autogiro_performances                                                         |
 % |Author      : Filippo Borriello - Alessandro Furno                                          |
 % |              University of Naples Federico II.                                             |
 % |Version     : 1.0.0                                                                         |
@@ -64,7 +64,7 @@
 % ==============================================================================================
 
 
-function [pnec, alpha, omega,THETA_0F,v0, pi, rs ]= AUTOGIRO_FUN(w,ro,co,cla,r,tetatw,n,fd,A,cd0,lock,lambda,mu,Pmax)
+function [pnec, alpha, omega,THETA_0F,v0, pi, rs ]= autogiro_performances(w,ro,co,cla,r,tetatw,n,fd,A,cd0,lock,lambda,mu,Pmax)
 sigma=n*co/(3.14*r);
 syms teta0 omega [1 50]
 for i=1:50
