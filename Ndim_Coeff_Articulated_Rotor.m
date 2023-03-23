@@ -25,34 +25,27 @@
 % |Name        : Ndim_Coeff_Articulated_Rotor                                                   |
 % |Author      : Marco Artiano & Luca Angelino                                                  |
 % |              University of Naples Federico II.                                              |
-% |Version     : 1.0.3                                                                          |
+% |Version     : 1.0.4                                                                          |
 % |Date        : 25/11/20                                                                       |
-% |Modified    : 24/01/21                                                                       |
+% |Modified    : 03/03/23 : Vincenzo Castrignano                                                |
 % |Description : Determination of non-dimensional aerodynamics coefficients                     |
 % |Reference   : 'Lezioni di AERODINAMICA DELL'ALA ROTANTE a.a. 2019-2020 - Renato Tognaccini'  |
 % |Input       : Velocity V_inf [m/s], Altitude h [m], Lock number L [~],                       |            
-% |              Equivalent drag area f [m^2], Rate of climb X [deg]                            |                                                             
+% |              Equivalent drag area f [m^2], Rate of climb X [deg],                           |                                                             
+% |              Rotor solidity sigma [~], Weight W [Kg], Blade radius R [m],                   |
+% |              Rotor angular velocity Omega [rad/s], Tip angle theta_tw [rad],                |
+% |              Cl_alpha [~], Cd_mean [~]                                                      |
 % |Output      : Tc, Hc, Yc, Qc, Pc, the angle of attack [deg] and the rotor inflow ratio       |
-% |Note        : Missing geometry and aerodynamics input                                        |
+% |Note        :                                                                                |
 % ===============================================================================================
 
-function [Tc,Hc,Yc,Qc,Pc,alfa,lambda] = Ndim_Coeff_Articulated_Rotor(V_inf,h,Lock,f,X)
+function [Tc,Hc,Yc,Qc,Pc,alfa,lambda] = Ndim_Coeff_Articulated_Rotor(V_inf,h,Lock,f,X,sigma,W,R,Omega,theta_tw,Cl_alpha,Cd_mean)
 
-%% Input data for local test
- N        = 4;
- W        = 8600;
- R        = 7.79;
- c        = 0.6;
- Cl_alpha = 2*pi;
- Omega    = 27.856;
- theta_tw = convang(-8,'deg','rad');
- Cd_mean  = 0.0121;
 
 %% Data
  [~,~,~,rho_inf] = atmosisa(h);                                             % International Standard Atmosphere model
- g               = 9.8195;                                                  % Gravitational acceleration
- sigma           = N*c/(pi*R);                                              % Rotor solidity
- W               = W*g;                                                      
+ g               = 9.8195;                                                  % Gravitational acceleration                                            
+ W_n               = W*g;                                                   % Weight in Newton  
  A               = pi*R^2;                                                  % Rotor disk area
  D_fus           = f*0.5*rho_inf*V_inf^2;                                   % Fuselage drag force
  
@@ -61,7 +54,7 @@ function [Tc,Hc,Yc,Qc,Pc,alfa,lambda] = Ndim_Coeff_Articulated_Rotor(V_inf,h,Loc
  err      = 1;                            % Error initialization
  err_stop = 1e-5;                         % Error tolerance 
  alfa     = convang(0,'deg','rad');       % Initialization for the angle of attack
- Tc       = W/(rho_inf*(Omega*R)^2*A);    % Thrust coefficient                                      
+ Tc       = W_n/(rho_inf*(Omega*R)^2*A);    % Thrust coefficient                                      
  X        = convang(X,'deg','rad');       % Rate of climb
  lambda_c = V_inf*sin(X)/(Omega*R);
  
@@ -72,7 +65,7 @@ while abs(err) > err_stop
 %% To overcome the problems due to the divergence of lambda_i at low speed, a different formula provided by Eng. Di Giorgio has been used.    
 if mu <= 0.1       
     if i == 0
-        lambda_i = sqrt(-V_inf^2/2+sqrt(V_inf^4/4+(W/(2*rho_inf*A))^2))/(Omega*R);          % First attempt value of induced inflow ratio at low speed
+        lambda_i = sqrt(-V_inf^2/2+sqrt(V_inf^4/4+(W_n/(2*rho_inf*A))^2))/(Omega*R);          % First attempt value of induced inflow ratio at low speed
     else
         lambda_i = Tc/(2*sqrt(mu^2 + lambda^2));                                            % Updated value of induced inflow ratio 
     end    
@@ -88,8 +81,10 @@ end
 %%   
     lambda   = mu*tan(alfa) + lambda_i;                                                     % Rotor inflow ratio
     theta_0  = (2*Tc/(sigma*Cl_alpha) - theta_tw/4*(1 + mu^2) + lambda/2)*3/(1 + 3/2*mu^2); % Collective pitch angle
-    Pc0      = sigma*Cd_mean*(1 + 3*mu^2)/8;
-    Pc       = lambda_i*Tc + lambda_c*Tc + mu*D_fus*Tc/W + Pc0;                             % Power coefficient
+
+    Pc0      = sigma*Cd_mean*(1 + 4.7*mu^2)/8;
+
+    Pc       = lambda_i*Tc + lambda_c*Tc + mu*D_fus*Tc/W_n + Pc0;                             % Power coefficient
     
     beta_0   = Lock*(theta_0/8*(1 + mu^2) + theta_tw/10*(1 + 5/6*mu^2) - lambda/6);         % Coning angle
     beta_1c  = -2*mu*(4/3*theta_0+theta_tw-lambda)/(1-mu^2/2);                              % Longitudinal tip-path-plane tilt angle, positive forward
@@ -106,7 +101,7 @@ end
                beta_0*beta_1c*(1/6 - mu^2)-3/2*mu*lambda*beta_0 - 1/4*beta_1c*beta_1s);
            
     lambda_old = lambda;                                                                    % Saving old lambda variable                
-    lambda     = lambda_i + lambda_c+mu*Hc/Tc + mu*D_fus/W;                                 % Updating lambda at the end of cycle
+    lambda     = lambda_i + lambda_c+mu*Hc/Tc + mu*D_fus/W_n;                                 % Updating lambda at the end of cycle
     alfa       = atan((lambda - Tc/(2*sqrt(mu^2 + lambda^2)))/mu);                          % Updating the value of the angle of attack for the next iteration
     err        = abs(lambda - lambda_old);                                                  % Evaluating error
     i          = i + 1;                                                                     % Increasing the count iteration 
