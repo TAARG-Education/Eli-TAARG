@@ -21,8 +21,9 @@
 % |Name        : PowersInForwardFlight_main_tail_rotor                                          |
 % |Author      : Rosa Castiello & Raffaella Scarano                                             |
 % |              University of Naples Federico II                                               |
-% |Version     : 1.0.0                                                                          |
-% |Date        : 07/01/2023                                                                     |  
+% |Version     : 1.1.0                                                                          |
+% |Date        : 07/01/2023                                                                     | 
+% |Edited      : 23/03/2023 : Vincenzo Castrignano                                              | 
 % |Description : the function calculates the required power in forward flight                   |
 % |              for main rotor and tail rotor, according to Rotor BEMT theory,                 |        
 % |              at different quotes and weights.                                               |
@@ -33,11 +34,12 @@
 % |              Tail rotor's solidity, Tail rotor's angular velocity,Cd of tail rotor's blade  |
 % |              element,b:distance between main rotor and tail rotor, correction factor,       |
 % |              Auxiliary Power, Coefficient due to transmission losses,                       |
-% |              Available Power at sea level.                                                  |  
+% |              Available Power at sea level, fonA ratio, Fuel weight and Specific Fuel        |
+%                consumption                                                                    |  
 % |Output      : Induced Power, Parasitic Power and Required Power by the main rotor, Parasitic |
 % |              Power by the fuselage, Induced Power, Parasitic Power and Required Power       |
 % |              by the tail rotor, Total Required Power, Available Power, Maximum Speed,       |
-% |              Speed of maximum endurance and Speed of maximum Range.                         | 
+% |              Speed of maximum endurance, Speed of maximum Range, endurance and range.       |
 % |Note        :                                                                                |                                               
 % ==============================================================================================
 %Argument 
@@ -57,10 +59,13 @@
 % v_input(13)--> Auxiliary Power
 % v_input(14)--> Coefficient due to transmission losses 
 % v_input(15)--> Available Power at sea level
+% v_input(16)--> fonA ratio for fuselage drag (0.007)
+% v_input(17)--> Fuel weight
+% v_input(18)--> SFC (specific fuel comsumption)
 
-function [ Pind_B, Ppar_rp,Pfus,P_tot_rp,...
+function [Pind_B, Ppar_rp,Pfus,P_tot_rp,...
          Pind_rc,Ppar_rc,P_tot_rc,Ptot_req, Pdisp, ...
-         V_NE, V_BE, V_BR] = PowerInForwardFlight_main_tail_rotor(h, Vinf, W,v_input)
+         V_NE, V_BE, V_BR, Endurance,Range] = PowerInForwardFlight_main_tail_rotor(h, Vinf, W,v_input)
 
 
          % Required Power by the main rotor in forward flight
@@ -80,21 +85,21 @@ function [ Pind_B, Ppar_rp,Pfus,P_tot_rp,...
          T = W;  % Hp small alpha, in forward flight
          %Induced Power 
 
-         %Impulsive Theory
-         Pind_A     = W^2./(2*rho*v_input(2).*Vinf); %Glauert Theory
+         %Impulsive Theory  
 
+         %Pind_A     = W^2./(2*rho*v_input(2).*Vinf); %Glauert Theory
          w_hov      = 1/sqrt(2*rho)*sqrt(T/v_input(2));
          Vinf_tilde = Vinf./w_hov;
          w_tilde    = sqrt((- (Vinf_tilde.^2)./2 + sqrt(((Vinf_tilde.^2)./2).^2+1)));
-         w_rotore   = w_tilde*w_hov;
+      
          Pi_tilde   = w_tilde; %Pi_tilde = Vinf_tilde*sin(alpha) + w = w because sin(alpha)=0
                                % Hp: T costant
-         P_hov  = T*w_hov;
+         Pi_hov  = T*w_hov;
 
-         Pind_B = Pi_tilde*P_hov;
+         Pind_B = Pi_tilde*Pi_hov;
 
          %Fusulage Power
-         f    = 0.007*v_input(2);         % f: equivalent wet area
+         f    =  v_input(16) *v_input(2);         % f: equivalent wet area
          Pfus = 0.5*rho.*Vinf.^3*f;  
          %real main rotor's request Power
          P_tot_rp = v_input(12)*Pind_B + Ppar_rp + Pfus;
@@ -107,14 +112,21 @@ function [ Pind_B, Ppar_rp,Pfus,P_tot_rp,...
          Q_rot_main      = P_tot_rp./(v_input(4));
          T_tail_required = Q_rot_main/v_input(11);
          whov_rc         = 1/sqrt(2*rho).*sqrt(T_tail_required./v_input(7)); % Impulsive Theory
+         
          Vinf_tilde_rc   = Vinf./whov_rc;
 
          w_tilde_rc  = sqrt((- (Vinf_tilde_rc.^2)./2 +...
                        sqrt(((Vinf_tilde_rc.^2)./2).^2+1)));
-         w_rotor_rc  = w_tilde_rc.*whov_rc;
 
-         Pind_rc     = T_tail_required.*w_rotor_rc;
+         
+         Pi_tilde_rc   = w_tilde_rc;        %Pi_tilde = Vinf_tilde*sin(alpha) + w = w because sin(alpha)=0
+                                            % Hp: T costant
 
+         Pi_hov_rc = T_tail_required .* whov_rc;
+         
+         Pind_rc  = Pi_tilde_rc.*Pi_hov_rc;
+
+  
          %Parasitic Power
          Ppar_rc  = (v_input(8)*v_input(10)/8.*(1+4.7*mu_rc.^2)).*...
                      pi*rho*v_input(9)^3*v_input(6)^5;
@@ -127,12 +139,19 @@ function [ Pind_B, Ppar_rp,Pfus,P_tot_rp,...
          v_P_aus  = v_input(13)*ones(1,length(Vinf));
          Ptot_req = (P_tot_rp+P_tot_rc+v_P_aus)*v_input(14);
 
-         % Maximum speed in forward flight
+         
+
+          % Maximum speed in forward flight
          for f=(length(Vinf)/2):length(Vinf)
            if(Pdisp>=Ptot_req(f-1) && Pdisp<Ptot_req(f))
-                V_NE = (Vinf(f)+Vinf(f-1))/2;
+                V_NE = (Vinf(f)+Vinf(f-1))/2;             
            end
          end
+
+
+
+
+
 
          % Speed of maximum endurance
          for f=1:length(Vinf)
@@ -141,12 +160,28 @@ function [ Pind_B, Ppar_rp,Pfus,P_tot_rp,...
           end
          end
 
+        
+
+
+
          % Speed of maximum Range
          for f=1:length(Vinf)
           if(Ptot_req(f)/Vinf(f) == min(Ptot_req./Vinf))
-               V_BR = Vinf(f);
+               V_BR = Vinf(f);          
           end
          end
 
-end
+         
+         % Endurance 
+         Endurance = v_input(17).*1000./(9.81.*Ptot_req.*v_input(18));
 
+         % Range
+         Range = Endurance.*Vinf*3.6;
+
+
+           
+
+
+
+
+end

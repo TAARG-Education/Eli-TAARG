@@ -21,18 +21,21 @@
 % <http://www.gnu.org/licenses/>.
 %
 % ===============================================================================================
-% |Name        : main.m                                                                         |
+% |Name        : Main.m                                                                         |
 % |Author      : Marco Artiano & Luca Angelino                                                  |
 % |              University of Naples Federico II.                                              |
-% |Version     : 1.0.3                                                                          |
+% |Version     : 1.0.4                                                                          |
 % |Date        : 25/11/20                                                                       |
-% |Modified    : 24/01/21                                                                       |
-% |Description : Ndim_Coeff_Articulated_Rotor function testing                                  |
+% |Modified    : 03/03/23 : Vincenzo Castrignano                                                |
+% |Description : Determination of non-dimensional aerodynamics coefficients                     |
 % |Reference   : 'Lezioni di AERODINAMICA DELL'ALA ROTANTE a.a. 2019-2020 - Renato Tognaccini'  |
 % |Input       : Velocity V_inf [m/s], Altitude h [m], Lock number L [~],                       |            
-% |              Equivalent drag area f [m^2], Rate of climb X [deg]                            |                                                             
+% |              Equivalent drag area f [m^2], Rate of climb X [deg],                           |                                                             
+% |              Rotor solidity sigma [~], Weight W [Kg], Blade radius R [m],                   |
+% |              Rotor angular velocity Omega [rad/s], Tip angle theta_tw [rad],                |
+% |              Cl_alpha [~], Cd_mean [~].                                                     |
 % |Output      : Tc, Hc, Yc, Qc, Pc, the angle of attack [deg] and the rotor inflow ratio       |
-% |Note        : Missing geometry and aerodynamics input                                        |
+% |Note        :                                                                                |
 % ===============================================================================================
 close all; clear all; clc;
 
@@ -47,7 +50,18 @@ Lock     = 8;                     % [~]
 f        = 0.7785;                % [m^2]
 X        = 0;                     % [rad]
 
-for i = 1:length(V_inf)
-[Tc(i),Hc(i),Yc(i),Qc(i),Pc(i),alfa(i),lambda(i)] = Ndim_Coeff_Articulated_Rotor(V_inf(i),altitude,Lock,f,X);
-end
+N        = 4;                     % Blade number
+W       = 8600;                   % Weight [kg]
+R        = 7.79;                  % radius [m]
+c        = 0.6;                   % chord [m]
+Cl_alpha = 2*pi;
+Omega    = 27.856;                % [rad/s]
+theta_tw = -8;                    % [deg]
+Cd_mean  = 0.0121;
 
+sigma    = N*c/(pi*R);            % Rotor solidity
+theta_tw = convang(theta_tw,'deg','rad');
+
+for i = 1:length(V_inf)
+[Tc(i),Hc(i),Yc(i),Qc(i),Pc(i),alfa(i),lambda(i)] = Ndim_Coeff_Articulated_Rotor(V_inf(i),altitude,Lock,f,X,sigma,W,R,Omega,theta_tw,Cl_alpha,Cd_mean);
+end
